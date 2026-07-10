@@ -1,0 +1,65 @@
+---
+title: "Starting a GEO Research Practice Without Overcomplicating It"
+excerpt: "A seed post on how I’m thinking about Generative Engine Optimization, research habits, and what makes this space interesting from a product and engineering perspective."
+date: "2026-07-10"
+tags:
+  - GEO Research
+  - Startups
+  - SDE Prep
+category: "GEO Research"
+---
+
+# Starting a GEO Research Practice Without Overcomplicating It
+
+Generative Engine Optimization feels interesting to me because it combines product strategy, content visibility, and the behavior of large language models in a way that is still changing quickly.
+
+Instead of treating GEO as pure theory, I want to study it through repeatable questions:
+
+- What kinds of sources do answer engines surface consistently?
+- How does brand mention quality compare with traditional keyword presence?
+- Which content structures are easiest for LLM systems to synthesize accurately?
+
+<Callout title="Why this post exists">
+This file is a starter MDX post so the blog system has a real example. You can duplicate it, update the frontmatter, and immediately create a new post.
+</Callout>
+
+## My current operating loop
+
+Right now I am trying to keep the research loop practical:
+
+1. Observe how answer engines respond to a narrow set of prompts.
+2. Compare the surfaced sources and patterns.
+3. Write down hypotheses before jumping to conclusions.
+4. Connect those observations back to product decisions and brand visibility.
+
+## Why this matters for engineering too
+
+This topic is not just a marketing question. It also creates engineering work around:
+
+- content pipelines,
+- data collection,
+- prompt and retrieval experimentation,
+- evaluation methods, and
+- tooling that makes research easier to repeat.
+
+## A tiny code example
+
+```ts
+type ResearchNote = {
+  prompt: string;
+  engine: "search" | "answer";
+  observation: string;
+  nextQuestion: string;
+};
+
+const note: ResearchNote = {
+  prompt: "Best workflow tools for hostel operations",
+  engine: "answer",
+  observation: "Brand mentions were synthesized from review-style pages.",
+  nextQuestion: "Which source formats were cited most consistently?",
+};
+```
+
+## How to add another post
+
+Create a new `.mdx` file inside `content/blog`, copy the frontmatter shape from this post, and write your content below it. The `/blog` page will pick it up automatically.
