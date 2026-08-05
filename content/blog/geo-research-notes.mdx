@@ -1,65 +1,59 @@
 ---
-title: "Starting a GEO Research Practice Without Overcomplicating It"
-excerpt: "A seed post on how I’m thinking about Generative Engine Optimization, research habits, and what makes this space interesting from a product and engineering perspective."
-date: "2026-07-10"
+title: "The Day Google Stopped Being the Front Door"
+excerpt: "What a broken product search taught me about the next decade of the internet."
+date: "2026-08-05"
 tags:
   - GEO Research
   - Startups
   - SDE Prep
 category: "GEO Research"
 ---
+The Day Google Stopped Being the Front Door
 
-# Starting a GEO Research Practice Without Overcomplicating It
+A few months ago, I watched my roommate buy a water purifier without opening a single website.
 
-Generative Engine Optimization feels interesting to me because it combines product strategy, content visibility, and the behavior of large language models in a way that is still changing quickly.
+He didn't Google "best water purifier under 15000." He didn't scroll through ten blue links, squint at ad-stuffed comparison sites, or open four tabs to cross-check reviews. He just opened ChatGPT, typed one line — "which water purifier should I buy for hard water in Delhi, budget 15k" — and got an answer. Three brands, ranked, with reasons. He picked the second one and closed the tab.
 
-Instead of treating GEO as pure theory, I want to study it through repeatable questions:
+I sat there for a second longer than I should have, because something about that moment felt like watching a small, quiet earthquake. Not the kind that knocks buildings down — the kind that shifts the ground so slowly that by the time you notice, everything downstream has already changed.
 
-- What kinds of sources do answer engines surface consistently?
-- How does brand mention quality compare with traditional keyword presence?
-- Which content structures are easiest for LLM systems to synthesize accurately?
+That water purifier company had probably spent years and lakhs of rupees on SEO. Keyword research. Backlinks. Meta descriptions tuned within an inch of their life. And none of it mattered in the room I was sitting in, because the "front door" to their customer wasn't a search engine results page anymore. It was a conversation with a model that had already decided, on its own, who was worth recommending.
 
-<Callout title="Why this post exists">
-This file is a starter MDX post so the blog system has a real example. You can duplicate it, update the frontmatter, and immediately create a new post.
-</Callout>
+That was the moment I stopped thinking of this as a curiosity and started thinking of it as a research question.
 
-## My current operating loop
+The question nobody had a clean answer to
 
-Right now I am trying to keep the research loop practical:
+Here's the thing that kept nagging at me: why that brand, and not the other four just as good?
 
-1. Observe how answer engines respond to a narrow set of prompts.
-2. Compare the surfaced sources and patterns.
-3. Write down hypotheses before jumping to conclusions.
-4. Connect those observations back to product decisions and brand visibility.
+With Google, you at least had a map. Rank higher, get more clicks — a brutal but legible game. Everyone understood the rules even if not everyone could win. But when I started poking at how answer engines like ChatGPT, Perplexity, and Gemini actually decide who to mention, the rules weren't just different. They barely existed yet, at least not in any form founders or marketers could act on.
 
-## Why this matters for engineering too
+I started running small experiments. I'd ask the same question fifty different ways and watch which brands kept showing up, and which ones vanished the moment I phrased things slightly differently. I found brands with excellent SEO rankings that the LLMs had never heard of in any useful way. I found smaller, scrappier brands that showed up constantly — not because they'd gamed anything, but because their content existed in a shape the model could actually digest and trust.
 
-This topic is not just a marketing question. It also creates engineering work around:
+That gap — between being findable by a crawler and being recommendable by a reasoning model — is what people have started calling GEO: Generative Engine Optimization. And once I saw it, I couldn't unsee it.
 
-- content pipelines,
-- data collection,
-- prompt and retrieval experimentation,
-- evaluation methods, and
-- tooling that makes research easier to repeat.
+Why this matters more in India than the case studies let on
 
-## A tiny code example
+Almost everything written about GEO so far comes from the US, and almost all of it assumes one language, one cultural context, one way of asking questions. That assumption breaks immediately in India.
 
-```ts
-type ResearchNote = {
-  prompt: string;
-  engine: "search" | "answer";
-  observation: string;
-  nextQuestion: string;
-};
+Think about how an actual Indian consumer types into a chatbot. It's rarely clean English. It's "purifier chahiye jo hard water handle kare, budget kam hai." It's half Hindi, half English, no punctuation, sometimes typed with one thumb on a moving auto-rickshaw. Hinglish isn't a dialect footnote here — it's the dominant register for a huge chunk of D2C, fintech, and EdTech queries. And I couldn't find a single serious benchmark that tested how well these models handle brand recall and recommendation in that register.
 
-const note: ResearchNote = {
-  prompt: "Best workflow tools for hostel operations",
-  engine: "answer",
-  observation: "Brand mentions were synthesized from review-style pages.",
-  nextQuestion: "Which source formats were cited most consistently?",
-};
-```
+So I started sketching one. I've been calling it, for now, the Hinglish-GEO-Bench — a way to systematically test whether an LLM's answer changes, degrades, or gets more biased toward big, English-dominant brands when the same question is asked in Hinglish instead of English. Early informal testing suggests it does shift, sometimes significantly. If that holds up under real methodology, it means Indian D2C and regional brands might be getting systematically less visible in AI-driven discovery simply because of how their customers actually talk — which is a genuinely unfair, fixable problem, not a marketing inconvenience.
 
-## How to add another post
+Alongside that, I've been working out something I call an Indian Brand Visibility Score (IBVS) — a framework to actually quantify a brand's presence across generative answer engines the way a domain authority score quantifies presence in classic search. Right now, if you're a founder at a D2C skincare brand or a regional fintech app, you have no idea if you exist to ChatGPT. There's no dashboard for that. IBVS is my attempt at building the first legible number for something that currently feels like guesswork.
 
-Create a new `.mdx` file inside `content/blog`, copy the frontmatter shape from this post, and write your content below it. The `/blog` page will pick it up automatically.
+Where the engineer in me and the researcher in me meet
+
+I'll be honest — I didn't come to this from a marketing background. I came to it as someone who wants to write production systems and get an SDE offer at a company that takes engineering seriously. GEO could easily have stayed a side curiosity.
+
+But the more I dug in, the more it looked like exactly the kind of problem I want to spend a career on: it's a systems problem wearing a marketing costume. Measuring "visibility" across a dozen different model providers, each with different retrieval behavior, different training cutoffs, different tendencies to hallucinate or cite — that's an engineering and data pipeline problem before it's anything else. Building Hinglish-GEO-Bench properly means building an evaluation harness, a query-generation pipeline, a scoring rubric, and probably a small annotated dataset by hand, because nothing off-the-shelf handles code-mixed Hindi-English well yet.
+
+That's also, not coincidentally, exactly what my research internship at SAU is structured around — using GEO as the lens, but treating it like a real ML/systems research problem, with an eye toward eventually publishing the benchmark work somewhere serious (WWW, KDD, and ACL are the venues on my radar, because this sits right at the intersection of information retrieval, NLP, and the web).
+
+Where I think this goes
+
+I don't think GEO stays a niche term for much longer. I think in two or three years, "is my brand visible to AI search" becomes as normal a business question as "are we ranking on Google" is today — except almost nobody in India is building the tooling for it yet, especially not for the Hinglish, code-mixed, voice-first way most of the country actually searches.
+
+That's the gap I keep circling back to, both as a researcher and, longer-term, as someone who'd like to build something real around it — a tiered GEO service, maybe, for D2C, EdTech, fintech, and FMCG brands who currently have zero idea whether they exist to the AI their customers are already asking.
+
+My roommate's water purifier didn't need a search engine. It needed to be the kind of brand a language model trusted enough to say out loud. Figuring out what makes a brand that kind of brand — measurably, not by accident — is the work I want to keep doing.
+
+If any of this overlaps with what you're building, researching, or wondering about, I'd genuinely like to hear from you — amar.kumar.career@gmail.com.
