@@ -10,9 +10,10 @@ import "./globals.css";
 const headingFont = Sora({
   variable: "--font-heading",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const bodyFont = Inter({ variable: "--font-body", subsets: ["latin"] });
+const bodyFont = Inter({ variable: "--font-body", subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -56,10 +57,18 @@ export default function RootLayout({
       className={`${headingFont.variable} ${bodyFont.variable} h-full scroll-smooth`}
     >
       <body className="min-h-full bg-background text-foreground antialiased">
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <a
+            href="#main"
+            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-accent focus:px-4 focus:py-2 focus:text-accent-foreground"
+          >
+            Skip to content
+          </a>
           <div className="relative flex min-h-screen flex-col">
             <SiteHeader />
-            <main className="flex-1">{children}</main>
+            <main id="main" className="flex-1">
+              {children}
+            </main>
             <SiteFooter />
           </div>
           {/* Free, privacy-friendly page analytics surfaced in the Vercel dashboard. */}

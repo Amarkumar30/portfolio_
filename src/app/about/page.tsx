@@ -6,7 +6,7 @@
 import type { Metadata } from "next";
 import { PersonJsonLd } from "@/components/seo/person-json-ld";
 import { ButtonLink } from "@/components/ui/button-link";
-import { Reveal } from "@/components/ui/reveal";
+import { Portrait } from "@/components/ui/portrait";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { aboutStory, familiarWith, siteContent, skillCategories } from "@/lib/data";
 import { buildMetadata, hasResume } from "@/lib/site";
@@ -23,8 +23,7 @@ export default function AboutPage() {
     <div className="container-shell space-y-20 py-12 sm:py-20">
       <PersonJsonLd />
 
-      <Reveal>
-        <article className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_16rem]">
+      <article className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_16rem]">
           <div className="space-y-8">
             <SectionHeading as="h1" eyebrow="About" title={aboutStory.title} />
             <div className="rich-text max-w-[68ch]">
@@ -43,7 +42,8 @@ export default function AboutPage() {
             </div>
           </div>
 
-          <aside className="space-y-8 text-sm leading-6 lg:pt-24">
+          <aside className="space-y-8 text-sm leading-6 lg:pt-8">
+            <Portrait size={112} />
             <div className="space-y-2">
               <h2 className="eyebrow">Education</h2>
               <p>{siteContent.education}</p>
@@ -61,8 +61,7 @@ export default function AboutPage() {
               <p>Research Intern, South Asian University — Generative Engine Optimization</p>
             </div>
           </aside>
-        </article>
-      </Reveal>
+      </article>
 
       <section aria-labelledby="skills-title" className="space-y-8">
         <SectionHeading id="skills-title" title="Skills" />

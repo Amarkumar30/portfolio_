@@ -9,6 +9,7 @@ import { PersonJsonLd } from "@/components/seo/person-json-ld";
 import { BlogCard } from "@/components/sections/blog-card";
 import { ProjectCard } from "@/components/sections/project-card";
 import { ButtonLink } from "@/components/ui/button-link";
+import { Portrait } from "@/components/ui/portrait";
 import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { getAllPosts } from "@/lib/blog";
@@ -32,8 +33,11 @@ export default async function HomePage() {
     <div className="container-shell space-y-24 py-12 sm:space-y-28 sm:py-20">
       <PersonJsonLd />
 
-      <Reveal>
-        <section aria-labelledby="hero-title" className="max-w-3xl space-y-6">
+      <section
+        aria-labelledby="hero-title"
+        className="flex flex-col-reverse gap-8 sm:flex-row sm:items-start sm:justify-between"
+      >
+        <div className="max-w-3xl space-y-6">
           <p className="eyebrow">{siteContent.availability}</p>
           <h1
             id="hero-title"
@@ -63,8 +67,9 @@ export default async function HomePage() {
               </ButtonLink>
             ) : null}
           </div>
-        </section>
-      </Reveal>
+        </div>
+        <Portrait size={128} priority className="sm:mt-2" />
+      </section>
 
       <section aria-labelledby="building-title" className="space-y-10">
         <SectionHeading id="building-title" title={buildingToward.title} />

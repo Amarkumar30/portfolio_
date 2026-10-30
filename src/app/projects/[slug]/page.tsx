@@ -9,7 +9,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink } from "lucide-react";
-import { Reveal } from "@/components/ui/reveal";
 import { projects } from "@/lib/data";
 import { buildMetadata } from "@/lib/site";
 
@@ -64,8 +63,7 @@ export default async function ProjectDetailPage({
         All projects
       </Link>
 
-      <Reveal>
-        <header className="max-w-[68ch] space-y-5">
+      <header className="max-w-[68ch] space-y-5">
           <p className="eyebrow">Case study</p>
           <h1 className="font-heading text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
             {project.title}
@@ -76,8 +74,7 @@ export default async function ProjectDetailPage({
               {project.collaborationNote}
             </p>
           ) : null}
-        </header>
-      </Reveal>
+      </header>
 
       {project.image ? (
         <Image

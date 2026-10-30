@@ -1,11 +1,9 @@
 /**
- * BlogCard renders a post summary with tags and reading time metadata.
+ * BlogCard renders a post summary with category, date and reading time.
  * Props: one BlogPostMeta object.
- * Used in: home latest posts preview and the blog index page.
- * TODO: Add cover images later if you decide the blog needs stronger visual anchors.
+ * Used in: home recent writing and the blog index page.
  */
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
 import type { BlogPostMeta } from "@/lib/blog";
 
 interface BlogCardProps {
@@ -14,34 +12,25 @@ interface BlogCardProps {
 
 export function BlogCard({ post }: BlogCardProps) {
   return (
-    <article className="section-card group flex h-full flex-col p-6">
-      <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-accent">
-        <span>{post.category}</span>
-        <span className="text-muted">{post.readingTime}</span>
-      </div>
-      <h3 className="mt-4 font-heading text-2xl font-semibold tracking-tight">
-        {post.title}
-      </h3>
-      <p className="mt-3 text-sm leading-7 text-muted">{post.excerpt}</p>
-      <div className="mt-5 flex flex-wrap gap-2">
-        {post.tags.map((tag) => (
-          <span
-            key={tag}
-            className="rounded-full border px-3 py-1 text-xs font-medium text-muted"
-          >
-            {tag}
-          </span>
-        ))}
-      </div>
-      <div className="mt-auto pt-6">
-        <Link
-          href={`/blog/${post.slug}`}
-          className="inline-flex items-center gap-2 text-sm font-semibold text-accent"
-        >
-          Read article
-          <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
+    <article className="section-card group relative flex h-full flex-col p-6 hover:border-accent/50">
+      <p className="eyebrow">{post.category}</p>
+      <h3 className="mt-3 font-heading text-xl font-semibold tracking-tight">
+        <Link href={`/blog/${post.slug}`} className="after:absolute after:inset-0">
+          {post.title}
         </Link>
-      </div>
+      </h3>
+      <p className="mt-3 text-base leading-7 text-muted">{post.excerpt}</p>
+      <p className="mt-auto flex gap-2 pt-6 text-sm text-muted">
+        <time dateTime={post.date}>
+          {new Date(post.date).toLocaleDateString("en-IN", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })}
+        </time>
+        <span aria-hidden="true">·</span>
+        <span>{post.readingTime}</span>
+      </p>
     </article>
   );
 }

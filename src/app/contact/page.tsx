@@ -6,7 +6,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ContactForm } from "@/components/sections/contact-form";
-import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { contactContent, socialLinks } from "@/lib/data";
 import { buildMetadata } from "@/lib/site";
@@ -22,7 +21,7 @@ export default function ContactPage() {
   return (
     <div className="container-shell py-12 sm:py-20">
       <div className="grid gap-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-        <Reveal className="space-y-8">
+        <div className="space-y-8">
           <SectionHeading
             as="h1"
             eyebrow="Contact"
@@ -52,10 +51,8 @@ export default function ContactPage() {
               ))}
             </ul>
           </div>
-        </Reveal>
-        <Reveal delay={0.05}>
-          <ContactForm />
-        </Reveal>
+        </div>
+        <ContactForm />
       </div>
     </div>
   );

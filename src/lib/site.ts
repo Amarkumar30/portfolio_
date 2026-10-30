@@ -8,6 +8,8 @@ export const siteUrl = (
 // Inlined at build time by next.config.ts, so it reflects whether public/resume.pdf
 // shipped with this deploy. TODO(amar): add public/resume.pdf
 export const hasResume = process.env.NEXT_PUBLIC_HAS_RESUME === "1";
+// TODO(amar): add photo at public/amar.jpg
+export const hasPhoto = process.env.NEXT_PUBLIC_HAS_PHOTO === "1";
 export const siteTitle = "Amar Kumar | Software Engineer";
 export const siteDescription =
   "Amar Kumar is a software engineer building full-stack products and researching Generative Engine Optimization: how brands get found when AI answers the question.";
