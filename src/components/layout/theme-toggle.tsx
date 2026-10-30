@@ -27,7 +27,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
     return (
       <div
         className={cn(
-          "h-10 w-10 rounded-full border bg-surface/70",
+          "h-10 w-10 rounded-full border",
           className,
         )}
         aria-hidden="true"
@@ -42,7 +42,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
       type="button"
       onClick={() => setTheme(isDark ? "light" : "dark")}
       className={cn(
-        "inline-flex h-10 w-10 items-center justify-center rounded-full border bg-surface text-foreground hover:-translate-y-0.5 hover:border-accent hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+        "inline-flex h-10 w-10 items-center justify-center rounded-full border text-foreground hover:border-accent hover:text-accent",
         className,
       )}
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}

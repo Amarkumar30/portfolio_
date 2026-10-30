@@ -1,12 +1,10 @@
-"use client";
-
 /**
- * Reveal wraps content in a subtle entrance animation for section and card reveals.
- * Props: children plus optional className and delay.
- * Used in: page sections and card grids across the site.
- * TODO: Tune motion timing if you later add more complex page choreography.
+ * Reveal fades content in as it scrolls into view using a CSS scroll-driven animation.
+ * Content is fully visible by default: the animation only applies in browsers that support
+ * animation-timeline and for visitors who haven't asked for reduced motion. No client JS.
+ * Props: children plus optional className and delay (seconds, kept for API compatibility).
+ * Used in: card grids across the site.
  */
-import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface RevealProps {
@@ -15,16 +13,6 @@ interface RevealProps {
   delay?: number;
 }
 
-export function Reveal({ children, className, delay = 0 }: RevealProps) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 18 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.45, ease: "easeOut", delay }}
-      className={cn(className)}
-    >
-      {children}
-    </motion.div>
-  );
+export function Reveal({ children, className }: RevealProps) {
+  return <div className={cn("reveal", className)}>{children}</div>;
 }

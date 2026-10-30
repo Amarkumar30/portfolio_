@@ -1,0 +1,39 @@
+---
+title: "Hostel Management Platform"
+summary: "One place for hostel room allocation, complaints and policy questions — with live complaint updates and an assistant that answers from the hostel's own rules."
+date: "2026-10-30"
+role: "Team project at SmartHack. I worked across the stack, mostly on authentication, the REST APIs and real-time complaint updates."
+collaborationNote: "Built as a team at SmartHack. Ownership was split across the team; this page describes my part."
+stack:
+  - NestJS
+  - React 19
+  - TypeScript
+  - PostgreSQL
+  - Prisma
+  - Socket.IO
+  - Docker
+  - Gemini API
+  - pgvector
+links: []
+featured: true
+---
+
+## Problem
+
+Hostel operations usually run on spreadsheets, group chats and manual approvals. Students can't see where their complaint stands, and wardens answer the same policy questions again and again.
+
+## What I built
+
+- Role-based access for three kinds of users — students, wardens and admins — each with their own flows.
+- JWT authentication with refresh tokens, and 10+ REST endpoints for room allocation and complaint management.
+- Real-time complaint notifications over Socket.IO, so status changes reach students without a refresh.
+- Contributed to a RAG chatbot (Gemini + pgvector) that answers hostel policy questions from a PostgreSQL knowledge base.
+- Supported an anonymous complaint flow that keeps the student's identity hidden.
+
+## The hard part
+
+Anonymous complaints that still need follow-up. Wardens shouldn't see who filed a complaint, but the system still has to route updates back to the right student. Storing a salted hash of the identity, instead of the identity itself, made both possible.
+
+## What I'd do next
+
+Add an audit log for warden actions, and test the chatbot against a fixed set of policy questions before trusting it with more.

@@ -7,6 +7,15 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 interface ContactPayload {
   name?: string;
   email?: string;
@@ -25,8 +34,8 @@ export async function POST(request: Request) {
       console.error("Missing contact email environment variables.");
 
       return NextResponse.json(
-        { error: "Email service is not configured on the server." },
-        { status: 500 },
+        { error: "not_configured" },
+        { status: 503 },
       );
     }
 
@@ -59,6 +68,9 @@ export async function POST(request: Request) {
     }
 
     const resend = new Resend(resendApiKey);
+    const safeName = escapeHtml(name);
+    const safeEmail = escapeHtml(email);
+    const safeMessage = escapeHtml(message).replace(/\n/g, "<br />");
 
     const { error: inboxError } = await resend.emails.send({
       from: contactFromEmail,
@@ -68,10 +80,10 @@ export async function POST(request: Request) {
       html: `
         <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #16211d;">
           <h2>New Portfolio Contact Submission</h2>
-          <p><strong>Name:</strong> ${name}</p>
-          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Name:</strong> ${safeName}</p>
+          <p><strong>Email:</strong> ${safeEmail}</p>
           <p><strong>Message:</strong></p>
-          <p>${message.replace(/\n/g, "<br />")}</p>
+          <p>${safeMessage}</p>
         </div>
       `,
     });
@@ -92,7 +104,7 @@ export async function POST(request: Request) {
       html: `
         <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #16211d;">
           <h2>Message received</h2>
-          <p>Hi ${name},</p>
+          <p>Hi ${safeName},</p>
           <p>Thanks for reaching out through my portfolio website. I’ve received your message and will get back to you as soon as I can.</p>
           <p>Best regards,<br />Amar Kumar</p>
         </div>

@@ -1,16 +1,18 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #f5f5f1;
+  --background: #f7f7f4;
   --foreground: #16211d;
-  --surface: rgba(255, 255, 255, 0.88);
+  --surface: #ffffff;
   --surface-strong: #ffffff;
-  --muted: #60726c;
+  --muted: #56665f;
   --border: rgba(22, 33, 29, 0.12);
   --accent: #0f766e;
-  --accent-soft: rgba(15, 118, 110, 0.12);
-  --accent-foreground: #effcf8;
-  --card-shadow: 0 18px 60px rgba(14, 28, 24, 0.08);
+  --accent-soft: rgba(15, 118, 110, 0.1);
+  --accent-foreground: #f2fdfa;
+  --card-shadow: 0 1px 2px rgba(14, 28, 24, 0.04), 0 8px 24px rgba(14, 28, 24, 0.04);
 }
 
 @theme inline {
@@ -28,16 +30,16 @@
 }
 
 .dark {
-  --background: #0b1513;
-  --foreground: #ecf5f0;
-  --surface: rgba(17, 31, 28, 0.82);
-  --surface-strong: #12211e;
-  --muted: #9ab1a9;
-  --border: rgba(236, 245, 240, 0.12);
+  --background: #0c1412;
+  --foreground: #e9f2ee;
+  --surface: #121d1a;
+  --surface-strong: #15221f;
+  --muted: #a3b6af;
+  --border: rgba(233, 242, 238, 0.12);
   --accent: #34d399;
-  --accent-soft: rgba(52, 211, 153, 0.16);
-  --accent-foreground: #062018;
-  --card-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+  --accent-soft: rgba(52, 211, 153, 0.12);
+  --accent-foreground: #04170f;
+  --card-shadow: none;
 }
 
 * {
@@ -45,40 +47,39 @@
 }
 
 html {
-  background:
-    radial-gradient(circle at top, rgba(15, 118, 110, 0.1), transparent 28%),
-    linear-gradient(to bottom, transparent, rgba(15, 118, 110, 0.04)),
-    var(--background);
+  background: var(--background);
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
+  /* One soft wash of accent at the top of the page, nothing else. */
+  background:
+    radial-gradient(60rem 24rem at 50% -12rem, var(--accent-soft), transparent 70%),
+    var(--background);
   color: var(--foreground);
   font-family: var(--font-body), sans-serif;
-}
-
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(rgba(15, 118, 110, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(15, 118, 110, 0.06) 1px, transparent 1px);
-  background-size: 36px 36px;
-  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.35), transparent 85%);
 }
 
 a,
 button,
 input,
-textarea {
+textarea,
+select {
   transition:
-    color 180ms ease,
-    border-color 180ms ease,
-    background-color 180ms ease,
-    box-shadow 180ms ease,
-    transform 180ms ease;
+    color 160ms ease,
+    border-color 160ms ease,
+    background-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
 ::selection {
@@ -86,65 +87,148 @@ textarea {
   color: var(--accent-foreground);
 }
 
-.prose-code {
-  box-shadow: var(--card-shadow);
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: reveal ease-out both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 35%;
+    }
+  }
 }
 
 .container-shell {
-  @apply mx-auto w-full max-w-6xl px-5 sm:px-8 lg:px-10;
+  @apply mx-auto w-full max-w-5xl px-4 sm:px-8;
 }
 
 .section-card {
-  @apply rounded-[1.75rem] border bg-surface backdrop-blur;
+  @apply rounded-2xl border bg-surface;
   box-shadow: var(--card-shadow);
 }
 
 .eyebrow {
-  @apply inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em];
-  background: var(--accent-soft);
-  color: var(--accent);
+  @apply text-xs font-semibold uppercase tracking-[0.16em] text-accent;
+}
+
+.field {
+  @apply w-full rounded-lg border bg-surface-strong px-3.5 py-2.5 text-base text-foreground outline-none placeholder:text-muted/70 focus:border-accent;
 }
 
 .rich-text {
-  @apply space-y-6 text-base leading-8 text-muted;
+  @apply space-y-5 text-base leading-[1.8] text-foreground/85 sm:text-[1.0625rem];
 }
 
 .rich-text h2,
 .rich-text h3,
 .rich-text h4 {
-  @apply font-heading text-foreground;
+  @apply font-heading font-semibold tracking-tight text-foreground;
+  scroll-margin-top: 6rem;
 }
 
 .rich-text h2 {
-  @apply mt-12 text-3xl;
+  @apply mt-12 text-2xl sm:text-[1.75rem];
 }
 
 .rich-text h3 {
-  @apply mt-10 text-2xl;
+  @apply mt-10 text-xl;
 }
 
-.rich-text p a,
-.rich-text li a {
-  @apply text-accent underline-offset-4 hover:underline;
+.rich-text section:first-child h2,
+.rich-text > h2:first-child {
+  @apply mt-0;
+}
+
+.rich-text section > * + * {
+  @apply mt-4;
+}
+
+.rich-text strong {
+  @apply font-semibold text-foreground;
+}
+
+.rich-text a {
+  @apply text-accent underline decoration-accent/40 underline-offset-4 hover:decoration-accent;
+}
+
+.rich-text .anchor-heading {
+  @apply text-inherit no-underline;
 }
 
 .rich-text ul {
-  @apply list-disc pl-6;
+  @apply list-disc space-y-2 pl-6;
+}
+
+.rich-text ol {
+  @apply list-decimal space-y-2 pl-6;
+}
+
+.rich-text li::marker {
+  color: var(--accent);
+}
+
+.rich-text img {
+  @apply h-auto max-w-full rounded-xl border;
+}
+
+.rich-text hr {
+  @apply my-10;
 }
 
 .rich-text pre {
-  @apply overflow-x-auto rounded-2xl border p-4 text-sm;
-  box-shadow: var(--card-shadow);
-  background: color-mix(in srgb, var(--surface-strong) 92%, black 8%);
+  @apply overflow-x-auto rounded-xl border p-4 text-sm;
+  background: color-mix(in srgb, var(--surface-strong) 94%, black 6%);
 }
 
 .rich-text code:not(pre code) {
-  @apply rounded-md px-1.5 py-0.5 text-sm;
+  @apply rounded-md px-1.5 py-0.5 text-[0.9em];
   background: var(--accent-soft);
   color: var(--foreground);
 }
 
 .rich-text blockquote {
-  @apply rounded-r-2xl border-l-4 pl-4 italic;
+  @apply border-l-2 pl-4 text-muted italic;
   border-left-color: var(--accent);
+}
+
+.rich-text table {
+  @apply w-full border-collapse text-sm;
+}
+
+.rich-text th,
+.rich-text td {
+  @apply border px-3 py-2 text-left;
+}
+
+/* rehype-pretty-code ships both themes; show the one that matches. */
+html.dark [data-rehype-pretty-code-figure] code[data-theme*=" "],
+html.dark [data-rehype-pretty-code-figure] code[data-theme*=" "] span {
+  color: var(--shiki-dark);
+  background-color: var(--shiki-dark-bg);
+}
+
+html:not(.dark) [data-rehype-pretty-code-figure] code[data-theme*=" "],
+html:not(.dark) [data-rehype-pretty-code-figure] code[data-theme*=" "] span {
+  color: var(--shiki-light);
+  background-color: var(--shiki-light-bg);
 }

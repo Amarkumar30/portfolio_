@@ -1,87 +1,82 @@
 /**
- * About page expands Amar's story, current focus, education, and motivation for building.
+ * About page: Amar's story, how engineering, research and building connect, and grouped skills.
  * Props: none for the route component.
  * Used in: /about route.
- * TODO: Refine wording over time as your positioning evolves, but keep the GEO focus accurate.
  */
 import type { Metadata } from "next";
 import { PersonJsonLd } from "@/components/seo/person-json-ld";
 import { ButtonLink } from "@/components/ui/button-link";
-import { Reveal } from "@/components/ui/reveal";
+import { Portrait } from "@/components/ui/portrait";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { skillCategories, siteContent } from "@/lib/data";
-import { buildMetadata } from "@/lib/site";
+import { aboutStory, familiarWith, siteContent, skillCategories } from "@/lib/data";
+import { buildMetadata, hasResume } from "@/lib/site";
 
 export const metadata: Metadata = buildMetadata({
   title: "About",
   description:
-    "Learn about Amar Kumar's background, GEO research focus, engineering journey, education at South Asian University, and communication work through Signal Clear.",
+    "How Amar Kumar got into building software, why he researches Generative Engine Optimization, and the kind of engineering team he wants to join.",
   path: "/about",
 });
 
 export default function AboutPage() {
   return (
-    <div className="container-shell space-y-16 py-10 sm:py-14">
+    <div className="container-shell space-y-20 py-12 sm:py-20">
       <PersonJsonLd />
-      <Reveal className="section-card p-8 sm:p-10">
-        <SectionHeading
-          eyebrow="About"
-          title="Engineering, research, and the reason I keep building."
-          description={siteContent.about}
-        />
-        <div className="mt-8 grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
-          <div className="rich-text">
-            <p>{siteContent.about}</p>
-            <p>
-              My current focus sits in two tracks that reinforce each other: research
-              into Generative Engine Optimization, and deliberate preparation for SDE
-              roles where product quality, systems thinking, and ownership matter.
-            </p>
-            <p>{siteContent.personalNote}</p>
-            <p>{siteContent.youtubeNote}</p>
-          </div>
-          <div className="space-y-5">
-            <div className="section-card p-6">
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-accent">
-                Education
-              </p>
-              <p className="mt-3 text-lg leading-8">{siteContent.education}</p>
+
+      <article className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_16rem]">
+          <div className="space-y-8">
+            <SectionHeading as="h1" eyebrow="About" title={aboutStory.title} />
+            <div className="rich-text max-w-[68ch]">
+              {aboutStory.paragraphs.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+              <p className="text-foreground">{aboutStory.teamNote}</p>
             </div>
-            <div className="section-card p-6">
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-accent">
-                Current focus
-              </p>
-              <ul className="mt-4 space-y-3 text-sm leading-7 text-muted">
-                {siteContent.currentFocus.map((item) => (
+            <div className="flex flex-wrap gap-3">
+              <ButtonLink href="/contact">Get in touch</ButtonLink>
+              {hasResume ? (
+                <ButtonLink href="/resume.pdf" variant="secondary">
+                  Resume
+                </ButtonLink>
+              ) : null}
+            </div>
+          </div>
+
+          <aside className="space-y-8 text-sm leading-6 lg:pt-8">
+            <Portrait size={112} />
+            <div className="space-y-2">
+              <h2 className="eyebrow">Education</h2>
+              <p>{siteContent.education}</p>
+            </div>
+            <div className="space-y-2">
+              <h2 className="eyebrow">Recognition</h2>
+              <ul className="space-y-1">
+                {siteContent.achievements.map((item) => (
                   <li key={item}>{item}</li>
                 ))}
               </ul>
             </div>
-            <ButtonLink href="/resume.pdf">Download Resume</ButtonLink>
-          </div>
-        </div>
-      </Reveal>
+            <div className="space-y-2">
+              <h2 className="eyebrow">Research</h2>
+              <p>Research Intern, South Asian University — Generative Engine Optimization</p>
+            </div>
+          </aside>
+      </article>
 
-      <section className="space-y-8">
-        <SectionHeading
-          eyebrow="Skill map"
-          title="Capabilities I want recruiters and hiring teams to assess quickly."
-          description="These categories mirror the structure on the home page so the site stays easy to scan in under a minute."
-        />
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {skillCategories.map((category, index) => (
-            <Reveal
-              key={category.title}
-              delay={index * 0.05}
-              className="section-card p-5"
-            >
-              <h3 className="font-heading text-xl font-semibold">{category.title}</h3>
-              <p className="mt-4 text-sm leading-7 text-muted">
-                {category.items.join(" • ")}
-              </p>
-            </Reveal>
+      <section aria-labelledby="skills-title" className="space-y-8">
+        <SectionHeading id="skills-title" title="Skills" />
+        <dl className="grid gap-x-10 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
+          {skillCategories.map((category) => (
+            <div key={category.title} className="space-y-2 border-t pt-4">
+              <dt className="font-heading font-semibold">{category.title}</dt>
+              <dd className="text-sm leading-6 text-muted">{category.items.join(" · ")}</dd>
+            </div>
           ))}
-        </div>
+          <div className="space-y-2 border-t pt-4">
+            <dt className="font-heading font-semibold">Familiar with</dt>
+            <dd className="text-sm leading-6 text-muted">{familiarWith.join(" · ")}</dd>
+          </div>
+        </dl>
       </section>
     </div>
   );

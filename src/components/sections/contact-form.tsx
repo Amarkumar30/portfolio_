@@ -17,6 +17,8 @@ interface FormState {
 
 type FieldErrors = Partial<Record<keyof FormState, string>>;
 
+const contactEmail = "amar.kumar.career@gmail.com";
+
 const initialState: FormState = {
   name: "",
   email: "",
@@ -30,6 +32,7 @@ export function ContactForm() {
     "idle",
   );
   const [errorMessage, setErrorMessage] = useState("");
+  const [showEmailFallback, setShowEmailFallback] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
 
   function validateForm(values: FormState) {
@@ -58,6 +61,7 @@ export function ContactForm() {
     const nextErrors = validateForm(form);
     setFieldErrors(nextErrors);
     setErrorMessage("");
+    setShowEmailFallback(false);
 
     if (Object.keys(nextErrors).length > 0) {
       setStatus("error");
@@ -75,6 +79,12 @@ export function ContactForm() {
 
       const payload = (await response.json()) as { error?: string };
 
+      if (response.status === 503 && payload.error === "not_configured") {
+        setStatus("error");
+        setShowEmailFallback(true);
+        return;
+      }
+
       if (!response.ok) {
         throw new Error(payload.error ?? "Request failed");
       }
@@ -83,19 +93,16 @@ export function ContactForm() {
       setForm(initialState);
     } catch (error) {
       setStatus("error");
-      setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "I couldn't send your message just now. Please try again or use the direct email link.",
-      );
+      setShowEmailFallback(true);
+      setErrorMessage(error instanceof Error ? error.message : "");
     }
   }
 
   if (status === "success") {
     return (
       <div className="section-card space-y-4 p-6">
-        <span className="eyebrow">Message sent</span>
-        <h2 className="font-heading text-3xl font-semibold tracking-tight">
+        <p className="eyebrow">Message sent</p>
+        <h2 className="font-heading text-2xl font-semibold tracking-tight">
           Thanks for reaching out.
         </h2>
         <p className="text-sm leading-7 text-muted">
@@ -107,9 +114,9 @@ export function ContactForm() {
   }
 
   return (
-    <form className="section-card space-y-5 p-6" onSubmit={handleSubmit}>
-      <div className="grid gap-5 md:grid-cols-2">
-        <label className="space-y-2 text-sm font-medium">
+    <form className="section-card space-y-5 p-6 sm:p-8" onSubmit={handleSubmit} noValidate>
+      <div className="grid gap-5 sm:grid-cols-2">
+        <label className="block space-y-2 text-sm font-medium">
           <span>Name</span>
           <input
             required
@@ -117,14 +124,14 @@ export function ContactForm() {
             value={form.name}
             onChange={(event) => setForm({ ...form, name: event.target.value })}
             aria-invalid={Boolean(fieldErrors.name)}
-            className="w-full rounded-2xl border bg-surface-strong px-4 py-3 outline-none focus:border-accent"
+            className="field"
             placeholder="Your name"
           />
           {fieldErrors.name ? (
-            <p className="text-xs text-red-600 dark:text-red-400">{fieldErrors.name}</p>
+            <p className="text-xs text-red-700 dark:text-red-400">{fieldErrors.name}</p>
           ) : null}
         </label>
-        <label className="space-y-2 text-sm font-medium">
+        <label className="block space-y-2 text-sm font-medium">
           <span>Email</span>
           <input
             required
@@ -132,11 +139,11 @@ export function ContactForm() {
             value={form.email}
             onChange={(event) => setForm({ ...form, email: event.target.value })}
             aria-invalid={Boolean(fieldErrors.email)}
-            className="w-full rounded-2xl border bg-surface-strong px-4 py-3 outline-none focus:border-accent"
+            className="field"
             placeholder="you@example.com"
           />
           {fieldErrors.email ? (
-            <p className="text-xs text-red-600 dark:text-red-400">{fieldErrors.email}</p>
+            <p className="text-xs text-red-700 dark:text-red-400">{fieldErrors.email}</p>
           ) : null}
         </label>
       </div>
@@ -151,7 +158,7 @@ export function ContactForm() {
           onChange={(event) => setForm({ ...form, company: event.target.value })}
         />
       </label>
-      <label className="space-y-2 text-sm font-medium">
+      <label className="block space-y-2 text-sm font-medium">
         <span>Message</span>
         <textarea
           required
@@ -159,32 +166,43 @@ export function ContactForm() {
           value={form.message}
           onChange={(event) => setForm({ ...form, message: event.target.value })}
           aria-invalid={Boolean(fieldErrors.message)}
-          className="w-full rounded-3xl border bg-surface-strong px-4 py-3 outline-none focus:border-accent"
-          placeholder="Share a quick note about the role, collaboration, or conversation you have in mind."
+          className="field"
+          placeholder="What are you working on, and how can I help?"
         />
         {fieldErrors.message ? (
-          <p className="text-xs text-red-600 dark:text-red-400">{fieldErrors.message}</p>
+          <p className="text-xs text-red-700 dark:text-red-400">{fieldErrors.message}</p>
         ) : null}
       </label>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <button
           type="submit"
           disabled={status === "loading"}
-          className="inline-flex items-center justify-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-semibold text-accent-foreground disabled:cursor-not-allowed disabled:opacity-70"
+          className="inline-flex items-center justify-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
         >
           {status === "loading" ? (
             <>
-              <span className="h-4 w-4 animate-spin rounded-full border-2 border-accent-foreground/35 border-t-accent-foreground" />
-              Sending...
+              <span aria-hidden="true" className="h-4 w-4 animate-spin rounded-full border-2 border-accent-foreground/35 border-t-accent-foreground" />
+              Sending…
             </>
           ) : (
             "Send message"
           )}
         </button>
-        <p className="text-sm text-muted" role="status">
-          {status === "error" && errorMessage
-            ? errorMessage
-            : "Messages are sent securely through a serverless Resend integration."}
+        <p className="text-sm text-muted" role="status" aria-live="polite">
+          {status === "error" && showEmailFallback ? (
+            <>
+              The form isn&apos;t working right now. Please email me directly at{" "}
+              <a
+                href={`mailto:${contactEmail}`}
+                className="font-semibold text-accent underline underline-offset-4"
+              >
+                {contactEmail}
+              </a>
+              .
+            </>
+          ) : status === "error" && errorMessage ? (
+            errorMessage
+          ) : null}
         </p>
       </div>
     </form>

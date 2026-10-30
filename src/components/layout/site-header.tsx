@@ -4,7 +4,6 @@
  * SiteHeader renders the sticky navigation, active route states, and theme toggle.
  * Props: none.
  * Used in: root app layout across the entire site.
- * TODO: Replace the resume link if you later move the file or add analytics tracking.
  */
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
@@ -14,68 +13,64 @@ import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/projects", label: "Projects" },
-  { href: "/blog", label: "Blog" },
-  { href: "/contact", label: "Contact" },
+  { href: "/", label: "Home", match: ["/"] },
+  { href: "/about", label: "About", match: ["/about"] },
+  { href: "/projects", label: "Projects", match: ["/projects"] },
+  { href: "/research", label: "Research", match: ["/research"] },
+  { href: "/blog", label: "Writing", match: ["/blog", "/notes"] },
+  { href: "/contact", label: "Contact", match: ["/contact"] },
 ];
+
+function isActive(pathname: string, match: string[]) {
+  return match.some((prefix) =>
+    prefix === "/" ? pathname === "/" : pathname === prefix || pathname.startsWith(`${prefix}/`),
+  );
+}
 
 export function SiteHeader() {
   const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(false);
+  const [openFor, setOpenFor] = useState<string | null>(null);
+  // Tie the open state to the current path so navigating always closes the menu.
+  const isOpen = openFor === pathname;
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border/70 bg-background/86 backdrop-blur-xl">
-      <div className="container-shell flex min-h-18 items-center justify-between gap-4">
-        <Link href="/" className="group flex items-center gap-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-2xl border bg-accent text-sm font-heading font-semibold text-accent-foreground shadow-sm">
-            AK
-          </span>
-          <div>
-            <p className="font-heading text-base font-semibold tracking-tight">
-              Amar Kumar
-            </p>
-            <p className="text-sm text-muted">Portfolio and writing</p>
-          </div>
+    <header className="sticky top-0 z-40 border-b bg-background/85 backdrop-blur-md">
+      <div className="container-shell flex h-16 items-center justify-between gap-4">
+        <Link href="/" className="font-heading text-base font-semibold tracking-tight">
+          Amar Kumar
         </Link>
 
-        <nav className="hidden items-center gap-2 md:flex" aria-label="Primary">
+        <nav className="hidden items-center gap-1 md:flex" aria-label="Primary">
           {navItems.map((item) => {
-            const isActive =
-              item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+            const active = isActive(pathname, item.match);
 
             return (
               <Link
                 key={item.href}
                 href={item.href}
+                aria-current={active ? "page" : undefined}
                 className={cn(
-                  "rounded-full px-4 py-2 text-sm font-medium hover:bg-accent-soft hover:text-accent",
-                  isActive && "bg-accent text-accent-foreground hover:text-accent-foreground",
+                  "rounded-md px-3 py-2 text-sm font-medium text-muted hover:text-foreground",
+                  active &&
+                    "text-foreground underline decoration-accent decoration-2 underline-offset-[10px]",
                 )}
               >
                 {item.label}
               </Link>
             );
           })}
-          <Link
-            href="/resume.pdf"
-            className="rounded-full border px-4 py-2 text-sm font-medium hover:-translate-y-0.5 hover:border-accent hover:text-accent"
-          >
-            Resume
-          </Link>
-          <ThemeToggle />
+          <ThemeToggle className="ml-2" />
         </nav>
 
         <div className="flex items-center gap-2 md:hidden">
           <ThemeToggle />
           <button
             type="button"
-            onClick={() => setIsOpen((open) => !open)}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border bg-surface"
+            onClick={() => setOpenFor(isOpen ? null : pathname)}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border"
             aria-expanded={isOpen}
             aria-controls="mobile-menu"
-            aria-label="Toggle navigation menu"
+            aria-label={isOpen ? "Close menu" : "Open menu"}
           >
             {isOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
@@ -83,36 +78,28 @@ export function SiteHeader() {
       </div>
 
       {isOpen ? (
-        <nav
-          id="mobile-menu"
-          aria-label="Mobile"
-          className="container-shell flex flex-col gap-2 border-t border-border/70 py-4 md:hidden"
-        >
-          {navItems.map((item) => {
-            const isActive =
-              item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+        <nav id="mobile-menu" aria-label="Mobile" className="border-t md:hidden">
+          <ul className="container-shell py-2">
+            {navItems.map((item) => {
+              const active = isActive(pathname, item.match);
 
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setIsOpen(false)}
-                className={cn(
-                  "rounded-2xl border px-4 py-3 text-sm font-medium",
-                  isActive ? "border-accent bg-accent-soft text-accent" : "bg-surface",
-                )}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
-          <Link
-            href="/resume.pdf"
-            onClick={() => setIsOpen(false)}
-            className="rounded-2xl border px-4 py-3 text-sm font-medium"
-          >
-            Download Resume
-          </Link>
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    onClick={() => setOpenFor(null)}
+                    aria-current={active ? "page" : undefined}
+                    className={cn(
+                      "block py-3 text-base font-medium text-muted",
+                      active && "text-accent",
+                    )}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
         </nav>
       ) : null}
     </header>

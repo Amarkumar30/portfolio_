@@ -1,37 +1,44 @@
 /**
- * Projects index page lists seeded project case studies backed by structured data.
+ * Projects index page lists project case studies.
  * Props: none for the route component.
  * Used in: /projects route.
- * TODO: Add future projects in src/lib/data.ts to keep logic and content separate.
  */
 import type { Metadata } from "next";
-import { ProjectCard } from "@/components/sections/project-card";
+import { ContentCard } from "@/components/sections/content-card";
 import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { projects } from "@/lib/data";
+import { getEntries } from "@/lib/content/loader";
 import { buildMetadata } from "@/lib/site";
 
 export const metadata: Metadata = buildMetadata({
   title: "Projects",
   description:
-    "Browse project case studies by Amar Kumar, including a hostel management platform and FreshSip, with problem statements, tech stacks, and specific contributions.",
+    "Projects by Amar Kumar: Bayana, his booking platform for independent wedding vendors; a hostel management platform with a RAG assistant; and FreshSip, a UPI ordering system for a local juice bar.",
   path: "/projects",
 });
 
 export default function ProjectsPage() {
+  const projects = getEntries("projects");
+
   return (
-    <div className="container-shell space-y-12 py-10 sm:py-14">
-      <Reveal className="section-card p-8 sm:p-10">
-        <SectionHeading
-          eyebrow="Projects"
-          title="Case studies framed around the problem, stack, and my contribution."
-          description="The copy here avoids inflated ownership claims and keeps collaborative context explicit, especially for hackathon work."
-        />
-      </Reveal>
-      <div className="grid gap-6 lg:grid-cols-2">
-        {projects.map((project, index) => (
-          <Reveal key={project.slug} delay={index * 0.08}>
-            <ProjectCard project={project} />
+    <div className="container-shell space-y-12 py-12 sm:py-20">
+      <SectionHeading
+        as="h1"
+        eyebrow="Projects"
+        title="Things I've built, and what they taught me."
+        description="Each one starts with a real problem. I note what I owned, what was hard, and what I'd change next."
+      />
+      <div className="grid gap-6 md:grid-cols-2">
+        {projects.map((project) => (
+          <Reveal key={project.slug}>
+            <ContentCard
+              href={`/projects/${project.slug}`}
+              eyebrow={project.data.status}
+              title={project.data.title}
+              summary={project.data.summary}
+              meta={project.data.stack.slice(0, 5)}
+              cta="Read case study"
+            />
           </Reveal>
         ))}
       </div>

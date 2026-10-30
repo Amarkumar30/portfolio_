@@ -1,144 +1,114 @@
 export interface SkillCategory {
   title: string;
   items: string[];
-  note?: string;
 }
 
-export interface ProjectLink {
-  label: string;
-  href: string;
-}
+export const contactEmail = "amar.kumar.career@gmail.com";
 
-export interface Project {
-  slug: string;
+export const siteContent = {
+  name: "Amar Kumar",
+  role: "Software Engineer",
+  availability: "Open to SDE internships & roles",
+  tagline:
+    "Software engineer building full-stack products — and researching how brands get found when AI answers the question.",
+  intro: [
+    "I study Computer Science at South Asian University in Delhi and work as a research intern on Generative Engine Optimization.",
+    "I build web products end to end, from the database schema to the last button — right now that's Bayana, my startup for independent wedding vendors. In research, I study how brands show up inside ChatGPT, Perplexity and Gemini — and why some never do.",
+  ],
+  footerLine:
+    "Software engineer in Delhi. Building full-stack products and researching how brands get found in AI answers.",
+  education: "B.Tech, Computer Science & Engineering · South Asian University, Delhi · 2024–2028",
+  achievements: ["1st Prize, AvishkarX — CSI × SAU Ideathon"],
+};
+
+export const buildingToward: {
   title: string;
-  summary: string;
-  problemStatement: string;
-  collaborationNote?: string;
-  stack: string[];
-  contributions: string[];
-  screenshotPlaceholder: string;
-  links: ProjectLink[];
-  featured: boolean;
-}
+  items: { label: string; title: string; body: string; link?: { href: string; label: string } }[];
+  closing: string;
+} = {
+  title: "What I'm building toward",
+  items: [
+    {
+      label: "Engineering",
+      title: "Reliable full-stack systems",
+      body: "I like turning messy workflows into simple products: clear data models, typed APIs, auth that holds up, and real-time updates where people actually need them.",
+    },
+    {
+      label: "Research",
+      title: "How brands get found by AI",
+      body: "At SAU I research Generative Engine Optimization. I'm developing Hinglish-GEO-Bench, which tests whether an LLM's brand recommendation shifts when the same question is asked in Hinglish, and the Indian Brand Visibility Score (IBVS), a measurable score for a brand's presence in generative answers.",
+    },
+    {
+      label: "Building",
+      title: "Bayana",
+      body: "I'm building Bayana, a booking platform for independent Indian wedding and event vendors, starting with wedding photographers in Delhi NCR. Vendors lock a date with an advance payment over UPI and a written record. Further out, I want to build a GEO company for Indian brands.",
+      link: { href: "/projects/bayana", label: "More on Bayana" },
+    },
+  ],
+  closing:
+    "A lot of software is built for markets that work differently from ours. I'd like to build from India, for the way India actually searches, books and pays.",
+};
 
-export const quickHighlights = [
-  {
-    label: "Education",
-    value: "B.Tech CSE, South Asian University, Delhi (2024-2028)",
-  },
-  {
-    label: "Current Focus",
-    value: "Generative Engine Optimization research and SDE interview prep",
-  },
-  {
-    label: "Achievement",
-    value: "1st Prize, AvishkarX - CSI x SAU Ideathon",
-  },
-] as const;
+export const aboutStory = {
+  title: "Engineer, researcher, and now a founder.",
+  paragraphs: [
+    "I like turning messy workflows into simple products. A hostel's complaint process, a juice bar's order queue: the hard part is rarely the code. It's understanding how people actually work, then building something they don't have to think about.",
+    "That's also why I'm building Bayana, on my own. For an independent wedding photographer, a booked date is that day's income, and it shouldn't hang on a chat message. Bayana lets vendors lock a date with an advance payment over UPI and a written record. It starts with wedding photographers in Delhi NCR.",
+    "My research started with something small. My roommate bought a water purifier by asking ChatGPT one question. He never opened a website. The brand that won that sale didn't win it on Google, and I wanted to know why the model picked it. That question became my research internship at SAU on Generative Engine Optimization.",
+    "To me, engineering, research and business are one track. Research tells me what's true about how AI answers are formed. Engineering is how I measure it at scale — query pipelines, evaluation harnesses, scoring. And the business question is right there: if customers ask AI before they ask Google, brands need to know whether they exist in that answer. That's a company I want to build one day, for Indian brands first.",
+    "I also run a YouTube channel, Signal Clear. It's my practice in explaining ideas clearly, which turns out to be most of engineering and nearly all of research.",
+  ],
+  teamNote:
+    "Right now I want to join a team that ships real products and cares how they're built — where I can own features end to end, get honest code review, and learn from engineers better than me.",
+};
 
 export const skillCategories: SkillCategory[] = [
   {
     title: "Languages",
-    items: ["Python", "C++", "JavaScript", "TypeScript", "SQL"],
+    items: ["TypeScript", "JavaScript", "Python", "C++", "SQL"],
   },
   {
-    title: "Frameworks & Libraries",
-    items: ["React", "Node.js", "Express", "NestJS", "Prisma ORM", "tRPC"],
+    title: "Frameworks",
+    items: ["React", "Node.js", "Express", "NestJS", "tRPC"],
   },
   {
-    title: "Backend & APIs",
-    items: [
-      "REST APIs",
-      "JWT Authentication",
-      "Socket.IO",
-      "Role-Based Access Control",
-    ],
+    title: "Backend",
+    items: ["REST APIs", "JWT authentication", "Role-based access control", "Socket.IO"],
   },
   {
     title: "Databases",
-    items: ["PostgreSQL", "MySQL", "Drizzle ORM"],
+    items: ["PostgreSQL", "MySQL", "Prisma", "Drizzle ORM"],
   },
   {
-    title: "DevOps & Tools",
-    items: ["Docker (basic)", "Git/GitHub", "Render", "Vercel"],
-  },
-  {
-    title: "AI/ML",
+    title: "AI",
     items: ["RAG pipelines", "LLM integration (Gemini API)", "GEO research"],
+  },
+  {
+    title: "Tools",
+    items: ["Git & GitHub", "Docker (basic)", "Vercel", "Render"],
   },
 ];
 
 export const familiarWith = ["Redis", "pgvector", "advanced Socket.IO patterns"];
 
-// TODO: Replace fallback media copy and add public repo/demo links below when the final assets are ready.
-export const projects: Project[] = [
-  {
-    slug: "hostel-management-platform",
-    title: "Hostel Management Platform",
-    summary:
-      "Collaborative SmartHack project for room allocation, complaints, and AI-assisted hostel support workflows.",
-    problemStatement:
-      "Hostel workflows often get fragmented across spreadsheets, ad hoc messaging, and manual approval loops. The team built a central platform to streamline room allocation, complaints, and policy queries across student, warden, and admin roles.",
-    collaborationNote:
-      "Built as a collaborative hackathon project at SmartHack, with ownership split across the team.",
-    stack: [
-      "NestJS",
-      "React 19",
-      "TypeScript",
-      "PostgreSQL",
-      "Prisma",
-      "Socket.IO",
-      "Docker",
-      "Gemini API",
-      "pgvector",
-    ],
-    contributions: [
-      "Worked on the full-stack product flow for role-based access across student, warden, and admin journeys.",
-      "Implemented secure JWT authentication with refresh-token support and helped shape 10+ REST endpoints for room allocation and complaint management.",
-      "Integrated real-time complaint notifications with Socket.IO to reduce lag in operational updates.",
-      "Contributed to the RAG-powered chatbot experience over a PostgreSQL knowledge base and supported the anonymous complaint flow using salted-hash identity preservation.",
-    ],
-    screenshotPlaceholder:
-      "Final product visuals can be added here once the dashboard walkthrough and AI assistant demo assets are ready for publication.",
-    links: [],
-    featured: true,
-  },
-  {
-    slug: "freshsip-ordering-platform",
-    title: "FreshSip",
-    summary:
-      "Full-stack ordering system for a local juice bar with UPI payments and a real-time order management dashboard.",
-    problemStatement:
-      "Small local food businesses often rely on phone calls or manual counters for orders, which makes order tracking and payment confirmation messy during busy hours. FreshSip was built to make ordering and status visibility simpler for both customers and operators.",
-    stack: [
-      "React 19",
-      "TypeScript",
-      "tRPC",
-      "Express",
-      "MySQL",
-      "Drizzle ORM",
-      "Razorpay",
-      "Docker",
-    ],
-    contributions: [
-      "Built the customer-facing ordering experience with a type-safe tRPC API layer between frontend and backend.",
-      "Integrated Razorpay UPI payments to support smoother checkout and order confirmation.",
-      "Implemented the admin dashboard workflow for status transitions from Pending to Confirmed, Ready, and Completed.",
-      "Structured data access with Drizzle ORM and containerized the project for easier local setup and deployment consistency.",
-    ],
-    screenshotPlaceholder:
-      "Product visuals can be added here once the checkout flow and admin dashboard demo assets are finalized for sharing.",
-    links: [],
-    featured: true,
-  },
-];
+export const contactContent = {
+  title: "Let's talk.",
+  intro:
+    "If you're hiring for an SDE internship or role, working on AI search or GEO, building a startup, or want to collaborate on research, I'd like to hear from you.",
+  topics: [
+    "SDE internships and full-time roles",
+    "GEO, AI search and brand visibility",
+    "Early-stage startups and product ideas",
+    "Research collaborations",
+  ],
+  note: "Email is the quickest way to reach me.",
+};
 
 export const socialLinks = [
   {
     label: "Email",
-    href: "mailto:amar.kumar.career@gmail.com",
-    display: "amar.kumar.career@gmail.com",
+    href: `mailto:${contactEmail}`,
+    display: contactEmail,
   },
   {
     label: "GitHub",
@@ -151,30 +121,3 @@ export const socialLinks = [
     display: "linkedin.com/in/amar-kumar-745288289",
   },
 ];
-
-export const siteContent = {
-  name: "Amar Kumar",
-  tagline:
-    "Computer Science undergraduate building reliable full-stack products and studying GEO in the age of LLM search.",
-  intro:
-    "I’m a Computer Science & Engineering undergraduate at South Asian University, Delhi, focused on shipping production-minded software and earning SDE opportunities at product companies and GCCs. My work sits at the intersection of full-stack engineering, developer-friendly systems, and research into how brands surface in AI-driven search experiences.",
-  about:
-    "My engineering journey has been shaped by curiosity, competitions, and the habit of turning ideas into working systems. Right now, I’m balancing Generative Engine Optimization research as a Research Intern at SAU with hands-on full-stack builds, hackathons, and steady SDE preparation centered on problem solving, system thinking, and execution speed.",
-  personalNote:
-    "I’m especially motivated by projects that turn messy real-world workflows into simple, dependable user experiences. That same instinct keeps me excited about building software: I like work that blends technical depth with clarity, usefulness, and momentum.",
-  youtubeNote:
-    "Alongside engineering work, I run Signal Clear, a YouTube channel that helps me practice communication, structured thinking, and content creation around ideas I care about.",
-  education:
-    "B.Tech in Computer Science & Engineering, South Asian University, Delhi, 2024-2028",
-  currentFocus: [
-    "Researching Generative Engine Optimization and how visibility shifts across LLM-driven answer engines.",
-    "Preparing for SDE internships and full-time roles through off-campus applications, hackathons, and coding practice.",
-    "Exploring the long-term path toward a GEO-focused startup for Indian brands.",
-  ],
-  achievements: [
-    "1st Prize, AvishkarX - CSI x SAU Ideathon",
-    "Consistent DSA practice across LeetCode and Codeforces with current focus on graphs, trees, dynamic programming, and arrays.",
-  ],
-  contactNote:
-    "I’m especially interested in internship opportunities, product engineering teams that value ownership, and conversations around GEO, startups, or developer-focused products.",
-};

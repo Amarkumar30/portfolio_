@@ -1,138 +1,220 @@
 /**
- * Home page introduces Amar Kumar with highlights, featured projects, latest writing, and grouped skills.
+ * Home page: who Amar is, what he's building toward, what he's doing now, selected work, writing and notes.
  * Props: none for the route component.
  * Used in: / route entry point.
- * TODO: Replace placeholder project/demo links and resume file with finalized assets.
  */
 import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 import { PersonJsonLd } from "@/components/seo/person-json-ld";
-import { BlogCard } from "@/components/sections/blog-card";
-import { ProjectCard } from "@/components/sections/project-card";
-import { SkillGroup } from "@/components/sections/skill-group";
+import { ContentCard } from "@/components/sections/content-card";
 import { ButtonLink } from "@/components/ui/button-link";
+import { Portrait } from "@/components/ui/portrait";
 import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { getAllPosts } from "@/lib/blog";
-import {
-  familiarWith,
-  projects,
-  quickHighlights,
-  siteContent,
-  skillCategories,
-} from "@/lib/data";
-import { buildMetadata } from "@/lib/site";
+import { getEntries, getSingle } from "@/lib/content/loader";
+import { buildingToward, siteContent } from "@/lib/data";
+import { formatDate } from "@/lib/format";
+import { renderMdx } from "@/lib/mdx";
+import { buildMetadata, hasResume } from "@/lib/site";
 
 export const metadata = buildMetadata({
   title: "Home",
   description:
-    "Explore Amar Kumar's portfolio, featured full-stack projects, engineering skills, and latest writing on GEO research and SDE growth.",
+    "Amar Kumar is a software engineer building full-stack products and researching Generative Engine Optimization: how brands get found when AI answers the question.",
   path: "/",
 });
 
-export default function HomePage() {
-  const latestPosts = getAllPosts().slice(0, 3);
-  const featuredProjects = projects.filter((project) => project.featured).slice(0, 3);
+export default async function HomePage() {
+  const latestPosts = getEntries("blog").slice(0, 2);
+  const recentNotes = getEntries("notes").slice(0, 3);
+  const featuredProjects = getEntries("projects")
+    .filter((project) => project.data.featured)
+    .slice(0, 2);
+  const now = getSingle("now");
+  const nowContent = now ? await renderMdx(now.body) : null;
 
   return (
-    <div className="container-shell space-y-24 py-10 sm:py-14">
+    <div className="container-shell space-y-24 py-12 sm:space-y-28 sm:py-20">
       <PersonJsonLd />
-      <Reveal className="section-card overflow-hidden p-8 sm:p-10 lg:p-14">
-        <div className="grid gap-10 lg:grid-cols-[1.35fr_0.65fr] lg:items-end">
-          <div className="space-y-7">
-            <span className="eyebrow">Open to internships and SDE roles</span>
-            <div className="space-y-5">
-              <h1 className="max-w-4xl font-heading text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
-                {siteContent.name}
-              </h1>
-              <p className="max-w-3xl text-xl leading-9 text-muted sm:text-2xl">
-                {siteContent.tagline}
-              </p>
-              <p className="max-w-3xl text-base leading-8 text-muted sm:text-lg">
-                {siteContent.intro}
-              </p>
-            </div>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <ButtonLink href="/projects">View Projects</ButtonLink>
-              <ButtonLink href="/blog" variant="secondary">
-                Read Blog
-              </ButtonLink>
+
+      <section
+        aria-labelledby="hero-title"
+        className="flex flex-col-reverse gap-8 sm:flex-row sm:items-start sm:justify-between"
+      >
+        <div className="max-w-3xl space-y-6">
+          <p className="eyebrow">{siteContent.availability}</p>
+          <h1
+            id="hero-title"
+            className="font-heading text-4xl font-semibold tracking-tight sm:text-6xl"
+          >
+            {siteContent.name}
+          </h1>
+          <p className="text-xl leading-8 text-balance text-foreground sm:text-2xl sm:leading-10">
+            {siteContent.tagline}
+          </p>
+          <div className="max-w-[68ch] space-y-4 text-base leading-7 text-muted sm:text-lg sm:leading-8">
+            {siteContent.intro.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </div>
+          <div className="flex flex-wrap gap-3 pt-2">
+            <ButtonLink href="/projects">View work</ButtonLink>
+            <ButtonLink href="/blog" variant="secondary">
+              Read writing
+            </ButtonLink>
+            <ButtonLink href="/contact" variant="secondary">
+              Get in touch
+            </ButtonLink>
+            {hasResume ? (
               <ButtonLink href="/resume.pdf" variant="secondary">
-                Download Resume
+                Resume
               </ButtonLink>
-            </div>
-          </div>
-          <div className="section-card p-6">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-accent">
-              Snapshot
-            </p>
-            <dl className="mt-5 space-y-5">
-              {quickHighlights.map((item) => (
-                <div key={item.label}>
-                  <dt className="text-sm font-medium text-muted">{item.label}</dt>
-                  <dd className="mt-1 text-lg leading-8 text-foreground">{item.value}</dd>
-                </div>
-              ))}
-            </dl>
+            ) : null}
           </div>
         </div>
-      </Reveal>
+        <Portrait size={128} priority className="sm:mt-2" />
+      </section>
 
-      <section className="space-y-8">
+      <section aria-labelledby="building-title" className="space-y-10">
+        <SectionHeading id="building-title" title={buildingToward.title} />
+        <div className="grid gap-10 md:grid-cols-3 md:gap-8">
+          {buildingToward.items.map((item, index) => (
+            <Reveal key={item.label} delay={index * 0.05} className="space-y-3 border-t pt-5">
+              <p className="eyebrow">{item.label}</p>
+              <h3 className="font-heading text-xl font-semibold">{item.title}</h3>
+              <p className="text-base leading-7 text-muted">{item.body}</p>
+              {item.link ? (
+                <Link
+                  href={item.link.href}
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:underline"
+                >
+                  {item.link.label}
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
+              ) : null}
+            </Reveal>
+          ))}
+        </div>
+        <p className="max-w-[68ch] font-heading text-lg leading-8 text-foreground">
+          {buildingToward.closing}
+        </p>
+      </section>
+
+      {now ? (
+        <section aria-labelledby="now-title" className="max-w-[68ch] space-y-4">
+          <div className="flex items-baseline justify-between gap-4">
+            <h2 id="now-title" className="font-heading text-2xl font-semibold">
+              Now
+            </h2>
+            <p className="text-sm text-muted">
+              Updated {formatDate(now.data.updated, "month")}
+            </p>
+          </div>
+          <div className="rich-text border-l-2 border-accent pl-5">{nowContent}</div>
+          <Link href="/now" className="inline-block text-sm font-semibold text-accent hover:underline">
+            More on what I&apos;m doing now
+          </Link>
+        </section>
+      ) : null}
+
+      <section aria-labelledby="work-title" className="space-y-8">
         <SectionHeading
+          id="work-title"
           eyebrow="Selected work"
-          title="Projects built with product thinking and implementation detail."
-          description="A mix of collaborative hackathon builds and practical full-stack systems, written for recruiters who want the signal fast."
+          title="Problems I've worked on"
+          description="Each one started with a real workflow that wasn't working."
         />
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2">
           {featuredProjects.map((project, index) => (
-            <Reveal key={project.slug} delay={index * 0.08}>
-              <ProjectCard project={project} />
+            <Reveal key={project.slug} delay={index * 0.05}>
+              <ContentCard
+                href={`/projects/${project.slug}`}
+                eyebrow={project.data.status}
+                title={project.data.title}
+                summary={project.data.summary}
+                meta={project.data.stack.slice(0, 4)}
+                cta="Read case study"
+              />
             </Reveal>
           ))}
         </div>
-        <ButtonLink href="/projects" variant="secondary" className="gap-2">
-          Explore all projects
-          <ArrowRight className="h-4 w-4" />
-        </ButtonLink>
+        <Link
+          href="/projects"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-accent hover:underline"
+        >
+          All projects
+          <ArrowRight className="h-4 w-4" aria-hidden="true" />
+        </Link>
       </section>
 
-      <section className="space-y-8">
-        <SectionHeading
-          eyebrow="Latest writing"
-          title="Notes on GEO research, engineering, and what I’m learning."
-          description="The blog is local-file powered with MDX so I can publish quickly without a CMS. Posts are structured for scannability and future iteration."
-        />
-        <div className="grid gap-6 lg:grid-cols-3">
-          {latestPosts.map((post, index) => (
-            <Reveal key={post.slug} delay={index * 0.08}>
-              <BlogCard post={post} />
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      <section className="space-y-8">
-        <SectionHeading
-          eyebrow="Skills snapshot"
-          title="Grouped skills, tools, and technical areas I reach for most."
-          description="Structured content lives in a central data file so updates stay easy as your experience evolves."
-        />
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {skillCategories.map((category, index) => (
-            <Reveal key={category.title} delay={index * 0.05}>
-              <SkillGroup {...category} />
-            </Reveal>
-          ))}
-        </div>
-        <Reveal>
-          <div className="section-card p-5">
-            <p className="font-heading text-xl font-semibold">Familiar with</p>
-            <p className="mt-3 text-sm leading-7 text-muted">
-              Listed separately to keep the main skills honest and calibrated.{" "}
-              {familiarWith.join(", ")}.
-            </p>
+      {latestPosts.length > 0 ? (
+        <section aria-labelledby="writing-title" className="space-y-8">
+          <SectionHeading
+            id="writing-title"
+            eyebrow="Writing"
+            title="Recent writing"
+            description="On GEO, AI search, and what I learn while building."
+          />
+          <div className="grid gap-6 md:grid-cols-2">
+            {latestPosts.map((post, index) => (
+              <Reveal key={post.slug} delay={index * 0.05}>
+                <ContentCard
+                  href={`/blog/${post.slug}`}
+                  eyebrow={post.data.category}
+                  title={post.data.title}
+                  summary={post.data.excerpt}
+                  meta={[formatDate(post.data.date, "short"), post.readingTime]}
+                />
+              </Reveal>
+            ))}
           </div>
-        </Reveal>
+          <Link
+            href="/blog"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-accent hover:underline"
+          >
+            All writing
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        </section>
+      ) : null}
+
+      {recentNotes.length > 0 ? (
+        <section aria-labelledby="notes-title" className="max-w-[68ch] space-y-6">
+          <h2 id="notes-title" className="font-heading text-2xl font-semibold">
+            Recent notes
+          </h2>
+          <ul className="divide-y border-y">
+            {recentNotes.map((note) => (
+              <li key={note.slug}>
+                <Link
+                  href={`/notes#${note.slug}`}
+                  className="flex flex-col gap-1 py-4 hover:text-accent sm:flex-row sm:items-baseline sm:justify-between sm:gap-6"
+                >
+                  <span className="font-medium">{note.data.title}</span>
+                  <time dateTime={note.data.date} className="shrink-0 text-sm text-muted">
+                    {formatDate(note.data.date, "short")}
+                  </time>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <Link
+            href="/notes"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-accent hover:underline"
+          >
+            All notes
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        </section>
+      ) : null}
+
+      <section className="max-w-[68ch] space-y-4 border-t pt-10">
+        <h2 className="font-heading text-2xl font-semibold">Working on something similar?</h2>
+        <p className="text-base leading-7 text-muted sm:text-lg sm:leading-8">
+          Hiring, building in AI search, or curious about GEO for Indian brands — I&apos;d
+          like to hear about it.
+        </p>
+        <ButtonLink href="/contact">Get in touch</ButtonLink>
       </section>
     </div>
   );

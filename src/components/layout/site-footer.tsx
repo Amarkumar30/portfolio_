@@ -1,29 +1,31 @@
 /**
- * SiteFooter provides a compact close to each page with profile links and positioning copy.
+ * SiteFooter: one line about Amar, profile links, and the year.
  * Props: none.
  * Used in: root app layout across all routes.
- * TODO: Add any future newsletter or speaking links here once they are real.
  */
 import Link from "next/link";
-import { socialLinks } from "@/lib/data";
+import { AdminLink } from "@/components/layout/admin-link";
+import { siteContent, socialLinks } from "@/lib/data";
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-border/70 py-10">
-      <div className="container-shell flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-        <div className="space-y-2">
-          <p className="font-heading text-lg font-semibold">Amar Kumar</p>
-          <p className="max-w-xl text-sm leading-6 text-muted">
-            Computer Science undergraduate building full-stack products, researching
-            GEO, and preparing for product-focused SDE roles.
+    <footer className="mt-24 border-t py-10">
+      <div className="container-shell flex flex-col gap-6 text-sm text-muted sm:flex-row sm:items-start sm:justify-between">
+        <p className="max-w-md leading-6">{siteContent.footerLine}</p>
+        <div className="flex flex-col gap-3 sm:items-end">
+          <ul className="flex flex-wrap gap-x-5 gap-y-2">
+            {socialLinks.map((link) => (
+              <li key={link.label}>
+                <Link href={link.href} className="hover:text-accent">
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <p className="flex gap-4">
+            <span>© {new Date().getFullYear()} Amar Kumar</span>
+            <AdminLink />
           </p>
-        </div>
-        <div className="flex flex-col gap-2 text-sm text-muted sm:items-end">
-          {socialLinks.map((link) => (
-            <Link key={link.label} href={link.href} className="hover:text-accent">
-              {link.display}
-            </Link>
-          ))}
         </div>
       </div>
     </footer>
