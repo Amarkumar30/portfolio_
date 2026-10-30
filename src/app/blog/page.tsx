@@ -1,8 +1,7 @@
 /**
- * Blog index page lists MDX-backed posts and exposes tags for lightweight categorization.
+ * Blog index page lists long-form posts with tag filtering.
  * Props: optional searchParams for tag filtering.
  * Used in: /blog route.
- * TODO: Expand into dedicated tag archive routes if the blog grows substantially.
  */
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -11,15 +10,16 @@ import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { getAllPosts, getAllTags } from "@/lib/blog";
 import { buildMetadata } from "@/lib/site";
+import { cn } from "@/lib/utils";
 
 interface BlogPageProps {
   searchParams: Promise<{ tag?: string }>;
 }
 
 export const metadata: Metadata = buildMetadata({
-  title: "Blog",
+  title: "Writing",
   description:
-    "Read Amar Kumar's MDX-powered notes on Generative Engine Optimization, engineering decisions, startup ideas, and learning in public.",
+    "Essays by Amar Kumar on Generative Engine Optimization, AI search, software engineering, and building products in India.",
   path: "/blog",
 });
 
@@ -32,43 +32,42 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
     ? posts.filter((post) => post.tags.includes(activeTag))
     : posts;
 
-  return (
-    <div className="container-shell space-y-12 py-10 sm:py-14">
-      <Reveal className="section-card p-8 sm:p-10">
-        <SectionHeading
-          eyebrow="Blog"
-          title="Writing powered by local MDX files, built for fast iteration."
-          description="Each post stores frontmatter, tags, and content in /content/blog. This keeps v1 lightweight while still supporting custom React components."
-        />
-      </Reveal>
+  const chip = (active: boolean) =>
+    cn(
+      "rounded-full border px-3 py-1.5 text-sm font-medium hover:border-accent hover:text-accent",
+      active && "border-accent text-accent",
+    );
 
-      <section className="section-card p-6">
-        <div className="flex flex-wrap gap-2">
-          <Link
-            href="/blog"
-            className={`rounded-full border px-4 py-2 text-sm font-medium ${
-              !activeTag ? "border-accent bg-accent text-accent-foreground" : ""
-            }`}
-          >
-            All posts
+  return (
+    <div className="container-shell space-y-10 py-12 sm:py-20">
+      <SectionHeading
+        as="h1"
+        eyebrow="Writing"
+        title="Notes on GEO, engineering, and building things."
+        description="Long-form pieces on how AI answers are changing discovery, what I learn while building, and the occasional startup idea."
+      />
+
+      {tags.length > 1 ? (
+        <nav aria-label="Filter by tag" className="flex flex-wrap gap-2">
+          <Link href="/blog" className={chip(!activeTag)} aria-current={!activeTag ? "page" : undefined}>
+            All
           </Link>
           {tags.map((tag) => (
             <Link
               key={tag}
               href={`/blog?tag=${encodeURIComponent(tag)}`}
-              className={`rounded-full border px-4 py-2 text-sm font-medium ${
-                activeTag === tag ? "border-accent bg-accent text-accent-foreground" : ""
-              }`}
+              className={chip(activeTag === tag)}
+              aria-current={activeTag === tag ? "page" : undefined}
             >
               {tag}
             </Link>
           ))}
-        </div>
-      </section>
+        </nav>
+      ) : null}
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2">
         {filteredPosts.map((post, index) => (
-          <Reveal key={post.slug} delay={index * 0.08}>
+          <Reveal key={post.slug} delay={index * 0.05}>
             <BlogCard post={post} />
           </Reveal>
         ))}

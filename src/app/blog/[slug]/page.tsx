@@ -2,11 +2,11 @@
  * Blog post page renders a single MDX article with syntax-highlighted code blocks.
  * Props: route params containing the post slug.
  * Used in: dynamic /blog/[slug] routes.
- * TODO: Add prev/next post navigation if the content library grows.
  */
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Reveal } from "@/components/ui/reveal";
+import { ArrowLeft } from "lucide-react";
 import { getAllPosts, getPostBySlug } from "@/lib/blog";
 import { buildMetadata } from "@/lib/site";
 
@@ -27,8 +27,7 @@ export async function generateMetadata({
         path: `/blog/${post.slug}`,
       })
     : {
-        title: "Blog post",
-        description: "Blog post.",
+        title: "Post not found",
       };
 }
 
@@ -45,32 +44,35 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   return (
-    <div className="container-shell py-10 sm:py-14">
-      <Reveal className="mx-auto max-w-4xl space-y-8">
-        <header className="section-card p-8 sm:p-10">
-          <span className="eyebrow">{post.category}</span>
-          <h1 className="mt-5 font-heading text-4xl font-semibold tracking-tight sm:text-5xl">
+    <div className="container-shell py-12 sm:py-20">
+      <article className="mx-auto max-w-[68ch] space-y-10">
+        <Link
+          href="/blog"
+          className="inline-flex items-center gap-2 text-sm font-medium text-muted hover:text-accent"
+        >
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          All writing
+        </Link>
+        <header className="space-y-5 border-b pb-8">
+          <p className="eyebrow">{post.category}</p>
+          <h1 className="font-heading text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
             {post.title}
           </h1>
-          <p className="mt-4 max-w-3xl text-lg leading-8 text-muted">{post.excerpt}</p>
-          <div className="mt-6 flex flex-wrap gap-3 text-sm text-muted">
-            <span>
-              {new Date(post.date).toLocaleDateString("en-US", {
+          <p className="text-lg leading-8 text-muted">{post.excerpt}</p>
+          <p className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted">
+            <time dateTime={post.date}>
+              {new Date(post.date).toLocaleDateString("en-IN", {
                 year: "numeric",
                 month: "long",
                 day: "numeric",
               })}
-            </span>
+            </time>
+            <span aria-hidden="true">·</span>
             <span>{post.readingTime}</span>
-            {post.tags.map((tag) => (
-              <span key={tag} className="rounded-full border px-3 py-1">
-                {tag}
-              </span>
-            ))}
-          </div>
+          </p>
         </header>
-        <article className="section-card rich-text p-8 sm:p-10">{post.content}</article>
-      </Reveal>
+        <div className="rich-text">{post.content}</div>
+      </article>
     </div>
   );
 }

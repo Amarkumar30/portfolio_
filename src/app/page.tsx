@@ -1,140 +1,162 @@
 /**
- * Home page introduces Amar Kumar with highlights, featured projects, latest writing, and grouped skills.
+ * Home page: who Amar is, what he's building toward, what he's doing now, selected work and recent writing.
  * Props: none for the route component.
  * Used in: / route entry point.
- * TODO: Replace placeholder project/demo links and resume file with finalized assets.
  */
 import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 import { PersonJsonLd } from "@/components/seo/person-json-ld";
 import { BlogCard } from "@/components/sections/blog-card";
 import { ProjectCard } from "@/components/sections/project-card";
-import { SkillGroup } from "@/components/sections/skill-group";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { getAllPosts } from "@/lib/blog";
-import {
-  familiarWith,
-  projects,
-  quickHighlights,
-  siteContent,
-  skillCategories,
-} from "@/lib/data";
+import { buildingToward, projects, siteContent } from "@/lib/data";
+import { getNow } from "@/lib/now";
 import { buildMetadata, hasResume } from "@/lib/site";
 
 export const metadata = buildMetadata({
   title: "Home",
   description:
-    "Explore Amar Kumar's portfolio, featured full-stack projects, engineering skills, and latest writing on GEO research and SDE growth.",
+    "Amar Kumar is a software engineer building full-stack products and researching Generative Engine Optimization: how brands get found when AI answers the question.",
   path: "/",
 });
 
-export default function HomePage() {
-  const latestPosts = getAllPosts().slice(0, 3);
-  const featuredProjects = projects.filter((project) => project.featured).slice(0, 3);
+export default async function HomePage() {
+  const latestPosts = getAllPosts().slice(0, 2);
+  const featuredProjects = projects.filter((project) => project.featured).slice(0, 2);
+  const now = await getNow();
 
   return (
-    <div className="container-shell space-y-24 py-10 sm:py-14">
+    <div className="container-shell space-y-24 py-12 sm:space-y-28 sm:py-20">
       <PersonJsonLd />
-      <Reveal className="section-card overflow-hidden p-8 sm:p-10 lg:p-14">
-        <div className="grid gap-10 lg:grid-cols-[1.35fr_0.65fr] lg:items-end">
-          <div className="space-y-7">
-            <span className="eyebrow">Open to internships and SDE roles</span>
-            <div className="space-y-5">
-              <h1 className="max-w-4xl font-heading text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
-                {siteContent.name}
-              </h1>
-              <p className="max-w-3xl text-xl leading-9 text-muted sm:text-2xl">
-                {siteContent.tagline}
-              </p>
-              <p className="max-w-3xl text-base leading-8 text-muted sm:text-lg">
-                {siteContent.intro}
-              </p>
-            </div>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <ButtonLink href="/projects">View Projects</ButtonLink>
-              <ButtonLink href="/blog" variant="secondary">
-                Read Blog
+
+      <Reveal>
+        <section aria-labelledby="hero-title" className="max-w-3xl space-y-6">
+          <p className="eyebrow">{siteContent.availability}</p>
+          <h1
+            id="hero-title"
+            className="font-heading text-4xl font-semibold tracking-tight sm:text-6xl"
+          >
+            {siteContent.name}
+          </h1>
+          <p className="text-xl leading-8 text-balance text-foreground sm:text-2xl sm:leading-10">
+            {siteContent.tagline}
+          </p>
+          <div className="max-w-[68ch] space-y-4 text-base leading-7 text-muted sm:text-lg sm:leading-8">
+            {siteContent.intro.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </div>
+          <div className="flex flex-wrap gap-3 pt-2">
+            <ButtonLink href="/projects">View work</ButtonLink>
+            <ButtonLink href="/blog" variant="secondary">
+              Read writing
+            </ButtonLink>
+            <ButtonLink href="/contact" variant="secondary">
+              Get in touch
+            </ButtonLink>
+            {hasResume ? (
+              <ButtonLink href="/resume.pdf" variant="secondary">
+                Resume
               </ButtonLink>
-              {hasResume ? (
-                <ButtonLink href="/resume.pdf" variant="secondary">
-                  Download Resume
-                </ButtonLink>
-              ) : null}
-            </div>
+            ) : null}
           </div>
-          <div className="section-card p-6">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-accent">
-              Snapshot
-            </p>
-            <dl className="mt-5 space-y-5">
-              {quickHighlights.map((item) => (
-                <div key={item.label}>
-                  <dt className="text-sm font-medium text-muted">{item.label}</dt>
-                  <dd className="mt-1 text-lg leading-8 text-foreground">{item.value}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-        </div>
+        </section>
       </Reveal>
 
-      <section className="space-y-8">
+      <section aria-labelledby="building-title" className="space-y-10">
+        <SectionHeading id="building-title" title={buildingToward.title} />
+        <div className="grid gap-10 md:grid-cols-3 md:gap-8">
+          {buildingToward.items.map((item, index) => (
+            <Reveal key={item.label} delay={index * 0.05} className="space-y-3 border-t pt-5">
+              <p className="eyebrow">{item.label}</p>
+              <h3 className="font-heading text-xl font-semibold">{item.title}</h3>
+              <p className="text-base leading-7 text-muted">{item.body}</p>
+            </Reveal>
+          ))}
+        </div>
+        <p className="max-w-[68ch] font-heading text-lg leading-8 text-foreground">
+          {buildingToward.closing}
+        </p>
+      </section>
+
+      {now ? (
+        <section aria-labelledby="now-title" className="max-w-[68ch] space-y-4">
+          <div className="flex items-baseline justify-between gap-4">
+            <h2 id="now-title" className="font-heading text-2xl font-semibold">
+              Now
+            </h2>
+            {now.updated ? (
+              <p className="text-sm text-muted">
+                Updated{" "}
+                {new Date(now.updated).toLocaleDateString("en-IN", {
+                  month: "long",
+                  year: "numeric",
+                })}
+              </p>
+            ) : null}
+          </div>
+          <div className="rich-text border-l-2 border-accent pl-5">{now.content}</div>
+        </section>
+      ) : null}
+
+      <section aria-labelledby="work-title" className="space-y-8">
         <SectionHeading
+          id="work-title"
           eyebrow="Selected work"
-          title="Projects built with product thinking and implementation detail."
-          description="A mix of collaborative hackathon builds and practical full-stack systems, written for recruiters who want the signal fast."
+          title="Problems I've worked on"
+          description="Each one started with a real workflow that wasn't working."
         />
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2">
           {featuredProjects.map((project, index) => (
-            <Reveal key={project.slug} delay={index * 0.08}>
+            <Reveal key={project.slug} delay={index * 0.05}>
               <ProjectCard project={project} />
             </Reveal>
           ))}
         </div>
-        <ButtonLink href="/projects" variant="secondary" className="gap-2">
-          Explore all projects
-          <ArrowRight className="h-4 w-4" />
-        </ButtonLink>
+        <Link
+          href="/projects"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-accent hover:underline"
+        >
+          All projects
+          <ArrowRight className="h-4 w-4" aria-hidden="true" />
+        </Link>
       </section>
 
-      <section className="space-y-8">
-        <SectionHeading
-          eyebrow="Latest writing"
-          title="Notes on GEO research, engineering, and what I’m learning."
-          description="The blog is local-file powered with MDX so I can publish quickly without a CMS. Posts are structured for scannability and future iteration."
-        />
-        <div className="grid gap-6 lg:grid-cols-3">
-          {latestPosts.map((post, index) => (
-            <Reveal key={post.slug} delay={index * 0.08}>
-              <BlogCard post={post} />
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      <section className="space-y-8">
-        <SectionHeading
-          eyebrow="Skills snapshot"
-          title="Grouped skills, tools, and technical areas I reach for most."
-          description="Structured content lives in a central data file so updates stay easy as your experience evolves."
-        />
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {skillCategories.map((category, index) => (
-            <Reveal key={category.title} delay={index * 0.05}>
-              <SkillGroup {...category} />
-            </Reveal>
-          ))}
-        </div>
-        <Reveal>
-          <div className="section-card p-5">
-            <p className="font-heading text-xl font-semibold">Familiar with</p>
-            <p className="mt-3 text-sm leading-7 text-muted">
-              Listed separately to keep the main skills honest and calibrated.{" "}
-              {familiarWith.join(", ")}.
-            </p>
+      {latestPosts.length > 0 ? (
+        <section aria-labelledby="writing-title" className="space-y-8">
+          <SectionHeading
+            id="writing-title"
+            eyebrow="Writing"
+            title="Recent writing"
+            description="On GEO, AI search, and what I learn while building."
+          />
+          <div className="grid gap-6 md:grid-cols-2">
+            {latestPosts.map((post, index) => (
+              <Reveal key={post.slug} delay={index * 0.05}>
+                <BlogCard post={post} />
+              </Reveal>
+            ))}
           </div>
-        </Reveal>
+          <Link
+            href="/blog"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-accent hover:underline"
+          >
+            All writing
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        </section>
+      ) : null}
+
+      <section className="max-w-[68ch] space-y-4 border-t pt-10">
+        <h2 className="font-heading text-2xl font-semibold">Working on something similar?</h2>
+        <p className="text-base leading-7 text-muted sm:text-lg sm:leading-8">
+          Hiring, building in AI search, or curious about GEO for Indian brands — I&apos;d
+          like to hear about it.
+        </p>
+        <ButtonLink href="/contact">Get in touch</ButtonLink>
       </section>
     </div>
   );

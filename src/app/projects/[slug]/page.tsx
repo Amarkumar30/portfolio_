@@ -1,5 +1,5 @@
 /**
- * Project detail page expands one project into a fuller recruiter-friendly case study.
+ * Project detail page: problem, role, what was built, the hard part, and what's next.
  * Props: route params containing the project slug.
  * Used in: dynamic /projects/[slug] routes.
  * TODO(amar): add GitHub/demo links and screenshots in src/lib/data.ts.
@@ -49,89 +49,102 @@ export default async function ProjectDetailPage({
     notFound();
   }
 
+  const sections = [
+    { title: "Problem", body: project.problem },
+    { title: "My role", body: project.role },
+  ];
+
   return (
-    <div className="container-shell space-y-10 py-10 sm:py-14">
+    <div className="container-shell space-y-12 py-12 sm:py-20">
       <Link
         href="/projects"
         className="inline-flex items-center gap-2 text-sm font-medium text-muted hover:text-accent"
       >
-        <ArrowLeft className="h-4 w-4" />
-        Back to projects
+        <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+        All projects
       </Link>
 
-      <Reveal className="section-card p-8 sm:p-10">
-        <div className="space-y-6">
-          <span className="eyebrow">Project case study</span>
-          <div className="space-y-4">
-            <h1 className="font-heading text-4xl font-semibold tracking-tight sm:text-5xl">
-              {project.title}
-            </h1>
-            <p className="max-w-3xl text-lg leading-8 text-muted">{project.summary}</p>
-            {project.collaborationNote ? (
-              <p className="rounded-2xl border bg-accent-soft px-4 py-3 text-sm leading-7 text-muted">
-                {project.collaborationNote}
-              </p>
-            ) : null}
-          </div>
-        </div>
+      <Reveal>
+        <header className="max-w-[68ch] space-y-5">
+          <p className="eyebrow">Case study</p>
+          <h1 className="font-heading text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
+            {project.title}
+          </h1>
+          <p className="text-lg leading-8 text-muted">{project.summary}</p>
+          {project.collaborationNote ? (
+            <p className="border-l-2 border-accent pl-4 text-sm leading-6 text-muted">
+              {project.collaborationNote}
+            </p>
+          ) : null}
+        </header>
       </Reveal>
 
-      <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-        <Reveal className="section-card p-6">
-          <h2 className="font-heading text-2xl font-semibold">Problem statement</h2>
-          <p className="mt-4 text-base leading-8 text-muted">{project.problemStatement}</p>
+      {project.image ? (
+        <Image
+          src={project.image.src}
+          alt={project.image.alt}
+          width={1200}
+          height={750}
+          className="h-auto w-full rounded-2xl border"
+        />
+      ) : null}
 
-          <h2 className="mt-8 font-heading text-2xl font-semibold">My contributions</h2>
-          <ul className="mt-4 space-y-3 text-sm leading-7 text-muted">
-            {project.contributions.map((contribution) => (
-              <li key={contribution}>{contribution}</li>
-            ))}
-          </ul>
-        </Reveal>
-
-        <div className="space-y-6">
-          <Reveal className="section-card p-6">
-            <h2 className="font-heading text-2xl font-semibold">Tech stack</h2>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {project.stack.map((item) => (
-                <span
-                  key={item}
-                  className="rounded-full border px-3 py-1.5 text-sm text-muted"
-                >
-                  {item}
-                </span>
+      <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_16rem]">
+        <article className="rich-text max-w-[68ch]">
+          {sections.map((section) => (
+            <section key={section.title}>
+              <h2>{section.title}</h2>
+              <p>{section.body}</p>
+            </section>
+          ))}
+          <section>
+            <h2>What I built</h2>
+            <ul>
+              {project.built.map((item) => (
+                <li key={item}>{item}</li>
               ))}
-            </div>
-          </Reveal>
-          {project.image ? (
-            <Reveal className="section-card overflow-hidden" delay={0.08}>
-              <Image
-                src={project.image.src}
-                alt={project.image.alt}
-                width={1200}
-                height={750}
-                className="h-auto w-full"
-              />
-            </Reveal>
-          ) : null}
+            </ul>
+          </section>
+          <section>
+            <h2>The hard part</h2>
+            <p>{project.hardPart}</p>
+          </section>
+          <section>
+            <h2>What I&apos;d do next</h2>
+            <p>{project.next}</p>
+          </section>
+        </article>
+
+        <aside className="space-y-8 text-sm">
+          <div className="space-y-3">
+            <h2 className="eyebrow">Stack</h2>
+            <ul className="flex flex-wrap gap-2">
+              {project.stack.map((item) => (
+                <li key={item} className="rounded-full border px-3 py-1 text-muted">
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
           {project.links.length > 0 ? (
-            <Reveal className="section-card p-6" delay={0.12}>
-              <h2 className="font-heading text-2xl font-semibold">Links</h2>
-              <div className="mt-4 flex flex-col gap-3">
+            <div className="space-y-3">
+              <h2 className="eyebrow">Links</h2>
+              <ul className="space-y-2">
                 {project.links.map((link) => (
-                  <Link
-                    key={link.label}
-                    href={link.href}
-                    className="inline-flex items-center gap-2 text-sm font-semibold text-accent"
-                  >
-                    {link.label}
-                    <ExternalLink className="h-4 w-4" />
-                  </Link>
+                  <li key={link.label}>
+                    <Link
+                      href={link.href}
+                      className="inline-flex items-center gap-2 font-semibold text-accent hover:underline"
+                    >
+                      {link.label}
+                      <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                    </Link>
+                  </li>
                 ))}
-              </div>
-            </Reveal>
+              </ul>
+            </div>
           ) : null}
-        </div>
+        </aside>
       </div>
     </div>
   );

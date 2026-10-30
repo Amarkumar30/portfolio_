@@ -32,7 +32,7 @@ export const metadata: Metadata = {
         url: ogImagePath,
         width: 1200,
         height: 630,
-        alt: "Amar Kumar portfolio and blog preview",
+        alt: "Amar Kumar, software engineer",
       },
     ],
   },

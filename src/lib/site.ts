@@ -8,9 +8,9 @@ export const siteUrl = (
 // Inlined at build time by next.config.ts, so it reflects whether public/resume.pdf
 // shipped with this deploy. TODO(amar): add public/resume.pdf
 export const hasResume = process.env.NEXT_PUBLIC_HAS_RESUME === "1";
-export const siteTitle = "Amar Kumar | Portfolio & Blog";
+export const siteTitle = "Amar Kumar | Software Engineer";
 export const siteDescription =
-  "Portfolio and blog of Amar Kumar, a Computer Science & Engineering undergraduate building full-stack products and researching Generative Engine Optimization.";
+  "Amar Kumar is a software engineer building full-stack products and researching Generative Engine Optimization: how brands get found when AI answers the question.";
 export const ogImagePath = "/opengraph-image";
 
 export function buildMetadata({
@@ -42,7 +42,7 @@ export function buildMetadata({
           url: ogImagePath,
           width: 1200,
           height: 630,
-          alt: "Amar Kumar portfolio and blog preview",
+          alt: "Amar Kumar, software engineer",
         },
       ],
     },
@@ -65,15 +65,16 @@ export const personStructuredData = {
   name: siteContent.name,
   url: siteUrl,
   email: "amar.kumar.career@gmail.com",
-  jobTitle: "Aspiring Software Development Engineer",
+  jobTitle: "Software Engineer",
   description: siteDescription,
-  alumniOf: {
+  affiliation: {
     "@type": "CollegeOrUniversity",
     name: "South Asian University",
   },
   knowsAbout: [
     "Full-stack engineering",
     "Generative Engine Optimization",
+    "AI search visibility",
     "RAG pipelines",
     "LLM integration",
   ],

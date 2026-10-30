@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "Amar Kumar portfolio and blog preview";
+export const alt = "Amar Kumar, software engineer";
 export const size = {
   width: 1200,
   height: 630,
@@ -51,14 +51,14 @@ export default function TwitterImage() {
           </div>
           <div style={{ display: "flex", flexDirection: "column" }}>
             <span style={{ fontSize: 22 }}>Amar Kumar</span>
-            <span style={{ fontSize: 18, opacity: 0.72 }}>Portfolio and blog</span>
+            <span style={{ fontSize: 18, opacity: 0.72 }}>Software Engineer</span>
           </div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
           <div
             style={{
               display: "flex",
-              width: 210,
+              width: 250,
               borderRadius: 9999,
               border: "1px solid rgba(236, 245, 240, 0.2)",
               padding: "10px 18px",
@@ -70,10 +70,10 @@ export default function TwitterImage() {
             Full-stack + GEO
           </div>
           <div style={{ display: "flex", fontSize: 70, fontWeight: 700, lineHeight: 1.1 }}>
-            Computer Science undergraduate building reliable products and studying visibility in AI search.
+            Building full-stack products and researching how brands get found in AI answers.
           </div>
           <div style={{ display: "flex", fontSize: 26, opacity: 0.78 }}>
-            South Asian University • Projects • Writing • SDE trajectory
+            amarkumar.dev · South Asian University, Delhi
           </div>
         </div>
       </div>

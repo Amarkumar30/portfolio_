@@ -167,7 +167,7 @@ export function ContactForm() {
           onChange={(event) => setForm({ ...form, message: event.target.value })}
           aria-invalid={Boolean(fieldErrors.message)}
           className="w-full rounded-3xl border bg-surface-strong px-4 py-3 outline-none focus:border-accent"
-          placeholder="Share a quick note about the role, collaboration, or conversation you have in mind."
+          placeholder="What are you working on, and how can I help?"
         />
         {fieldErrors.message ? (
           <p className="text-xs text-red-600 dark:text-red-400">{fieldErrors.message}</p>

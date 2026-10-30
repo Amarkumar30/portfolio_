@@ -2,15 +2,8 @@ import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 import readingTime from "reading-time";
-import { compile, run } from "@mdx-js/mdx";
-import rehypeAutolinkHeadings from "rehype-autolink-headings";
-import rehypePrettyCode from "rehype-pretty-code";
-import rehypeSlug from "rehype-slug";
-import remarkGfm from "remark-gfm";
-import * as runtime from "react/jsx-runtime";
-import type { ComponentType } from "react";
 import { z } from "zod";
-import { mdxComponents } from "@/components/mdx/mdx-components";
+import { renderMdx } from "@/lib/mdx";
 
 const blogDirectory = path.join(process.cwd(), "content", "blog");
 
@@ -99,45 +92,10 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
 
   const { frontmatter, content } = post;
 
-  const compiled = await compile(content, {
-    outputFormat: "function-body",
-    development: process.env.NODE_ENV === "development",
-    remarkPlugins: [remarkGfm],
-    rehypePlugins: [
-      rehypeSlug,
-      [
-        rehypeAutolinkHeadings,
-        {
-          properties: {
-            className: ["anchor-heading"],
-          },
-        },
-      ],
-      [
-        rehypePrettyCode,
-        {
-          theme: {
-            dark: "github-dark-dimmed",
-            light: "github-light",
-          },
-        },
-      ],
-    ],
-  });
-
-  const evaluated = await run(compiled, {
-    ...runtime,
-    baseUrl: import.meta.url,
-  });
-
-  const MdxComponent = evaluated.default as ComponentType<{
-    components?: typeof mdxComponents;
-  }>;
-
   return {
     ...frontmatter,
     slug,
     readingTime: readingTime(content).text,
-    content: <MdxComponent components={mdxComponents} />,
+    content: await renderMdx(content),
   };
 }

@@ -18,7 +18,7 @@ const navItems = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
   { href: "/projects", label: "Projects" },
-  { href: "/blog", label: "Blog" },
+  { href: "/blog", label: "Writing" },
   { href: "/contact", label: "Contact" },
 ];
 
@@ -33,12 +33,9 @@ export function SiteHeader() {
           <span className="flex h-10 w-10 items-center justify-center rounded-2xl border bg-accent text-sm font-heading font-semibold text-accent-foreground shadow-sm">
             AK
           </span>
-          <div>
-            <p className="font-heading text-base font-semibold tracking-tight">
-              Amar Kumar
-            </p>
-            <p className="text-sm text-muted">Portfolio and writing</p>
-          </div>
+          <span className="font-heading text-base font-semibold tracking-tight">
+            Amar Kumar
+          </span>
         </Link>
 
         <nav className="hidden items-center gap-2 md:flex" aria-label="Primary">
