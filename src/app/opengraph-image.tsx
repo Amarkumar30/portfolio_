@@ -1,83 +1,13 @@
-import { ImageResponse } from "next/og";
+import { ogContentType, ogSize, renderOgImage } from "@/lib/og";
 
-export const runtime = "edge";
 export const alt = "Amar Kumar, software engineer";
-export const size = {
-  width: 1200,
-  height: 630,
-};
-export const contentType = "image/png";
+export const size = ogSize;
+export const contentType = ogContentType;
 
 export default function OpenGraphImage() {
-  return new ImageResponse(
-    (
-      <div
-        style={{
-          height: "100%",
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          padding: "56px",
-          background:
-            "radial-gradient(circle at top left, rgba(52, 211, 153, 0.35), transparent 28%), linear-gradient(135deg, #0b1513 0%, #112723 100%)",
-          color: "#ecf5f0",
-          fontFamily: "sans-serif",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "18px",
-            fontSize: 24,
-            opacity: 0.92,
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              height: 64,
-              width: 64,
-              borderRadius: 20,
-              alignItems: "center",
-              justifyContent: "center",
-              background: "#34d399",
-              color: "#062018",
-              fontWeight: 700,
-            }}
-          >
-            AK
-          </div>
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <span style={{ fontSize: 22 }}>Amar Kumar</span>
-            <span style={{ fontSize: 18, opacity: 0.72 }}>Software Engineer</span>
-          </div>
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-          <div
-            style={{
-              display: "flex",
-              width: 250,
-              borderRadius: 9999,
-              border: "1px solid rgba(236, 245, 240, 0.2)",
-              padding: "10px 18px",
-              fontSize: 18,
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-            }}
-          >
-            Full-stack + GEO
-          </div>
-          <div style={{ display: "flex", fontSize: 70, fontWeight: 700, lineHeight: 1.1 }}>
-            Building full-stack products and researching how brands get found in AI answers.
-          </div>
-          <div style={{ display: "flex", fontSize: 26, opacity: 0.78 }}>
-            amarkumar.dev · South Asian University, Delhi
-          </div>
-        </div>
-      </div>
-    ),
-    size,
-  );
+  return renderOgImage({
+    eyebrow: "Software engineer · GEO research",
+    title: "Building full-stack products and researching how brands get found in AI answers.",
+    subtitle: "South Asian University, Delhi",
+  });
 }

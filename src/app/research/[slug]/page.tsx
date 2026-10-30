@@ -7,10 +7,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
+import { JsonLd } from "@/components/seo/json-ld";
 import { getEntries, getEntry } from "@/lib/content/loader";
 import { formatDate } from "@/lib/format";
 import { renderMdx } from "@/lib/mdx";
-import { buildMetadata } from "@/lib/site";
+import { articleStructuredData, buildMetadata } from "@/lib/site";
 
 interface ResearchEntryPageProps {
   params: Promise<{ slug: string }>;
@@ -28,6 +29,7 @@ export async function generateMetadata({ params }: ResearchEntryPageProps): Prom
         description: entry.data.excerpt,
         path: `/research/${entry.slug}`,
         type: "article",
+        image: `/research/${entry.slug}/opengraph-image`,
       })
     : { title: "Not found" };
 }
@@ -48,6 +50,16 @@ export default async function ResearchEntryPage({ params }: ResearchEntryPagePro
 
   return (
     <div className="container-shell py-12 sm:py-20">
+      <JsonLd
+        data={articleStructuredData({
+          type: "ScholarlyArticle",
+          title: entry.data.title,
+          description: entry.data.excerpt,
+          path: `/research/${entry.slug}`,
+          date: entry.data.date,
+          tags: entry.data.tags,
+        })}
+      />
       <article className="mx-auto max-w-[68ch] space-y-10">
         <Link
           href="/research"

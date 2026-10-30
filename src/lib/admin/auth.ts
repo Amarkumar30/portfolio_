@@ -30,7 +30,8 @@ export function isAdminConfigured() {
 
 export async function verifyCredentials(username: string, password: string) {
   const expectedUsername = process.env.ADMIN_USERNAME ?? "";
-  const passwordHash = process.env.ADMIN_PASSWORD_HASH ?? "";
+  // Accept the .env.local form (\$ escapes) too, in case it's pasted into Vercel as-is.
+  const passwordHash = (process.env.ADMIN_PASSWORD_HASH ?? "").replaceAll("\\$", "$");
   const configured = isAdminConfigured();
 
   const usernameMatches = sameString(username, expectedUsername);

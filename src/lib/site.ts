@@ -91,3 +91,67 @@ export const personStructuredData = {
   ],
   sameAs: sameAsLinks,
 };
+
+const author = { "@type": "Person", name: siteContent.name, url: siteUrl };
+
+export function articleStructuredData({
+  type,
+  title,
+  description,
+  path,
+  date,
+  tags = [],
+}: {
+  type: "BlogPosting" | "ScholarlyArticle";
+  title: string;
+  description: string;
+  path: string;
+  date: string;
+  tags?: string[];
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": type,
+    headline: title,
+    description,
+    url: `${siteUrl}${path}`,
+    mainEntityOfPage: `${siteUrl}${path}`,
+    datePublished: date,
+    dateModified: date,
+    image: `${siteUrl}${path}/opengraph-image`,
+    keywords: tags.join(", ") || undefined,
+    inLanguage: "en-IN",
+    author,
+    publisher: author,
+  };
+}
+
+export function projectStructuredData({
+  title,
+  description,
+  path,
+  stack,
+  links,
+}: {
+  title: string;
+  description: string;
+  path: string;
+  stack: string[];
+  links: { label: string; href: string }[];
+}) {
+  const repository = links.find((link) => link.href.startsWith("https://github.com/"));
+
+  return {
+    "@context": "https://schema.org",
+    // SoftwareSourceCode once there's a public repo to point at; CreativeWork until then.
+    "@type": repository ? "SoftwareSourceCode" : "CreativeWork",
+    name: title,
+    description,
+    url: `${siteUrl}${path}`,
+    image: `${siteUrl}${path}/opengraph-image`,
+    keywords: stack.join(", "),
+    ...(repository ? { codeRepository: repository.href, programmingLanguage: stack } : {}),
+    author,
+    creator: author,
+  };
+}

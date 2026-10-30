@@ -17,6 +17,8 @@ export function compileMdx(source: string) {
       [
         rehypeAutolinkHeadings,
         {
+          // Wrap the heading text so the anchor link has an accessible name.
+          behavior: "wrap",
           properties: {
             className: ["anchor-heading"],
           },

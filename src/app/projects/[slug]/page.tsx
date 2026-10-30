@@ -8,9 +8,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink } from "lucide-react";
+import { JsonLd } from "@/components/seo/json-ld";
 import { getEntries, getEntry } from "@/lib/content/loader";
 import { renderMdx } from "@/lib/mdx";
-import { buildMetadata } from "@/lib/site";
+import { buildMetadata, projectStructuredData } from "@/lib/site";
 
 interface ProjectDetailPageProps {
   params: Promise<{ slug: string }>;
@@ -27,6 +28,7 @@ export async function generateMetadata({ params }: ProjectDetailPageProps): Prom
         title: project.data.title,
         description: project.data.summary,
         path: `/projects/${project.slug}`,
+        image: `/projects/${project.slug}/opengraph-image`,
       })
     : { title: "Project not found" };
 }
@@ -48,6 +50,15 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
 
   return (
     <div className="container-shell space-y-12 py-12 sm:py-20">
+      <JsonLd
+        data={projectStructuredData({
+          title: data.title,
+          description: data.summary,
+          path: `/projects/${project.slug}`,
+          stack: data.stack,
+          links: data.links,
+        })}
+      />
       <Link
         href="/projects"
         className="inline-flex items-center gap-2 text-sm font-medium text-muted hover:text-accent"

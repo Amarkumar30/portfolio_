@@ -8,10 +8,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
+import { JsonLd } from "@/components/seo/json-ld";
 import { getEntries, getEntry } from "@/lib/content/loader";
 import { formatDate } from "@/lib/format";
 import { renderMdx } from "@/lib/mdx";
-import { buildMetadata } from "@/lib/site";
+import { articleStructuredData, buildMetadata } from "@/lib/site";
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
@@ -29,6 +30,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
         description: post.data.excerpt,
         path: `/blog/${post.slug}`,
         type: "article",
+        image: `/blog/${post.slug}/opengraph-image`,
       })
     : { title: "Post not found" };
 }
@@ -49,6 +51,16 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   return (
     <div className="container-shell py-12 sm:py-20">
+      <JsonLd
+        data={articleStructuredData({
+          type: "BlogPosting",
+          title: post.data.title,
+          description: post.data.excerpt,
+          path: `/blog/${post.slug}`,
+          date: post.data.date,
+          tags: post.data.tags,
+        })}
+      />
       <article className="mx-auto max-w-[68ch] space-y-10">
         <Link
           href="/blog"
