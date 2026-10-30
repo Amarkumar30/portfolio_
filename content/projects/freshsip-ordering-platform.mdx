@@ -1,10 +1,8 @@
 ---
 title: "FreshSip"
 summary: "Online ordering for a local juice bar: customers order and pay by UPI, and staff track every order on a live dashboard."
-# TODO(amar): set date to when you built this (it only controls ordering).
 date: "2026-10-29"
-# TODO(amar): confirm whether FreshSip was solo or a team project.
-role: "I built the ordering flow, the payment integration and the admin dashboard."
+role: "Solo project. I built all of it: the ordering flow, the payment integration and the admin dashboard."
 stack:
   - React 19
   - TypeScript
@@ -14,7 +12,6 @@ stack:
   - Drizzle ORM
   - Razorpay
   - Docker
-# TODO(amar): add GitHub/demo links.
 links: []
 featured: true
 ---
@@ -30,13 +27,9 @@ At a busy counter, orders come in by phone and in person, and payments are confi
 - A real-time admin dashboard that moves orders through Pending → Confirmed → Ready → Completed.
 - MySQL with Drizzle ORM for data access, and Docker for a consistent local setup.
 
-{/* TODO(amar): confirm this was the hardest part for you, or replace it. */}
-
 ## The hard part
 
 Keeping payment state and order state in agreement. An order should only reach the counter once the UPI payment is confirmed, and the dashboard has to show status changes the moment they happen.
-
-{/* TODO(amar): confirm or replace with what you would actually do next. */}
 
 ## What I'd do next
 

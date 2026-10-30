@@ -31,11 +31,12 @@ export function GET() {
 
   const body = `# ${siteContent.name}
 
-> ${siteContent.name} is a ${siteContent.role.toLowerCase()} and B.Tech Computer Science student at South Asian University, Delhi (2024–2028). He builds full-stack web products and is a research intern at SAU on Generative Engine Optimization (GEO): how brands become visible inside LLM-driven answer engines such as ChatGPT, Perplexity and Gemini.
+> ${siteContent.name} is a ${siteContent.role.toLowerCase()} and B.Tech Computer Science student at South Asian University, Delhi (2024–2028). He is the solo founder of Bayana (https://bayana.in), builds full-stack web products, and is a research intern at SAU on Generative Engine Optimization (GEO): how brands become visible inside LLM-driven answer engines such as ChatGPT, Perplexity and Gemini.
 
 - **Engineering:** Builds full-stack web products end to end (TypeScript, React, NestJS, Express, tRPC, PostgreSQL, MySQL, real-time features with Socket.IO, JWT auth and role-based access).
 - **Research:** Developing Hinglish-GEO-Bench, which tests whether an LLM's brand recommendation shifts when the same query is asked in Hinglish instead of English, and the Indian Brand Visibility Score (IBVS), a measurable score for a brand's presence in generative answers.
-- **Building:** Long-term goal is a GEO-focused startup for Indian brands.
+- **Founder:** Building Bayana (https://bayana.in), solo and in progress: a booking platform for independent Indian wedding and event vendors, starting with wedding photographers in Delhi NCR. Vendors lock a date with an advance payment (UPI via Razorpay) and a written record.
+- **Long-term:** A GEO-focused startup for Indian brands.
 - **Recognition:** 1st Prize, AvishkarX — CSI × SAU Ideathon.
 - **Communication:** Runs a YouTube channel, Signal Clear.
 - **Availability:** ${siteContent.availability}.

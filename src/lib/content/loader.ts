@@ -76,6 +76,10 @@ export function getEntries<K extends SectionId>(sectionId: K): Entry<K>[] {
   }
 
   const dateKey = section.dateField as keyof SectionData<K>;
+  const position = (entry: Entry<K>) =>
+    "order" in entry.data && typeof entry.data.order === "number"
+      ? entry.data.order
+      : Number.POSITIVE_INFINITY;
 
   return fs
     .readdirSync(dir)
@@ -84,8 +88,10 @@ export function getEntries<K extends SectionId>(sectionId: K): Entry<K>[] {
       const entry = readEntry(sectionId, file.replace(/\.mdx$/, ""));
       return entry ? [entry] : [];
     })
+    // Explicit `order` first (lower first), then newest first.
     .sort(
       (a, b) =>
+        position(a) - position(b) ||
         Date.parse(String(b.data[dateKey])) - Date.parse(String(a.data[dateKey])),
     );
 }

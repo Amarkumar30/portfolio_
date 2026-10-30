@@ -15,7 +15,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
 
   return renderOgImage(
     project
-      ? { eyebrow: "Case study", title: project.data.title, subtitle: project.data.summary }
+      ? { eyebrow: project.data.status ?? "Case study", title: project.data.title, subtitle: project.data.summary }
       : { eyebrow: "Amar Kumar", title: "Not found" },
   );
 }

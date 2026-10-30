@@ -7,7 +7,7 @@ It has a private `/admin` area for publishing to any section. Publishing commits
 ## Stack
 
 - Next.js 16 (App Router, `src/proxy.ts`), React 19, TypeScript
-- Tailwind CSS v4, `next-themes` for light/dark
+- Tailwind CSS v4 (CSS-only scroll animations), `next-themes` for light/dark
 - MDX via `@mdx-js/mdx` + `gray-matter`, frontmatter validated with `zod`
 - Admin: `jose` (session JWT), `bcryptjs`, `@octokit/rest` (GitHub Contents API), `react-markdown` (editor preview)
 - Resend for the contact form, Vercel for hosting and analytics
@@ -47,6 +47,8 @@ All content lives in `content/` as MDX files with YAML frontmatter.
 - **Optional files:** `public/resume.pdf` and `public/amar.jpg`. Resume buttons and the photo appear only if these exist at build time; otherwise the site shows an "AK" monogram and no resume links.
 
 You can still write content by hand: add an `.mdx` file, commit and push. The admin is a convenience, not a requirement.
+
+Keep notes and to-dos out of content files: the admin rewrites a whole file when you edit an entry, so YAML comments would be lost. Open items live in [TODO.md](TODO.md).
 
 ## How admin publishing works
 

@@ -6,9 +6,8 @@ export const siteUrl = (
 ).replace(/\/$/, "");
 
 // Inlined at build time by next.config.ts, so it reflects whether public/resume.pdf
-// shipped with this deploy. TODO(amar): add public/resume.pdf
+// shipped with this deploy. Open items for both files are in TODO.md.
 export const hasResume = process.env.NEXT_PUBLIC_HAS_RESUME === "1";
-// TODO(amar): add photo at public/amar.jpg
 export const hasPhoto = process.env.NEXT_PUBLIC_HAS_PHOTO === "1";
 export const siteTitle = "Amar Kumar | Software Engineer";
 export const siteDescription =
@@ -89,6 +88,14 @@ export const personStructuredData = {
     "RAG pipelines",
     "LLM integration",
   ],
+  worksFor: {
+    "@type": "Organization",
+    name: "Bayana",
+    url: "https://bayana.in",
+    description:
+      "Booking platform for independent Indian wedding and event vendors, starting with wedding photographers in Delhi NCR.",
+    founder: { "@type": "Person", name: siteContent.name, url: siteUrl },
+  },
   sameAs: sameAsLinks,
 };
 

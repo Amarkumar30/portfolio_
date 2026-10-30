@@ -13,7 +13,7 @@ export const siteContent = {
     "Software engineer building full-stack products — and researching how brands get found when AI answers the question.",
   intro: [
     "I study Computer Science at South Asian University in Delhi and work as a research intern on Generative Engine Optimization.",
-    "I build web products end to end, from the database schema to the last button. In research, I study how brands show up inside ChatGPT, Perplexity and Gemini — and why some never do.",
+    "I build web products end to end, from the database schema to the last button — right now that's Bayana, my startup for independent wedding vendors. In research, I study how brands show up inside ChatGPT, Perplexity and Gemini — and why some never do.",
   ],
   footerLine:
     "Software engineer in Delhi. Building full-stack products and researching how brands get found in AI answers.",
@@ -21,7 +21,11 @@ export const siteContent = {
   achievements: ["1st Prize, AvishkarX — CSI × SAU Ideathon"],
 };
 
-export const buildingToward = {
+export const buildingToward: {
+  title: string;
+  items: { label: string; title: string; body: string; link?: { href: string; label: string } }[];
+  closing: string;
+} = {
   title: "What I'm building toward",
   items: [
     {
@@ -36,21 +40,22 @@ export const buildingToward = {
     },
     {
       label: "Building",
-      title: "A GEO company for Indian brands",
-      body: "The long-term plan is a startup that helps Indian brands see and improve how they appear in AI answers. Research first, then a product that follows the evidence.",
+      title: "Bayana",
+      body: "I'm building Bayana, a booking platform for independent Indian wedding and event vendors, starting with wedding photographers in Delhi NCR. Vendors lock a date with an advance payment over UPI and a written record. Further out, I want to build a GEO company for Indian brands.",
+      link: { href: "/projects/bayana", label: "More on Bayana" },
     },
   ],
   closing:
-    "Most tools for AI search are being built for English-first markets. I'd like to build some from India, for the way India actually searches.",
+    "A lot of software is built for markets that work differently from ours. I'd like to build from India, for the way India actually searches, books and pays.",
 };
 
-// TODO(amar): add the Signal Clear channel URL so it can be linked from About and socialLinks.
 export const aboutStory = {
-  title: "Engineer, researcher, and slowly, a founder.",
+  title: "Engineer, researcher, and now a founder.",
   paragraphs: [
     "I like turning messy workflows into simple products. A hostel's complaint process, a juice bar's order queue: the hard part is rarely the code. It's understanding how people actually work, then building something they don't have to think about.",
+    "That's also why I'm building Bayana, on my own. For an independent wedding photographer, a booked date is that day's income, and it shouldn't hang on a chat message. Bayana lets vendors lock a date with an advance payment over UPI and a written record. It starts with wedding photographers in Delhi NCR.",
     "My research started with something small. My roommate bought a water purifier by asking ChatGPT one question. He never opened a website. The brand that won that sale didn't win it on Google, and I wanted to know why the model picked it. That question became my research internship at SAU on Generative Engine Optimization.",
-    "To me, engineering, research and business are one track. Research tells me what's true about how AI answers are formed. Engineering is how I measure it at scale — query pipelines, evaluation harnesses, scoring. And the business question is right there: if customers ask AI before they ask Google, brands need to know whether they exist in that answer. That's the company I want to build one day, for Indian brands first.",
+    "To me, engineering, research and business are one track. Research tells me what's true about how AI answers are formed. Engineering is how I measure it at scale — query pipelines, evaluation harnesses, scoring. And the business question is right there: if customers ask AI before they ask Google, brands need to know whether they exist in that answer. That's a company I want to build one day, for Indian brands first.",
     "I also run a YouTube channel, Signal Clear. It's my practice in explaining ideas clearly, which turns out to be most of engineering and nearly all of research.",
   ],
   teamNote:

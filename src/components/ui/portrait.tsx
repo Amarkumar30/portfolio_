@@ -2,7 +2,7 @@
  * Portrait shows public/amar.jpg when it shipped with the build, otherwise an "AK" monogram.
  * Props: size in pixels, optional priority for above-the-fold use, and className.
  * Used in: home hero and about page.
- * TODO(amar): add photo at public/amar.jpg (square, at least 480×480).
+ * Open item: add public/amar.jpg (see TODO.md).
  */
 import Image from "next/image";
 import { hasPhoto } from "@/lib/site";

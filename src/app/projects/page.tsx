@@ -13,7 +13,7 @@ import { buildMetadata } from "@/lib/site";
 export const metadata: Metadata = buildMetadata({
   title: "Projects",
   description:
-    "Case studies by Amar Kumar: a hostel management platform with a RAG assistant, and FreshSip, a UPI ordering system for a local juice bar.",
+    "Projects by Amar Kumar: Bayana, his booking platform for independent wedding vendors; a hostel management platform with a RAG assistant; and FreshSip, a UPI ordering system for a local juice bar.",
   path: "/projects",
 });
 
@@ -33,6 +33,7 @@ export default function ProjectsPage() {
           <Reveal key={project.slug}>
             <ContentCard
               href={`/projects/${project.slug}`}
+              eyebrow={project.data.status}
               title={project.data.title}
               summary={project.data.summary}
               meta={project.data.stack.slice(0, 5)}

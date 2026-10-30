@@ -70,6 +70,9 @@ function toFormValues(fields: FieldDef[], data: Record<string, unknown> = {}): F
       case "date":
         values[field.name] = typeof value === "string" && value ? value : today();
         break;
+      case "number":
+        values[field.name] = typeof value === "number" ? String(value) : "";
+        break;
       default:
         values[field.name] = typeof value === "string" ? value : "";
     }
@@ -102,7 +105,7 @@ function fromFormValues(fields: FieldDef[], values: FormValues) {
         });
     } else {
       const text = String(value ?? "").trim();
-      if (text) data[field.name] = text;
+      if (text) data[field.name] = field.type === "number" ? Number(text) : text;
     }
   }
 
@@ -398,7 +401,7 @@ export function Editor({
               ) : (
                 <input
                   id={id}
-                  type={field.type === "date" ? "date" : "text"}
+                  type={field.type === "date" || field.type === "number" ? field.type : "text"}
                   className="field"
                   value={String(value ?? "")}
                   required={field.required}

@@ -1,7 +1,6 @@
 ---
 title: "Hostel Management Platform"
 summary: "One place for hostel room allocation, complaints and policy questions — with live complaint updates and an assistant that answers from the hostel's own rules."
-# TODO(amar): set date to when you built this (it only controls ordering).
 date: "2026-10-30"
 role: "Team project at SmartHack. I worked across the stack, mostly on authentication, the REST APIs and real-time complaint updates."
 collaborationNote: "Built as a team at SmartHack. Ownership was split across the team; this page describes my part."
@@ -15,7 +14,6 @@ stack:
   - Docker
   - Gemini API
   - pgvector
-# TODO(amar): add GitHub/demo links, e.g. - label: "GitHub" / href: "https://github.com/..."
 links: []
 featured: true
 ---
@@ -32,13 +30,9 @@ Hostel operations usually run on spreadsheets, group chats and manual approvals.
 - Contributed to a RAG chatbot (Gemini + pgvector) that answers hostel policy questions from a PostgreSQL knowledge base.
 - Supported an anonymous complaint flow that keeps the student's identity hidden.
 
-{/* TODO(amar): confirm this was the hardest part for you, or replace it. */}
-
 ## The hard part
 
 Anonymous complaints that still need follow-up. Wardens shouldn't see who filed a complaint, but the system still has to route updates back to the right student. Storing a salted hash of the identity, instead of the identity itself, made both possible.
-
-{/* TODO(amar): confirm or replace with what you would actually do next. */}
 
 ## What I'd do next
 

@@ -50,6 +50,8 @@ export const sectionSchemas = {
     stack: z.array(z.string().min(1)).default([]),
     links: z.array(linkSchema).default([]),
     featured: z.boolean().optional().default(false),
+    status: z.string().optional(),
+    order: z.number().int().optional(),
     cover: imagePathField,
     coverAlt: z.string().optional(),
     draft: draftField,
@@ -70,7 +72,15 @@ export const sectionSchemas = {
 export type SectionId = keyof typeof sectionSchemas;
 export type SectionData<K extends SectionId> = z.infer<(typeof sectionSchemas)[K]>;
 
-export type FieldType = "text" | "textarea" | "date" | "tags" | "boolean" | "links" | "image";
+export type FieldType =
+  | "text"
+  | "textarea"
+  | "date"
+  | "number"
+  | "tags"
+  | "boolean"
+  | "links"
+  | "image";
 
 export interface FieldDef {
   name: string;
@@ -161,6 +171,18 @@ export const sections: Record<SectionId, SectionConfig> = {
       dateDef,
       { name: "stack", label: "Stack", type: "tags", help: "Comma-separated" },
       { name: "links", label: "Links", type: "links", help: "One per line: Label | https://…" },
+      {
+        name: "status",
+        label: "Label",
+        type: "text",
+        help: 'Shown above the title, e.g. "Founder · in progress". Defaults to "Case study".',
+      },
+      {
+        name: "order",
+        label: "Position",
+        type: "number",
+        help: "Lower comes first. Leave empty to sort by date.",
+      },
       { name: "featured", label: "Feature on home page", type: "boolean" },
       { name: "cover", label: "Screenshot", type: "image" },
       { name: "coverAlt", label: "Screenshot description (alt text)", type: "text" },

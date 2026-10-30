@@ -68,7 +68,10 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
       </Link>
 
       <header className="max-w-[68ch] space-y-5">
-        <p className="eyebrow">Case study{data.draft ? " · Draft" : ""}</p>
+        <p className="eyebrow">
+          {data.status ?? "Case study"}
+          {data.draft ? " · Draft" : ""}
+        </p>
         <h1 className="font-heading text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
           {data.title}
         </h1>

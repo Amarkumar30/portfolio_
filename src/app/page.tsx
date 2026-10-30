@@ -83,6 +83,15 @@ export default async function HomePage() {
               <p className="eyebrow">{item.label}</p>
               <h3 className="font-heading text-xl font-semibold">{item.title}</h3>
               <p className="text-base leading-7 text-muted">{item.body}</p>
+              {item.link ? (
+                <Link
+                  href={item.link.href}
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:underline"
+                >
+                  {item.link.label}
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
+              ) : null}
             </Reveal>
           ))}
         </div>
@@ -120,6 +129,7 @@ export default async function HomePage() {
             <Reveal key={project.slug} delay={index * 0.05}>
               <ContentCard
                 href={`/projects/${project.slug}`}
+                eyebrow={project.data.status}
                 title={project.data.title}
                 summary={project.data.summary}
                 meta={project.data.stack.slice(0, 4)}
