@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
 import { socialLinks, siteContent } from "@/lib/data";
 
-export const siteUrl = "https://amar-portfolio.vercel.app";
+export const siteUrl = (
+  process.env.NEXT_PUBLIC_SITE_URL || "https://www.amarkumar.dev"
+).replace(/\/$/, "");
+
+// Inlined at build time by next.config.ts, so it reflects whether public/resume.pdf
+// shipped with this deploy. TODO(amar): add public/resume.pdf
+export const hasResume = process.env.NEXT_PUBLIC_HAS_RESUME === "1";
 export const siteTitle = "Amar Kumar | Portfolio & Blog";
 export const siteDescription =
   "Portfolio and blog of Amar Kumar, a Computer Science & Engineering undergraduate building full-stack products and researching Generative Engine Optimization.";

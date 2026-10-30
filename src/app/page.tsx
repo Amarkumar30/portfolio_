@@ -20,7 +20,7 @@ import {
   siteContent,
   skillCategories,
 } from "@/lib/data";
-import { buildMetadata } from "@/lib/site";
+import { buildMetadata, hasResume } from "@/lib/site";
 
 export const metadata = buildMetadata({
   title: "Home",
@@ -56,9 +56,11 @@ export default function HomePage() {
               <ButtonLink href="/blog" variant="secondary">
                 Read Blog
               </ButtonLink>
-              <ButtonLink href="/resume.pdf" variant="secondary">
-                Download Resume
-              </ButtonLink>
+              {hasResume ? (
+                <ButtonLink href="/resume.pdf" variant="secondary">
+                  Download Resume
+                </ButtonLink>
+              ) : null}
             </div>
           </div>
           <div className="section-card p-6">

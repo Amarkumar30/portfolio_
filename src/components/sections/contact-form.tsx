@@ -17,6 +17,8 @@ interface FormState {
 
 type FieldErrors = Partial<Record<keyof FormState, string>>;
 
+const contactEmail = "amar.kumar.career@gmail.com";
+
 const initialState: FormState = {
   name: "",
   email: "",
@@ -30,6 +32,7 @@ export function ContactForm() {
     "idle",
   );
   const [errorMessage, setErrorMessage] = useState("");
+  const [showEmailFallback, setShowEmailFallback] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
 
   function validateForm(values: FormState) {
@@ -58,6 +61,7 @@ export function ContactForm() {
     const nextErrors = validateForm(form);
     setFieldErrors(nextErrors);
     setErrorMessage("");
+    setShowEmailFallback(false);
 
     if (Object.keys(nextErrors).length > 0) {
       setStatus("error");
@@ -75,6 +79,12 @@ export function ContactForm() {
 
       const payload = (await response.json()) as { error?: string };
 
+      if (response.status === 503 && payload.error === "not_configured") {
+        setStatus("error");
+        setShowEmailFallback(true);
+        return;
+      }
+
       if (!response.ok) {
         throw new Error(payload.error ?? "Request failed");
       }
@@ -83,11 +93,8 @@ export function ContactForm() {
       setForm(initialState);
     } catch (error) {
       setStatus("error");
-      setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "I couldn't send your message just now. Please try again or use the direct email link.",
-      );
+      setShowEmailFallback(true);
+      setErrorMessage(error instanceof Error ? error.message : "");
     }
   }
 
@@ -182,9 +189,20 @@ export function ContactForm() {
           )}
         </button>
         <p className="text-sm text-muted" role="status">
-          {status === "error" && errorMessage
-            ? errorMessage
-            : "Messages are sent securely through a serverless Resend integration."}
+          {status === "error" && showEmailFallback ? (
+            <>
+              The form isn&apos;t working right now. Please email me directly at{" "}
+              <a
+                href={`mailto:${contactEmail}`}
+                className="font-semibold text-accent underline underline-offset-4"
+              >
+                {contactEmail}
+              </a>
+              .
+            </>
+          ) : status === "error" && errorMessage ? (
+            errorMessage
+          ) : null}
         </p>
       </div>
     </form>

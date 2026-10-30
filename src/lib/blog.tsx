@@ -9,17 +9,26 @@ import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 import * as runtime from "react/jsx-runtime";
 import type { ComponentType } from "react";
+import { z } from "zod";
 import { mdxComponents } from "@/components/mdx/mdx-components";
 
 const blogDirectory = path.join(process.cwd(), "content", "blog");
 
-export interface BlogFrontmatter {
-  title: string;
-  excerpt: string;
-  date: string;
-  tags: string[];
-  category: string;
-}
+const blogFrontmatterSchema = z.object({
+  title: z.string().min(1),
+  excerpt: z.string().min(1),
+  date: z
+    .union([z.string(), z.date()])
+    .transform((value) =>
+      value instanceof Date ? value.toISOString().slice(0, 10) : value,
+    )
+    .refine((value) => !Number.isNaN(Date.parse(value)), "Invalid date"),
+  tags: z.array(z.string()).default([]),
+  category: z.string().min(1),
+  draft: z.boolean().optional().default(false),
+});
+
+export type BlogFrontmatter = z.infer<typeof blogFrontmatterSchema>;
 
 export interface BlogPostMeta extends BlogFrontmatter {
   slug: string;
@@ -30,23 +39,45 @@ export interface BlogPost extends BlogPostMeta {
   content: React.ReactNode;
 }
 
+const showDrafts = process.env.NODE_ENV !== "production";
+
 function getPostFiles() {
   return fs.readdirSync(blogDirectory).filter((file) => file.endsWith(".mdx"));
 }
 
+function readPost(slug: string) {
+  const filePath = path.join(blogDirectory, `${slug}.mdx`);
+
+  if (!fs.existsSync(filePath)) {
+    return null;
+  }
+
+  const { data, content } = matter(fs.readFileSync(filePath, "utf8"));
+  const parsed = blogFrontmatterSchema.safeParse(data);
+
+  if (!parsed.success) {
+    console.warn(
+      `[blog] Skipping ${slug}.mdx: invalid frontmatter\n${z.prettifyError(parsed.error)}`,
+    );
+    return null;
+  }
+
+  if (parsed.data.draft && !showDrafts) {
+    return null;
+  }
+
+  return { frontmatter: parsed.data, content };
+}
+
 export function getAllPosts(): BlogPostMeta[] {
   return getPostFiles()
-    .map((file) => {
+    .flatMap((file) => {
       const slug = file.replace(/\.mdx$/, "");
-      const source = fs.readFileSync(path.join(blogDirectory, file), "utf8");
-      const { data, content } = matter(source);
-      const frontmatter = data as BlogFrontmatter;
+      const post = readPost(slug);
 
-      return {
-        ...frontmatter,
-        slug,
-        readingTime: readingTime(content).text,
-      };
+      return post
+        ? [{ ...post.frontmatter, slug, readingTime: readingTime(post.content).text }]
+        : [];
     })
     .sort((a, b) => +new Date(b.date) - +new Date(a.date));
 }
@@ -56,15 +87,17 @@ export function getAllTags() {
 }
 
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
-  const filePath = path.join(blogDirectory, `${slug}.mdx`);
-
-  if (!fs.existsSync(filePath)) {
+  if (!/^[a-z0-9-]+$/i.test(slug)) {
     return null;
   }
 
-  const source = fs.readFileSync(filePath, "utf8");
-  const { data, content } = matter(source);
-  const frontmatter = data as BlogFrontmatter;
+  const post = readPost(slug);
+
+  if (!post) {
+    return null;
+  }
+
+  const { frontmatter, content } = post;
 
   const compiled = await compile(content, {
     outputFormat: "function-body",

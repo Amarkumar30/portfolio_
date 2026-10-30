@@ -17,7 +17,7 @@ export interface Project {
   collaborationNote?: string;
   stack: string[];
   contributions: string[];
-  screenshotPlaceholder: string;
+  image?: { src: string; alt: string };
   links: ProjectLink[];
   featured: boolean;
 }
@@ -71,7 +71,7 @@ export const skillCategories: SkillCategory[] = [
 
 export const familiarWith = ["Redis", "pgvector", "advanced Socket.IO patterns"];
 
-// TODO: Replace fallback media copy and add public repo/demo links below when the final assets are ready.
+// TODO(amar): add GitHub/demo links and a screenshot (image: { src, alt }) for each project.
 export const projects: Project[] = [
   {
     slug: "hostel-management-platform",
@@ -99,8 +99,6 @@ export const projects: Project[] = [
       "Integrated real-time complaint notifications with Socket.IO to reduce lag in operational updates.",
       "Contributed to the RAG-powered chatbot experience over a PostgreSQL knowledge base and supported the anonymous complaint flow using salted-hash identity preservation.",
     ],
-    screenshotPlaceholder:
-      "Final product visuals can be added here once the dashboard walkthrough and AI assistant demo assets are ready for publication.",
     links: [],
     featured: true,
   },
@@ -127,8 +125,6 @@ export const projects: Project[] = [
       "Implemented the admin dashboard workflow for status transitions from Pending to Confirmed, Ready, and Completed.",
       "Structured data access with Drizzle ORM and containerized the project for easier local setup and deployment consistency.",
     ],
-    screenshotPlaceholder:
-      "Product visuals can be added here once the checkout flow and admin dashboard demo assets are finalized for sharing.",
     links: [],
     featured: true,
   },

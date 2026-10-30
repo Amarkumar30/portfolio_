@@ -10,7 +10,7 @@ import { ButtonLink } from "@/components/ui/button-link";
 import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { skillCategories, siteContent } from "@/lib/data";
-import { buildMetadata } from "@/lib/site";
+import { buildMetadata, hasResume } from "@/lib/site";
 
 export const metadata: Metadata = buildMetadata({
   title: "About",
@@ -57,7 +57,9 @@ export default function AboutPage() {
                 ))}
               </ul>
             </div>
-            <ButtonLink href="/resume.pdf">Download Resume</ButtonLink>
+            {hasResume ? (
+              <ButtonLink href="/resume.pdf">Download Resume</ButtonLink>
+            ) : null}
           </div>
         </div>
       </Reveal>

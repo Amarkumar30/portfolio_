@@ -11,6 +11,7 @@ import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { hasResume } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -58,12 +59,14 @@ export function SiteHeader() {
               </Link>
             );
           })}
-          <Link
-            href="/resume.pdf"
-            className="rounded-full border px-4 py-2 text-sm font-medium hover:-translate-y-0.5 hover:border-accent hover:text-accent"
-          >
-            Resume
-          </Link>
+          {hasResume ? (
+            <Link
+              href="/resume.pdf"
+              className="rounded-full border px-4 py-2 text-sm font-medium hover:-translate-y-0.5 hover:border-accent hover:text-accent"
+            >
+              Resume
+            </Link>
+          ) : null}
           <ThemeToggle />
         </nav>
 
@@ -106,13 +109,15 @@ export function SiteHeader() {
               </Link>
             );
           })}
-          <Link
-            href="/resume.pdf"
-            onClick={() => setIsOpen(false)}
-            className="rounded-2xl border px-4 py-3 text-sm font-medium"
-          >
-            Download Resume
-          </Link>
+          {hasResume ? (
+            <Link
+              href="/resume.pdf"
+              onClick={() => setIsOpen(false)}
+              className="rounded-2xl border px-4 py-3 text-sm font-medium"
+            >
+              Download Resume
+            </Link>
+          ) : null}
         </nav>
       ) : null}
     </header>

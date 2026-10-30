@@ -2,9 +2,10 @@
  * Project detail page expands one project into a fuller recruiter-friendly case study.
  * Props: route params containing the project slug.
  * Used in: dynamic /projects/[slug] routes.
- * TODO: Replace placeholder screenshot copy and external links with finalized assets.
+ * TODO(amar): add GitHub/demo links and screenshots in src/lib/data.ts.
  */
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink } from "lucide-react";
@@ -102,15 +103,20 @@ export default async function ProjectDetailPage({
               ))}
             </div>
           </Reveal>
-          <Reveal className="section-card p-6" delay={0.08}>
-            <h2 className="font-heading text-2xl font-semibold">Media placeholder</h2>
-            <p className="mt-4 text-sm leading-7 text-muted">
-              {project.screenshotPlaceholder}
-            </p>
-          </Reveal>
-          <Reveal className="section-card p-6" delay={0.12}>
-            <h2 className="font-heading text-2xl font-semibold">Links</h2>
-            {project.links.length > 0 ? (
+          {project.image ? (
+            <Reveal className="section-card overflow-hidden" delay={0.08}>
+              <Image
+                src={project.image.src}
+                alt={project.image.alt}
+                width={1200}
+                height={750}
+                className="h-auto w-full"
+              />
+            </Reveal>
+          ) : null}
+          {project.links.length > 0 ? (
+            <Reveal className="section-card p-6" delay={0.12}>
+              <h2 className="font-heading text-2xl font-semibold">Links</h2>
               <div className="mt-4 flex flex-col gap-3">
                 {project.links.map((link) => (
                   <Link
@@ -123,13 +129,8 @@ export default async function ProjectDetailPage({
                   </Link>
                 ))}
               </div>
-            ) : (
-              <p className="mt-4 text-sm leading-7 text-muted">
-                Public repository and demo links will be added here once the shareable
-                project versions are ready.
-              </p>
-            )}
-          </Reveal>
+            </Reveal>
+          ) : null}
         </div>
       </div>
     </div>
