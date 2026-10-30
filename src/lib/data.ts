@@ -44,6 +44,7 @@ export const buildingToward = {
     "Most tools for AI search are being built for English-first markets. I'd like to build some from India, for the way India actually searches.",
 };
 
+// TODO(amar): add the Signal Clear channel URL so it can be linked from About and socialLinks.
 export const aboutStory = {
   title: "Engineer, researcher, and slowly, a founder.",
   paragraphs: [
