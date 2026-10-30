@@ -12,7 +12,7 @@ interface CalloutProps {
 export function Callout({ title, children }: CalloutProps) {
   return (
     <aside className="rounded-3xl border bg-accent-soft p-5">
-      <p className="font-heading text-lg font-semibold text-foreground">{title}</p>
+      <p className="text-lg font-semibold text-foreground">{title}</p>
       <div className="mt-2 text-sm leading-7 text-muted">{children}</div>
     </aside>
   );

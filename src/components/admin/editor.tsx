@@ -454,7 +454,7 @@ export function Editor({
           />
           <div
             aria-label="Preview"
-            className={cn("section-card min-h-[28rem] overflow-auto p-6", pane !== "preview" && "hidden lg:block")}
+            className={cn("card min-h-[28rem] overflow-auto p-6", pane !== "preview" && "hidden lg:block")}
           >
             {body.trim() ? (
               <div className="rich-text">

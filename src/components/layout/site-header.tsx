@@ -36,7 +36,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b bg-background/85 backdrop-blur-md">
       <div className="container-shell flex h-16 items-center justify-between gap-4">
-        <Link href="/" className="font-heading text-base font-semibold tracking-tight">
+        <Link href="/" className="text-base font-semibold tracking-tight">
           Amar Kumar
         </Link>
 

@@ -17,9 +17,9 @@ interface ContentCardProps {
 
 export function ContentCard({ href, title, summary, eyebrow, meta = [], cta }: ContentCardProps) {
   return (
-    <article className="section-card group relative flex h-full flex-col p-6 hover:border-accent/50">
+    <article className="card group relative flex h-full flex-col p-6 hover:border-accent/50">
       {eyebrow ? <p className="eyebrow mb-3">{eyebrow}</p> : null}
-      <h3 className="font-heading text-xl font-semibold tracking-tight">
+      <h3 className="text-xl font-semibold tracking-tight">
         <Link href={href} className="after:absolute after:inset-0">
           {title}
         </Link>

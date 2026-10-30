@@ -100,9 +100,9 @@ export function ContactForm() {
 
   if (status === "success") {
     return (
-      <div className="section-card space-y-4 p-6">
+      <div className="card space-y-4 p-6">
         <p className="eyebrow">Message sent</p>
-        <h2 className="font-heading text-2xl font-semibold tracking-tight">
+        <h2 className="text-2xl font-semibold tracking-tight">
           Thanks for reaching out.
         </h2>
         <p className="text-sm leading-7 text-muted">
@@ -114,7 +114,7 @@ export function ContactForm() {
   }
 
   return (
-    <form className="section-card space-y-5 p-6 sm:p-8" onSubmit={handleSubmit} noValidate>
+    <form className="card space-y-5 p-6 sm:p-8" onSubmit={handleSubmit} noValidate>
       <div className="grid gap-5 sm:grid-cols-2">
         <label className="block space-y-2 text-sm font-medium">
           <span>Name</span>

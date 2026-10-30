@@ -71,7 +71,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </Link>
         <header className="space-y-5 border-b pb-8">
           <p className="eyebrow">{post.data.category}</p>
-          <h1 className="font-heading text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
+          <h1 className="text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
             {post.data.title}
           </h1>
           <p className="text-lg leading-8 text-muted">{post.data.excerpt}</p>

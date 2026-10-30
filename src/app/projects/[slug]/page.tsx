@@ -72,7 +72,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
           {data.status ?? "Case study"}
           {data.draft ? " · Draft" : ""}
         </p>
-        <h1 className="font-heading text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
+        <h1 className="text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
           {data.title}
         </h1>
         <p className="text-lg leading-8 text-muted">{data.summary}</p>

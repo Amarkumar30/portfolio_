@@ -15,7 +15,7 @@ export default function NotFound() {
     <div className="container-shell py-20 sm:py-28">
       <div className="max-w-[68ch] space-y-6">
         <p className="eyebrow">404</p>
-        <h1 className="font-heading text-4xl font-semibold tracking-tight sm:text-5xl">
+        <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
           This page isn&apos;t here.
         </h1>
         <p className="text-lg leading-8 text-muted">

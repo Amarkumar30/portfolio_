@@ -1,35 +1,28 @@
 /**
- * ButtonLink standardizes primary and secondary action styling for links.
+ * ButtonLink renders a link styled as a button (primary, secondary or ghost).
+ * Styles live in globals.css (.btn, .btn-*) so form buttons use the exact same classes.
  * Props: href, children, optional variant, and optional className.
- * Used in: hero section, page CTAs, project links, and contact links.
+ * Used in: hero, page CTAs, 404, and admin.
  */
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
+export type ButtonVariant = "primary" | "secondary" | "ghost";
+
+export function buttonClass(variant: ButtonVariant = "primary", className?: string) {
+  return cn("btn", `btn-${variant}`, className);
+}
+
 interface ButtonLinkProps {
   href: string;
   children: React.ReactNode;
-  variant?: "primary" | "secondary";
+  variant?: ButtonVariant;
   className?: string;
 }
 
-export function ButtonLink({
-  href,
-  children,
-  variant = "primary",
-  className,
-}: ButtonLinkProps) {
+export function ButtonLink({ href, children, variant = "primary", className }: ButtonLinkProps) {
   return (
-    <Link
-      href={href}
-      className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold",
-        variant === "primary"
-          ? "bg-accent text-accent-foreground hover:opacity-90"
-          : "border text-foreground hover:border-accent hover:text-accent",
-        className,
-      )}
-    >
+    <Link href={href} className={buttonClass(variant, className)}>
       {children}
     </Link>
   );

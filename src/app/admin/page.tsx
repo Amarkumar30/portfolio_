@@ -30,7 +30,7 @@ export default async function AdminDashboardPage() {
     <>
       <AdminBar title="Content" storage={storageKind} />
       {error ? (
-        <p role="alert" className="section-card mb-8 p-5 text-sm text-red-700 dark:text-red-400">
+        <p role="alert" className="card mb-8 p-5 text-sm text-red-700 dark:text-red-400">
           {error}
         </p>
       ) : null}
@@ -42,7 +42,7 @@ export default async function AdminDashboardPage() {
           return (
             <section key={section.id} aria-labelledby={`section-${section.id}`} className="space-y-3">
               <div className="flex items-baseline justify-between gap-4">
-                <h2 id={`section-${section.id}`} className="font-heading text-lg font-semibold">
+                <h2 id={`section-${section.id}`} className="text-lg font-semibold">
                   {section.label}
                   <span className="ml-2 text-sm font-normal text-muted">{rows.length}</span>
                 </h2>

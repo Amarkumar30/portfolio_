@@ -73,7 +73,7 @@ export default async function ResearchEntryPage({ params }: ResearchEntryPagePro
             {entry.data.status}
             {entry.data.draft ? " · Draft" : ""}
           </p>
-          <h1 className="font-heading text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
+          <h1 className="text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
             {entry.data.title}
           </h1>
           <p className="text-lg leading-8 text-muted">{entry.data.excerpt}</p>

@@ -36,7 +36,7 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="section-card space-y-4 p-6">
+    <form onSubmit={handleSubmit} className="card space-y-4 p-6">
       <label className="block space-y-2 text-sm font-medium">
         <span>Username</span>
         <input name="username" autoComplete="username" required className="field" />

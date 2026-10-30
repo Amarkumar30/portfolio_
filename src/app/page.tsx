@@ -45,7 +45,7 @@ export default async function HomePage() {
           <p className="eyebrow">{siteContent.availability}</p>
           <h1
             id="hero-title"
-            className="font-heading text-4xl font-semibold tracking-tight sm:text-6xl"
+            className="text-4xl font-semibold tracking-tight sm:text-6xl"
           >
             {siteContent.name}
           </h1>
@@ -81,7 +81,7 @@ export default async function HomePage() {
           {buildingToward.items.map((item, index) => (
             <Reveal key={item.label} delay={index * 0.05} className="space-y-3 border-t pt-5">
               <p className="eyebrow">{item.label}</p>
-              <h3 className="font-heading text-xl font-semibold">{item.title}</h3>
+              <h3 className="text-xl font-semibold">{item.title}</h3>
               <p className="text-base leading-7 text-muted">{item.body}</p>
               {item.link ? (
                 <Link
@@ -95,7 +95,7 @@ export default async function HomePage() {
             </Reveal>
           ))}
         </div>
-        <p className="max-w-[68ch] font-heading text-lg leading-8 text-foreground">
+        <p className="max-w-[68ch] text-lg leading-8 text-foreground">
           {buildingToward.closing}
         </p>
       </section>
@@ -103,7 +103,7 @@ export default async function HomePage() {
       {now ? (
         <section aria-labelledby="now-title" className="max-w-[68ch] space-y-4">
           <div className="flex items-baseline justify-between gap-4">
-            <h2 id="now-title" className="font-heading text-2xl font-semibold">
+            <h2 id="now-title" className="text-2xl font-semibold">
               Now
             </h2>
             <p className="text-sm text-muted">
@@ -180,7 +180,7 @@ export default async function HomePage() {
 
       {recentNotes.length > 0 ? (
         <section aria-labelledby="notes-title" className="max-w-[68ch] space-y-6">
-          <h2 id="notes-title" className="font-heading text-2xl font-semibold">
+          <h2 id="notes-title" className="text-2xl font-semibold">
             Recent notes
           </h2>
           <ul className="divide-y border-y">
@@ -209,7 +209,7 @@ export default async function HomePage() {
       ) : null}
 
       <section className="max-w-[68ch] space-y-4 border-t pt-10">
-        <h2 className="font-heading text-2xl font-semibold">Working on something similar?</h2>
+        <h2 className="text-2xl font-semibold">Working on something similar?</h2>
         <p className="text-base leading-7 text-muted sm:text-lg sm:leading-8">
           Hiring, building in AI search, or curious about GEO for Indian brands — I&apos;d
           like to hear about it.

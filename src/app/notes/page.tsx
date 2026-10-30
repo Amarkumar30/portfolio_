@@ -45,7 +45,7 @@ export default async function NotesPage() {
                   {formatDate(note.data.date)}
                   {note.data.draft ? " · Draft" : ""}
                 </time>
-                <h2 className="font-heading text-2xl font-semibold tracking-tight">
+                <h2 className="text-2xl font-semibold tracking-tight">
                   <a href={`#${note.slug}`} className="hover:text-accent">
                     {note.data.title}
                   </a>

@@ -19,7 +19,7 @@ export function AdminBar({ title, storage }: { title: string; storage: "github" 
   return (
     <div className="mb-8 flex flex-wrap items-center justify-between gap-4 border-b pb-6">
       <div className="space-y-1">
-        <h1 className="font-heading text-2xl font-semibold">{title}</h1>
+        <h1 className="text-2xl font-semibold">{title}</h1>
         {storage ? (
           <p className="text-sm text-muted">
             {storage === "github"

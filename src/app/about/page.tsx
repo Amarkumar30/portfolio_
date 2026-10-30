@@ -68,12 +68,12 @@ export default function AboutPage() {
         <dl className="grid gap-x-10 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
           {skillCategories.map((category) => (
             <div key={category.title} className="space-y-2 border-t pt-4">
-              <dt className="font-heading font-semibold">{category.title}</dt>
+              <dt className="font-semibold">{category.title}</dt>
               <dd className="text-sm leading-6 text-muted">{category.items.join(" · ")}</dd>
             </div>
           ))}
           <div className="space-y-2 border-t pt-4">
-            <dt className="font-heading font-semibold">Familiar with</dt>
+            <dt className="font-semibold">Familiar with</dt>
             <dd className="text-sm leading-6 text-muted">{familiarWith.join(" · ")}</dd>
           </div>
         </dl>

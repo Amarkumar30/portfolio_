@@ -1,19 +1,26 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
-import { Inter, Sora } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { ThemeProvider } from "@/components/layout/theme-provider";
 import { ogImagePath, siteDescription, siteTitle, siteUrl } from "@/lib/site";
 import "./globals.css";
 
-const headingFont = Sora({
-  variable: "--font-heading",
+// One sans family for headings and body (tighter tracking on headings), plus a mono for code and metadata.
+const sans = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
   display: "swap",
 });
 
-const bodyFont = Inter({ variable: "--font-body", subsets: ["latin"], display: "swap" });
+const mono = JetBrains_Mono({
+  variable: "--font-jetbrains",
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -54,7 +61,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${headingFont.variable} ${bodyFont.variable} h-full scroll-smooth`}
+      className={`${sans.variable} ${mono.variable} h-full`}
     >
       <body className="min-h-full bg-background text-foreground antialiased">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
