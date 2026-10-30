@@ -19,32 +19,41 @@ export function buildMetadata({
   title,
   description,
   path = "/",
+  type = "website",
+  image = ogImagePath,
 }: {
   title: string;
   description: string;
   path?: string;
+  type?: "website" | "article";
+  /** Path of the share image; per-entry pages pass their own opengraph-image route. */
+  image?: string;
 }): Metadata {
   const url = `${siteUrl}${path}`;
-  const fullTitle = title === "Home" ? siteTitle : `${title} | Amar Kumar`;
+  const isHome = title === "Home";
+  const fullTitle = isHome ? siteTitle : `${title} | Amar Kumar`;
 
   return {
-    title,
+    title: isHome ? { absolute: siteTitle } : title,
     description,
     alternates: {
       canonical: path,
+      types: {
+        "application/rss+xml": "/feed.xml",
+      },
     },
     openGraph: {
       title: fullTitle,
       description,
       url,
-      siteName: siteTitle,
-      type: "website",
+      siteName: "Amar Kumar",
+      type,
       images: [
         {
-          url: ogImagePath,
+          url: image,
           width: 1200,
           height: 630,
-          alt: "Amar Kumar, software engineer",
+          alt: title === "Home" ? "Amar Kumar, software engineer" : title,
         },
       ],
     },
@@ -52,7 +61,7 @@ export function buildMetadata({
       card: "summary_large_image",
       title: fullTitle,
       description,
-      images: [ogImagePath],
+      images: [image],
     },
   };
 }

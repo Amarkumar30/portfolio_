@@ -1,20 +1,20 @@
 /**
- * Home page: who Amar is, what he's building toward, what he's doing now, selected work and recent writing.
+ * Home page: who Amar is, what he's building toward, what he's doing now, selected work, writing and notes.
  * Props: none for the route component.
  * Used in: / route entry point.
  */
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { PersonJsonLd } from "@/components/seo/person-json-ld";
-import { BlogCard } from "@/components/sections/blog-card";
-import { ProjectCard } from "@/components/sections/project-card";
+import { ContentCard } from "@/components/sections/content-card";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Portrait } from "@/components/ui/portrait";
 import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { getAllPosts } from "@/lib/blog";
-import { buildingToward, projects, siteContent } from "@/lib/data";
-import { getNow } from "@/lib/now";
+import { getEntries, getSingle } from "@/lib/content/loader";
+import { buildingToward, siteContent } from "@/lib/data";
+import { formatDate } from "@/lib/format";
+import { renderMdx } from "@/lib/mdx";
 import { buildMetadata, hasResume } from "@/lib/site";
 
 export const metadata = buildMetadata({
@@ -25,9 +25,13 @@ export const metadata = buildMetadata({
 });
 
 export default async function HomePage() {
-  const latestPosts = getAllPosts().slice(0, 2);
-  const featuredProjects = projects.filter((project) => project.featured).slice(0, 2);
-  const now = await getNow();
+  const latestPosts = getEntries("blog").slice(0, 2);
+  const recentNotes = getEntries("notes").slice(0, 3);
+  const featuredProjects = getEntries("projects")
+    .filter((project) => project.data.featured)
+    .slice(0, 2);
+  const now = getSingle("now");
+  const nowContent = now ? await renderMdx(now.body) : null;
 
   return (
     <div className="container-shell space-y-24 py-12 sm:space-y-28 sm:py-20">
@@ -93,17 +97,14 @@ export default async function HomePage() {
             <h2 id="now-title" className="font-heading text-2xl font-semibold">
               Now
             </h2>
-            {now.updated ? (
-              <p className="text-sm text-muted">
-                Updated{" "}
-                {new Date(now.updated).toLocaleDateString("en-IN", {
-                  month: "long",
-                  year: "numeric",
-                })}
-              </p>
-            ) : null}
+            <p className="text-sm text-muted">
+              Updated {formatDate(now.data.updated, "month")}
+            </p>
           </div>
-          <div className="rich-text border-l-2 border-accent pl-5">{now.content}</div>
+          <div className="rich-text border-l-2 border-accent pl-5">{nowContent}</div>
+          <Link href="/now" className="inline-block text-sm font-semibold text-accent hover:underline">
+            More on what I&apos;m doing now
+          </Link>
         </section>
       ) : null}
 
@@ -117,7 +118,13 @@ export default async function HomePage() {
         <div className="grid gap-6 md:grid-cols-2">
           {featuredProjects.map((project, index) => (
             <Reveal key={project.slug} delay={index * 0.05}>
-              <ProjectCard project={project} />
+              <ContentCard
+                href={`/projects/${project.slug}`}
+                title={project.data.title}
+                summary={project.data.summary}
+                meta={project.data.stack.slice(0, 4)}
+                cta="Read case study"
+              />
             </Reveal>
           ))}
         </div>
@@ -141,7 +148,13 @@ export default async function HomePage() {
           <div className="grid gap-6 md:grid-cols-2">
             {latestPosts.map((post, index) => (
               <Reveal key={post.slug} delay={index * 0.05}>
-                <BlogCard post={post} />
+                <ContentCard
+                  href={`/blog/${post.slug}`}
+                  eyebrow={post.data.category}
+                  title={post.data.title}
+                  summary={post.data.excerpt}
+                  meta={[formatDate(post.data.date, "short"), post.readingTime]}
+                />
               </Reveal>
             ))}
           </div>
@@ -150,6 +163,36 @@ export default async function HomePage() {
             className="inline-flex items-center gap-2 text-sm font-semibold text-accent hover:underline"
           >
             All writing
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        </section>
+      ) : null}
+
+      {recentNotes.length > 0 ? (
+        <section aria-labelledby="notes-title" className="max-w-[68ch] space-y-6">
+          <h2 id="notes-title" className="font-heading text-2xl font-semibold">
+            Recent notes
+          </h2>
+          <ul className="divide-y border-y">
+            {recentNotes.map((note) => (
+              <li key={note.slug}>
+                <Link
+                  href={`/notes#${note.slug}`}
+                  className="flex flex-col gap-1 py-4 hover:text-accent sm:flex-row sm:items-baseline sm:justify-between sm:gap-6"
+                >
+                  <span className="font-medium">{note.data.title}</span>
+                  <time dateTime={note.data.date} className="shrink-0 text-sm text-muted">
+                    {formatDate(note.data.date, "short")}
+                  </time>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <Link
+            href="/notes"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-accent hover:underline"
+          >
+            All notes
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </section>

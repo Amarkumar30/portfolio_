@@ -3,27 +3,6 @@ export interface SkillCategory {
   items: string[];
 }
 
-export interface ProjectLink {
-  label: string;
-  href: string;
-}
-
-export interface Project {
-  slug: string;
-  title: string;
-  summary: string;
-  problem: string;
-  role: string;
-  collaborationNote?: string;
-  built: string[];
-  hardPart: string;
-  next: string;
-  stack: string[];
-  image?: { src: string; alt: string };
-  links: ProjectLink[];
-  featured: boolean;
-}
-
 export const contactEmail = "amar.kumar.career@gmail.com";
 
 export const siteContent = {
@@ -118,79 +97,6 @@ export const contactContent = {
   ],
   note: "Email is the quickest way to reach me.",
 };
-
-// TODO(amar): add GitHub/demo links and a screenshot (image: { src, alt }) for each project.
-export const projects: Project[] = [
-  {
-    slug: "hostel-management-platform",
-    title: "Hostel Management Platform",
-    summary:
-      "One place for hostel room allocation, complaints and policy questions — with live complaint updates and an assistant that answers from the hostel's own rules.",
-    problem:
-      "Hostel operations usually run on spreadsheets, group chats and manual approvals. Students can't see where their complaint stands, and wardens answer the same policy questions again and again.",
-    role: "Team project at SmartHack. I worked across the stack, mostly on authentication, the REST APIs and real-time complaint updates.",
-    collaborationNote:
-      "Built as a team at SmartHack. Ownership was split across the team; this page describes my part.",
-    built: [
-      "Role-based access for three kinds of users — students, wardens and admins — each with their own flows.",
-      "JWT authentication with refresh tokens, and 10+ REST endpoints for room allocation and complaint management.",
-      "Real-time complaint notifications over Socket.IO, so status changes reach students without a refresh.",
-      "Contributed to a RAG chatbot (Gemini + pgvector) that answers hostel policy questions from a PostgreSQL knowledge base.",
-      "Supported an anonymous complaint flow that keeps the student's identity hidden.",
-    ],
-    // TODO(amar): confirm this was the hardest part for you, or replace it.
-    hardPart:
-      "Anonymous complaints that still need follow-up. Wardens shouldn't see who filed a complaint, but the system still has to route updates back to the right student. Storing a salted hash of the identity, instead of the identity itself, made both possible.",
-    // TODO(amar): confirm or replace with what you would actually do next.
-    next: "Add an audit log for warden actions, and test the chatbot against a fixed set of policy questions before trusting it with more.",
-    stack: [
-      "NestJS",
-      "React 19",
-      "TypeScript",
-      "PostgreSQL",
-      "Prisma",
-      "Socket.IO",
-      "Docker",
-      "Gemini API",
-      "pgvector",
-    ],
-    links: [],
-    featured: true,
-  },
-  {
-    slug: "freshsip-ordering-platform",
-    title: "FreshSip",
-    summary:
-      "Online ordering for a local juice bar: customers order and pay by UPI, and staff track every order on a live dashboard.",
-    problem:
-      "At a busy counter, orders come in by phone and in person, and payments are confirmed by glancing at a phone screen. Orders get missed and nobody knows what's ready.",
-    // TODO(amar): confirm whether FreshSip was solo or a team project.
-    role: "I built the ordering flow, the payment integration and the admin dashboard.",
-    built: [
-      "Customer ordering flow with a type-safe tRPC API between the React frontend and the Express backend.",
-      "Razorpay UPI checkout, so an order is confirmed only after payment.",
-      "A real-time admin dashboard that moves orders through Pending → Confirmed → Ready → Completed.",
-      "MySQL with Drizzle ORM for data access, and Docker for a consistent local setup.",
-    ],
-    // TODO(amar): confirm this was the hardest part for you, or replace it.
-    hardPart:
-      "Keeping payment state and order state in agreement. An order should only reach the counter once the UPI payment is confirmed, and the dashboard has to show status changes the moment they happen.",
-    // TODO(amar): confirm or replace with what you would actually do next.
-    next: "Handle payment webhooks with idempotency checks, and give the owner a simple daily sales summary.",
-    stack: [
-      "React 19",
-      "TypeScript",
-      "tRPC",
-      "Express",
-      "MySQL",
-      "Drizzle ORM",
-      "Razorpay",
-      "Docker",
-    ],
-    links: [],
-    featured: true,
-  },
-];
 
 export const socialLinks = [
   {

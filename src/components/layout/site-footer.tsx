@@ -4,6 +4,7 @@
  * Used in: root app layout across all routes.
  */
 import Link from "next/link";
+import { AdminLink } from "@/components/layout/admin-link";
 import { siteContent, socialLinks } from "@/lib/data";
 
 export function SiteFooter() {
@@ -21,7 +22,10 @@ export function SiteFooter() {
               </li>
             ))}
           </ul>
-          <p>© {new Date().getFullYear()} Amar Kumar</p>
+          <p className="flex gap-4">
+            <span>© {new Date().getFullYear()} Amar Kumar</span>
+            <AdminLink />
+          </p>
         </div>
       </div>
     </footer>

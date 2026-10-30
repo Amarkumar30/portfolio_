@@ -1,57 +1,50 @@
 /**
- * Project detail page: problem, role, what was built, the hard part, and what's next.
+ * Project detail page: summary, role, then the case study body (problem, what I built, hard part, next).
  * Props: route params containing the project slug.
  * Used in: dynamic /projects/[slug] routes.
- * TODO(amar): add GitHub/demo links and screenshots in src/lib/data.ts.
  */
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink } from "lucide-react";
-import { projects } from "@/lib/data";
+import { getEntries, getEntry } from "@/lib/content/loader";
+import { renderMdx } from "@/lib/mdx";
 import { buildMetadata } from "@/lib/site";
 
 interface ProjectDetailPageProps {
   params: Promise<{ slug: string }>;
 }
 
-export async function generateMetadata({
-  params,
-}: ProjectDetailPageProps): Promise<Metadata> {
+export const dynamicParams = false;
+
+export async function generateMetadata({ params }: ProjectDetailPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const project = projects.find((item) => item.slug === slug);
+  const project = getEntry("projects", slug);
 
   return project
     ? buildMetadata({
-        title: project.title,
-        description: project.summary,
+        title: project.data.title,
+        description: project.data.summary,
         path: `/projects/${project.slug}`,
       })
-    : {
-        title: "Project",
-        description: "Project details.",
-      };
+    : { title: "Project not found" };
 }
 
 export function generateStaticParams() {
-  return projects.map((project) => ({ slug: project.slug }));
+  return getEntries("projects").map((project) => ({ slug: project.slug }));
 }
 
-export default async function ProjectDetailPage({
-  params,
-}: ProjectDetailPageProps) {
+export default async function ProjectDetailPage({ params }: ProjectDetailPageProps) {
   const { slug } = await params;
-  const project = projects.find((item) => item.slug === slug);
+  const project = getEntry("projects", slug);
 
   if (!project) {
     notFound();
   }
 
-  const sections = [
-    { title: "Problem", body: project.problem },
-    { title: "My role", body: project.role },
-  ];
+  const { data } = project;
+  const content = await renderMdx(project.body);
 
   return (
     <div className="container-shell space-y-12 py-12 sm:py-20">
@@ -64,78 +57,62 @@ export default async function ProjectDetailPage({
       </Link>
 
       <header className="max-w-[68ch] space-y-5">
-          <p className="eyebrow">Case study</p>
-          <h1 className="font-heading text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
-            {project.title}
-          </h1>
-          <p className="text-lg leading-8 text-muted">{project.summary}</p>
-          {project.collaborationNote ? (
-            <p className="border-l-2 border-accent pl-4 text-sm leading-6 text-muted">
-              {project.collaborationNote}
-            </p>
-          ) : null}
+        <p className="eyebrow">Case study{data.draft ? " · Draft" : ""}</p>
+        <h1 className="font-heading text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
+          {data.title}
+        </h1>
+        <p className="text-lg leading-8 text-muted">{data.summary}</p>
+        {data.collaborationNote ? (
+          <p className="border-l-2 border-accent pl-4 text-sm leading-6 text-muted">
+            {data.collaborationNote}
+          </p>
+        ) : null}
       </header>
 
-      {project.image ? (
+      {data.cover ? (
         <Image
-          src={project.image.src}
-          alt={project.image.alt}
+          src={data.cover}
+          alt={data.coverAlt ?? `Screenshot of ${data.title}`}
           width={1200}
           height={750}
+          priority
           className="h-auto w-full rounded-2xl border"
         />
       ) : null}
 
       <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_16rem]">
         <article className="rich-text max-w-[68ch]">
-          {sections.map((section) => (
-            <section key={section.title}>
-              <h2>{section.title}</h2>
-              <p>{section.body}</p>
-            </section>
-          ))}
-          <section>
-            <h2>What I built</h2>
-            <ul>
-              {project.built.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </section>
-          <section>
-            <h2>The hard part</h2>
-            <p>{project.hardPart}</p>
-          </section>
-          <section>
-            <h2>What I&apos;d do next</h2>
-            <p>{project.next}</p>
-          </section>
+          <h2>My role</h2>
+          <p>{data.role}</p>
+          {content}
         </article>
 
         <aside className="space-y-8 text-sm">
-          <div className="space-y-3">
-            <h2 className="eyebrow">Stack</h2>
-            <ul className="flex flex-wrap gap-2">
-              {project.stack.map((item) => (
-                <li key={item} className="rounded-full border px-3 py-1 text-muted">
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-          {project.links.length > 0 ? (
+          {data.stack.length > 0 ? (
+            <div className="space-y-3">
+              <h2 className="eyebrow">Stack</h2>
+              <ul className="flex flex-wrap gap-2">
+                {data.stack.map((item) => (
+                  <li key={item} className="rounded-full border px-3 py-1 text-muted">
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+          {data.links.length > 0 ? (
             <div className="space-y-3">
               <h2 className="eyebrow">Links</h2>
               <ul className="space-y-2">
-                {project.links.map((link) => (
-                  <li key={link.label}>
-                    <Link
+                {data.links.map((link) => (
+                  <li key={link.href}>
+                    <a
                       href={link.href}
                       className="inline-flex items-center gap-2 font-semibold text-accent hover:underline"
                     >
                       {link.label}
                       <ExternalLink className="h-4 w-4" aria-hidden="true" />
-                    </Link>
+                    </a>
                   </li>
                 ))}
               </ul>

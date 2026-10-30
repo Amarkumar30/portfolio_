@@ -1,0 +1,35 @@
+---
+title: "Hinglish-GEO-Bench"
+excerpt: "Does an LLM recommend different brands when the same question is asked in Hinglish instead of English?"
+date: "2026-10-30"
+status: "In progress"
+tags:
+  - GEO
+  - Benchmarks
+  - Hinglish
+---
+
+{/* TODO(amar): update this page as the method and results firm up. */}
+
+## The question
+
+Does an LLM's brand recommendation shift when the same query is asked in Hinglish instead of English?
+
+Most writing on Generative Engine Optimization assumes one language and one way of asking. Indian users rarely ask that way. A real query looks like *"purifier chahiye jo hard water handle kare, budget kam hai"* — half Hindi, half English, no punctuation. I couldn't find a benchmark that tests brand recall and recommendation in that register.
+
+## Why it matters
+
+If answers change, or lean further towards large English-first brands, when the question is in Hinglish, then Indian D2C and regional brands may be less visible in AI-driven discovery simply because of how their customers talk. That would be an unfair problem, and a fixable one.
+
+## Approach
+
+Building this properly means:
+
+- **Paired queries** — the same intent written in English and in Hinglish.
+- **A query-generation pipeline** to produce those pairs at scale.
+- **An evaluation harness** that sends them to several answer engines (ChatGPT, Perplexity, Gemini) and records which brands are mentioned, and how.
+- **A scoring rubric**, and probably a small annotated dataset built by hand, because off-the-shelf tools don't handle code-mixed Hindi-English well yet.
+
+## Status
+
+Early and in progress, as part of my research internship at South Asian University. I'll share the method and results here as they become solid.

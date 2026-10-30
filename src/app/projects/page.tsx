@@ -4,10 +4,10 @@
  * Used in: /projects route.
  */
 import type { Metadata } from "next";
-import { ProjectCard } from "@/components/sections/project-card";
+import { ContentCard } from "@/components/sections/content-card";
 import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { projects } from "@/lib/data";
+import { getEntries } from "@/lib/content/loader";
 import { buildMetadata } from "@/lib/site";
 
 export const metadata: Metadata = buildMetadata({
@@ -18,6 +18,8 @@ export const metadata: Metadata = buildMetadata({
 });
 
 export default function ProjectsPage() {
+  const projects = getEntries("projects");
+
   return (
     <div className="container-shell space-y-12 py-12 sm:py-20">
       <SectionHeading
@@ -27,9 +29,15 @@ export default function ProjectsPage() {
         description="Each one starts with a real problem. I note what I owned, what was hard, and what I'd change next."
       />
       <div className="grid gap-6 md:grid-cols-2">
-        {projects.map((project, index) => (
-          <Reveal key={project.slug} delay={index * 0.05}>
-            <ProjectCard project={project} />
+        {projects.map((project) => (
+          <Reveal key={project.slug}>
+            <ContentCard
+              href={`/projects/${project.slug}`}
+              title={project.data.title}
+              summary={project.data.summary}
+              meta={project.data.stack.slice(0, 5)}
+              cta="Read case study"
+            />
           </Reveal>
         ))}
       </div>

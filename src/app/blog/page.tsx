@@ -1,14 +1,16 @@
 /**
- * Blog index page lists long-form posts with tag filtering.
+ * Writing index: long-form essays with tag filtering. Notes live on the sibling /notes tab.
  * Props: optional searchParams for tag filtering.
  * Used in: /blog route.
  */
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BlogCard } from "@/components/sections/blog-card";
+import { ContentCard } from "@/components/sections/content-card";
+import { WritingTabs } from "@/components/sections/writing-tabs";
 import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { getAllPosts, getAllTags } from "@/lib/blog";
+import { getEntries, getTags } from "@/lib/content/loader";
+import { formatDate } from "@/lib/format";
 import { buildMetadata } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
@@ -26,10 +28,10 @@ export const metadata: Metadata = buildMetadata({
 export default async function BlogPage({ searchParams }: BlogPageProps) {
   const params = await searchParams;
   const activeTag = params.tag;
-  const posts = getAllPosts();
-  const tags = getAllTags();
+  const posts = getEntries("blog");
+  const tags = getTags("blog");
   const filteredPosts = activeTag
-    ? posts.filter((post) => post.tags.includes(activeTag))
+    ? posts.filter((post) => post.data.tags.includes(activeTag))
     : posts;
 
   const chip = (active: boolean) =>
@@ -46,6 +48,8 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
         title="Notes on GEO, engineering, and building things."
         description="Long-form pieces on how AI answers are changing discovery, what I learn while building, and the occasional startup idea."
       />
+
+      <WritingTabs active="blog" />
 
       {tags.length > 1 ? (
         <nav aria-label="Filter by tag" className="flex flex-wrap gap-2">
@@ -66,9 +70,15 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
       ) : null}
 
       <div className="grid gap-6 md:grid-cols-2">
-        {filteredPosts.map((post, index) => (
-          <Reveal key={post.slug} delay={index * 0.05}>
-            <BlogCard post={post} />
+        {filteredPosts.map((post) => (
+          <Reveal key={post.slug}>
+            <ContentCard
+              href={`/blog/${post.slug}`}
+              eyebrow={post.data.category}
+              title={post.data.title}
+              summary={post.data.excerpt}
+              meta={[formatDate(post.data.date, "short"), post.readingTime]}
+            />
           </Reveal>
         ))}
       </div>
