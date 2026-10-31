@@ -1,10 +1,11 @@
 /**
  * About page: Amar's story in the reading column, a sidebar with education, focus, recognition
- * and links, then grouped skills.
+ * and links, the journey timeline, then grouped skills.
  * Props: none for the route component.
  * Used in: /about route.
  */
 import type { Metadata } from "next";
+import { JourneySection } from "@/components/journey/journey-section";
 import { PersonJsonLd } from "@/components/seo/person-json-ld";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Portrait } from "@/components/ui/portrait";
@@ -51,6 +52,9 @@ export default function AboutPage() {
                 Resume
               </ButtonLink>
             ) : null}
+          </div>
+          <div className="mt-section">
+            <JourneySection />
           </div>
         </article>
 

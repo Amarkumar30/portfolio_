@@ -12,7 +12,7 @@ import { useMemo, useState } from "react";
 import { EntryActions } from "@/components/admin/entry-actions";
 import type { AdminEntrySummary } from "@/lib/admin/content-service";
 import type { SectionId } from "@/lib/content/sections";
-import { formatDate } from "@/lib/format";
+import { formatPartialDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 export interface SectionMeta {
@@ -156,7 +156,7 @@ export function ContentTable({ entries, sections }: { entries: AdminEntrySummary
                   <p className="meta mt-1 flex flex-wrap gap-x-2">
                     <span>{section.label}</span>
                     <span aria-hidden="true">·</span>
-                    <span>{entry.date ? formatDate(entry.date, "short") : "No date"}</span>
+                    <span>{entry.date ? formatPartialDate(entry.date) : "No date"}</span>
                     <span aria-hidden="true">·</span>
                     <a href={entry.url} className="truncate hover:text-foreground hover:underline">
                       {entry.url}

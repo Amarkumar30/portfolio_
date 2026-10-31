@@ -25,6 +25,43 @@ const linkSchema = z.object({
   href: z.url(),
 });
 
+/** Journey links can also point inside the site ("/projects/bayana"). */
+const siteOrWebLinkSchema = z.object({
+  label: z.string().min(1),
+  href: z
+    .string()
+    .refine(
+      (value) =>
+        (value.startsWith("/") && !value.startsWith("//")) ||
+        (URL.canParse(value) && /^https?:\/\//.test(value)),
+      { message: "Use a site path like /projects/bayana or a full https:// URL" },
+    ),
+});
+
+/** "2026" or "2026-08". YAML may read a bare year as a number, so accept that too. */
+const yearMonthField = z
+  .union([z.string(), z.number()])
+  .transform((value) => String(value))
+  .refine((value) => /^\d{4}(-(0[1-9]|1[0-2]))?$/.test(value), { message: "Use YYYY or YYYY-MM" });
+
+export const journeyKinds = [
+  { value: "education", label: "Education" },
+  { value: "win", label: "Win" },
+  { value: "project", label: "Project" },
+  { value: "research", label: "Research" },
+  { value: "founder", label: "Founder" },
+  { value: "creator", label: "Creator" },
+  { value: "now", label: "Now" },
+] as const;
+
+export type JourneyKind = (typeof journeyKinds)[number]["value"];
+
+const journeyKindValues = journeyKinds.map((kind) => kind.value) as [JourneyKind, ...JourneyKind[]];
+
+/** Soft guides shown in the admin; the summary has a hard limit a little above its guide. */
+export const JOURNEY_SUMMARY_GUIDE = 120;
+export const JOURNEY_STORY_GUIDE = 600;
+
 export const sectionSchemas = {
   blog: z.object({
     title: z.string().min(1),
@@ -68,6 +105,19 @@ export const sectionSchemas = {
   now: z.object({
     updated: dateField,
   }),
+  journey: z.object({
+    title: z.string().min(1),
+    // Optional so a milestone can go up before its date is known; the label is hidden until then.
+    date: yearMonthField.optional(),
+    summary: z.string().min(1).max(160),
+    kind: z.enum(journeyKindValues),
+    highlight: z.boolean().optional().default(false),
+    links: z.array(siteOrWebLinkSchema).default([]),
+    image: imagePathField,
+    imageAlt: z.string().optional(),
+    order: z.number().int().optional(),
+    draft: draftField,
+  }),
 } as const;
 
 export type SectionId = keyof typeof sectionSchemas;
@@ -81,7 +131,8 @@ export type FieldType =
   | "tags"
   | "boolean"
   | "links"
-  | "image";
+  | "image"
+  | "select";
 
 export interface FieldDef {
   name: string;
@@ -89,6 +140,13 @@ export interface FieldDef {
   type: FieldType;
   required?: boolean;
   help?: string;
+  placeholder?: string;
+  /** Choices for "select" fields. */
+  options?: readonly { value: string; label: string }[];
+  /** Icons shown with a "select" field's options (see components/admin/field-icons). */
+  iconSet?: "journeyKind";
+  /** Soft length guide: the editor shows a character count against it. */
+  lengthGuide?: number;
 }
 
 export interface SectionConfig {
@@ -106,6 +164,10 @@ export interface SectionConfig {
   /** Frontmatter key holding the entry's date. */
   dateField: string;
   fields: FieldDef[];
+  /** For sections without detail pages: prefix for the entry's anchor id on `route`. */
+  anchorPrefix?: string;
+  /** Soft length guide for the body, shown as a character count in the editor. */
+  bodyGuide?: number;
 }
 
 const titleDef: FieldDef = { name: "title", label: "Title", type: "text", required: true };
@@ -226,6 +288,61 @@ export const sections: Record<SectionId, SectionConfig> = {
     dateField: "updated",
     fields: [{ name: "updated", label: "Updated", type: "date", required: true }],
   },
+  journey: {
+    id: "journey",
+    label: "Journey",
+    singular: "Milestone",
+    kind: "collection",
+    dir: "content/journey",
+    route: "/about",
+    anchorPrefix: "journey-",
+    hasDetailPage: false,
+    titleField: "title",
+    dateField: "date",
+    bodyGuide: JOURNEY_STORY_GUIDE,
+    fields: [
+      titleDef,
+      {
+        name: "date",
+        label: "Date",
+        type: "text",
+        placeholder: "2026 or 2026-08",
+        help: "YYYY or YYYY-MM. Leave empty if unknown: the date label is hidden and Position decides the place.",
+      },
+      {
+        name: "summary",
+        label: "Summary",
+        type: "textarea",
+        required: true,
+        lengthGuide: JOURNEY_SUMMARY_GUIDE,
+        help: "The one line shown when the milestone is collapsed.",
+      },
+      {
+        name: "kind",
+        label: "Kind",
+        type: "select",
+        required: true,
+        options: journeyKinds,
+        iconSet: "journeyKind",
+        help: "Sets the icon. “Now” always shows last.",
+      },
+      { name: "highlight", label: "Highlight (accent dot and title)", type: "boolean" },
+      {
+        name: "links",
+        label: "Links",
+        type: "links",
+        help: "One per line: Label | /projects/bayana or Label | https://…",
+      },
+      { name: "image", label: "Image", type: "image" },
+      { name: "imageAlt", label: "Image description (alt text)", type: "text" },
+      {
+        name: "order",
+        label: "Position",
+        type: "number",
+        help: "Places milestones without a date, and breaks ties between the same date. Lower comes first.",
+      },
+    ],
+  },
 };
 
 export const sectionList = Object.values(sections);
@@ -255,5 +372,7 @@ export function entryPath(section: SectionConfig, slug: string) {
 /** Public URL of an entry. */
 export function entryUrl(section: SectionConfig, slug: string) {
   if (section.kind === "single") return section.route;
-  return section.hasDetailPage ? `${section.route}/${slug}` : `${section.route}#${slug}`;
+  return section.hasDetailPage
+    ? `${section.route}/${slug}`
+    : `${section.route}#${section.anchorPrefix ?? ""}${slug}`;
 }

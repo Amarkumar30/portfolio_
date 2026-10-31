@@ -40,6 +40,7 @@ export class ContentError extends Error {
 
 function toDateString(value: unknown) {
   if (value instanceof Date) return value.toISOString().slice(0, 10);
+  if (typeof value === "number") return String(value);
   return typeof value === "string" ? value : "";
 }
 
