@@ -57,6 +57,7 @@ ${list(posts)}
 ## About and contact
 
 - [About](${siteUrl}/about): Background, and how engineering, research and entrepreneurship connect.
+- [Journey](${siteUrl}/about#journey): A timeline of milestones on the About page.
 - [Now](${siteUrl}/now): What he's focused on this month.
 - [Contact](${siteUrl}/contact): For SDE roles, GEO and AI search, startups, and research collaborations.
 - Email: ${contactEmail}
