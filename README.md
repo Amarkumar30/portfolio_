@@ -52,6 +52,14 @@ You can still write content by hand: add an `.mdx` file, commit and push. The ad
 
 Keep notes and to-dos out of content files: the admin rewrites a whole file when you edit an entry, so YAML comments would be lost. Open items live in [TODO.md](TODO.md).
 
+## Daily quote & joke
+
+The home page has a small "Daily" card (a quote and a programming joke), and the 404 page shows the day's joke. It's self-contained in `src/features/daily/` and read-only: it never touches `content/`, the admin or publishing, and isn't in the sitemap, RSS, `llms.txt` or structured data.
+
+- **Sources:** [ZenQuotes](https://zenquotes.io) (quote of the day, with attribution) and [JokeAPI](https://v2.jokeapi.dev) (safe-mode programming jokes, limited to ids reviewed in `curated.ts`). Requests run on the server only, time out after 3 seconds, and are cached per day in IST.
+- **Fallback:** if an API fails, is slow, or returns something over 220 characters, the day's pick from the curated list in `src/features/daily/curated.ts` is used.
+- **Turn it off:** set `DAILY_ENABLED = false` in `src/features/daily/config.ts`.
+
 ## How admin publishing works
 
 ```
