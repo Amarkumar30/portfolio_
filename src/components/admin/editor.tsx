@@ -27,6 +27,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ConfirmDialog } from "@/components/admin/confirm-dialog";
+import { journeyKindIcons } from "@/components/journey/kind-icons";
 import { useToast } from "@/components/admin/toast";
 import {
   SLUG_PATTERN,
@@ -36,6 +37,7 @@ import {
   sections,
   slugify,
   type FieldDef,
+  type JourneyKind,
   type SectionId,
 } from "@/lib/content/sections";
 import { cn } from "@/lib/utils";
@@ -94,6 +96,9 @@ function toFormValues(fields: FieldDef[], data: Record<string, unknown> = {}): F
         break;
       case "number":
         values[field.name] = typeof value === "number" ? String(value) : "";
+        break;
+      case "select":
+        values[field.name] = typeof value === "string" && value ? value : (field.options?.[0]?.value ?? "");
         break;
       default:
         values[field.name] = typeof value === "string" ? value : "";
@@ -672,6 +677,8 @@ export function Editor({
           const id = `field-${field.name}`;
           const value = values[field.name];
           const wide = field.type === "textarea" || field.type === "links";
+          const SelectIcon =
+            field.iconSet === "journeyKind" ? journeyKindIcons[String(value) as JourneyKind] : undefined;
 
           if (field.type === "boolean") {
             return (
@@ -700,9 +707,31 @@ export function Editor({
                   className="field"
                   value={String(value ?? "")}
                   required={field.required}
-                  placeholder={field.type === "links" ? "GitHub | https://github.com/…" : undefined}
+                  placeholder={field.placeholder ?? (field.type === "links" ? "GitHub | https://github.com/…" : undefined)}
                   onChange={(event) => setField(field.name, event.target.value)}
                 />
+              ) : field.type === "select" ? (
+                <div className="relative">
+                  {SelectIcon ? (
+                    <SelectIcon
+                      aria-hidden="true"
+                      className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted"
+                    />
+                  ) : null}
+                  <select
+                    id={id}
+                    className={cn("field", SelectIcon && "pl-9")}
+                    value={String(value ?? "")}
+                    required={field.required}
+                    onChange={(event) => setField(field.name, event.target.value)}
+                  >
+                    {field.options?.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               ) : field.type === "image" ? (
                 <div className="flex gap-2">
                   <input
@@ -730,10 +759,25 @@ export function Editor({
                   className="field"
                   value={String(value ?? "")}
                   required={field.required}
+                  placeholder={field.placeholder}
                   onChange={(event) => setField(field.name, event.target.value)}
                 />
               )}
-              {field.help ? <p className="mt-1.5 text-caption text-subtle">{field.help}</p> : null}
+              {field.help || field.lengthGuide ? (
+                <div className="mt-1.5 flex justify-between gap-4 text-caption text-subtle">
+                  {field.help ? <p>{field.help}</p> : <span />}
+                  {field.lengthGuide ? (
+                    <p
+                      className={cn(
+                        "tabular shrink-0",
+                        String(value ?? "").length > field.lengthGuide && "text-danger",
+                      )}
+                    >
+                      {String(value ?? "").length} / {field.lengthGuide}
+                    </p>
+                  ) : null}
+                </div>
+              ) : null}
             </div>
           );
         })}
@@ -750,6 +794,13 @@ export function Editor({
             </button>
           </div>
           <p className="hidden min-h-11 items-center text-small font-medium lg:flex">Body</p>
+          {section.bodyGuide ? (
+            <span
+              className={cn("meta pb-2 lg:ml-auto lg:pb-0 lg:self-center", body.trim().length > section.bodyGuide && "text-danger")}
+            >
+              {body.trim().length} / ~{section.bodyGuide} characters
+            </span>
+          ) : null}
           <span className="meta pb-2 sm:hidden">
             {words} words · {minutes} min
           </span>
