@@ -751,3 +751,10 @@ html:not(.dark) [data-rehype-pretty-code-figure] code[data-theme*=" "] span {
     transition-delay: var(--reveal-delay, 0ms);
   }
 }
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}

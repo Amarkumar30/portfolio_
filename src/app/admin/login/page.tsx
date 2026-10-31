@@ -14,16 +14,26 @@ export default async function AdminLoginPage() {
   }
 
   return (
-    <div className="mx-auto max-w-sm space-y-6 py-10">
-      <h1 className="text-2xl font-semibold">Admin</h1>
-      {isAdminConfigured() ? (
-        <LoginForm />
-      ) : (
-        <p className="text-sm leading-6 text-muted">
-          Admin login isn&apos;t configured on this deployment. Set ADMIN_USERNAME,
-          ADMIN_PASSWORD_HASH and ADMIN_SESSION_SECRET — see SETUP_ADMIN.md.
-        </p>
-      )}
+    <div className="flex min-h-[calc(100svh-var(--header-height)-14rem)] items-center justify-center py-8">
+      <div className="w-full max-w-sm">
+        <div className="mb-6 text-center">
+          <p className="eyebrow">Admin</p>
+          <h1 className="mt-2 text-h2 font-semibold">Log in</h1>
+        </div>
+        {isAdminConfigured() ? (
+          <LoginForm />
+        ) : (
+          <div className="card p-6 text-small text-muted">
+            <p className="font-medium text-foreground">Admin login isn&apos;t configured here.</p>
+            <p className="mt-2">
+              Set <code className="font-mono text-caption">ADMIN_USERNAME</code>,{" "}
+              <code className="font-mono text-caption">ADMIN_PASSWORD_HASH</code> and{" "}
+              <code className="font-mono text-caption">ADMIN_SESSION_SECRET</code> — see
+              SETUP_ADMIN.md.
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
