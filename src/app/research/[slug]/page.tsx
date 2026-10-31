@@ -1,15 +1,15 @@
 /**
- * Research write-up page.
+ * Research write-up page, with reading progress, a table of contents and previous/next links.
  * Props: route params containing the entry slug.
  * Used in: dynamic /research/[slug] routes.
  */
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { ArticleFooter, ArticleHeader, ReadingLayout } from "@/components/reading/reading-layout";
 import { JsonLd } from "@/components/seo/json-ld";
 import { getEntries, getEntry } from "@/lib/content/loader";
 import { formatDate } from "@/lib/format";
+import { getH2Headings } from "@/lib/headings";
 import { renderMdx } from "@/lib/mdx";
 import { articleStructuredData, buildMetadata } from "@/lib/site";
 
@@ -47,9 +47,15 @@ export default async function ResearchEntryPage({ params }: ResearchEntryPagePro
   }
 
   const content = await renderMdx(entry.body);
+  const entries = getEntries("research");
+  const index = entries.findIndex((item) => item.slug === entry.slug);
+  const neighbour = (offset: number) => {
+    const item = entries[index + offset];
+    return item ? { href: `/research/${item.slug}`, title: item.data.title } : undefined;
+  };
 
   return (
-    <div className="container-shell py-12 sm:py-20">
+    <ReadingLayout headings={getH2Headings(entry.body)} progress>
       <JsonLd
         data={articleStructuredData({
           type: "ScholarlyArticle",
@@ -60,29 +66,25 @@ export default async function ResearchEntryPage({ params }: ResearchEntryPagePro
           tags: entry.data.tags,
         })}
       />
-      <article className="mx-auto max-w-[68ch] space-y-10">
-        <Link
-          href="/research"
-          className="inline-flex items-center gap-2 text-sm font-medium text-muted hover:text-accent"
-        >
-          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-          All research
-        </Link>
-        <header className="space-y-5 border-b pb-8">
-          <p className="eyebrow">
-            {entry.data.status}
-            {entry.data.draft ? " · Draft" : ""}
-          </p>
-          <h1 className="font-heading text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
-            {entry.data.title}
-          </h1>
-          <p className="text-lg leading-8 text-muted">{entry.data.excerpt}</p>
-          <p className="text-sm text-muted">
+      <ArticleHeader
+        back={{ href: "/research", label: "Research" }}
+        eyebrow={`${entry.data.status}${entry.data.draft ? " · Draft" : ""}`}
+        title={entry.data.title}
+        lead={entry.data.excerpt}
+        className="border-b pb-8"
+        meta={[
+          <span key="date">
             Updated <time dateTime={entry.data.date}>{formatDate(entry.data.date)}</time>
-          </p>
-        </header>
-        <div className="rich-text">{content}</div>
-      </article>
-    </div>
+          </span>,
+          entry.readingTime,
+        ]}
+      />
+      <div className="rich-text">{content}</div>
+      <ArticleFooter
+        previous={neighbour(1)}
+        next={neighbour(-1)}
+        back={{ href: "/research", label: "Back to research" }}
+      />
+    </ReadingLayout>
   );
 }

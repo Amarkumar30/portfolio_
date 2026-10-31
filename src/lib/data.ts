@@ -19,6 +19,11 @@ export const siteContent = {
     "Software engineer in Delhi. Building full-stack products and researching how brands get found in AI answers.",
   education: "B.Tech, Computer Science & Engineering · South Asian University, Delhi · 2024–2028",
   achievements: ["1st Prize, AvishkarX — CSI × SAU Ideathon"],
+  focus: [
+    "Full-stack product engineering",
+    "Research Intern, South Asian University — Generative Engine Optimization",
+    "Founder, Bayana",
+  ],
 };
 
 export const buildingToward: {

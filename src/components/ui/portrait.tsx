@@ -37,9 +37,9 @@ export function Portrait({ size = 160, priority = false, className }: PortraitPr
       aria-label="Amar Kumar"
       className={cn(
         shared,
-        "flex items-center justify-center bg-accent-soft font-heading font-semibold text-accent",
+        "flex items-center justify-center bg-surface-muted font-mono font-medium tracking-tight text-muted",
       )}
-      style={{ width: size, height: size, fontSize: size * 0.32 }}
+      style={{ width: size, height: size, fontSize: size * 0.3 }}
     >
       AK
     </div>

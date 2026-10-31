@@ -5,14 +5,11 @@
  */
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ContentCard } from "@/components/sections/content-card";
+import { EntryList } from "@/components/sections/entry-list";
 import { WritingTabs } from "@/components/sections/writing-tabs";
-import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { getEntries, getTags } from "@/lib/content/loader";
-import { formatDate } from "@/lib/format";
 import { buildMetadata } from "@/lib/site";
-import { cn } from "@/lib/utils";
 
 interface BlogPageProps {
   searchParams: Promise<{ tag?: string }>;
@@ -34,14 +31,8 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
     ? posts.filter((post) => post.data.tags.includes(activeTag))
     : posts;
 
-  const chip = (active: boolean) =>
-    cn(
-      "rounded-full border px-3 py-1.5 text-sm font-medium hover:border-accent hover:text-accent",
-      active && "border-accent text-accent",
-    );
-
   return (
-    <div className="container-shell space-y-10 py-12 sm:py-20">
+    <div className="container-shell page">
       <SectionHeading
         as="h1"
         eyebrow="Writing"
@@ -49,38 +40,46 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
         description="Long-form pieces on how AI answers are changing discovery, what I learn while building, and the occasional startup idea."
       />
 
-      <WritingTabs active="blog" />
+      <div className="mt-12 max-w-3xl space-y-8">
+        <WritingTabs active="blog" />
 
-      {tags.length > 1 ? (
-        <nav aria-label="Filter by tag" className="flex flex-wrap gap-2">
-          <Link href="/blog" className={chip(!activeTag)} aria-current={!activeTag ? "page" : undefined}>
-            All
-          </Link>
-          {tags.map((tag) => (
-            <Link
-              key={tag}
-              href={`/blog?tag=${encodeURIComponent(tag)}`}
-              className={chip(activeTag === tag)}
-              aria-current={activeTag === tag ? "page" : undefined}
-            >
-              {tag}
+        {tags.length > 1 ? (
+          <nav aria-label="Filter by tag" className="flex flex-wrap gap-2">
+            <Link href="/blog" className="chip" aria-current={!activeTag ? "page" : undefined}>
+              All
             </Link>
-          ))}
-        </nav>
-      ) : null}
+            {tags.map((tag) => (
+              <Link
+                key={tag}
+                href={`/blog?tag=${encodeURIComponent(tag)}`}
+                className="chip"
+                aria-current={activeTag === tag ? "page" : undefined}
+              >
+                {tag}
+              </Link>
+            ))}
+          </nav>
+        ) : null}
 
-      <div className="grid gap-6 md:grid-cols-2">
-        {filteredPosts.map((post) => (
-          <Reveal key={post.slug}>
-            <ContentCard
-              href={`/blog/${post.slug}`}
-              eyebrow={post.data.category}
-              title={post.data.title}
-              summary={post.data.excerpt}
-              meta={[formatDate(post.data.date, "short"), post.readingTime]}
-            />
-          </Reveal>
-        ))}
+        {filteredPosts.length > 0 ? (
+          <EntryList
+            rows={filteredPosts.map((post) => ({
+              href: `/blog/${post.slug}`,
+              title: post.data.title,
+              date: post.data.date,
+              excerpt: post.data.excerpt,
+              trailing: post.readingTime,
+            }))}
+          />
+        ) : (
+          <p className="border-y py-8 text-muted">
+            No posts tagged &ldquo;{activeTag}&rdquo; yet.{" "}
+            <Link href="/blog" className="link">
+              See all writing
+            </Link>
+            .
+          </p>
+        )}
       </div>
     </div>
   );

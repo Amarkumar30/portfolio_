@@ -2,11 +2,11 @@
 
 /**
  * ThemeToggle switches between light and dark mode with persisted user preference.
+ * Before hydration it renders an identical, empty button so the header never shifts.
  * Props: optional className for layout-specific placement styling.
  * Used in: site header on all pages.
- * TODO: Swap icon treatment if you later refine the visual language of the header.
  */
-import { MoonStar, SunMedium } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useSyncExternalStore } from "react";
 import { cn } from "@/lib/utils";
@@ -22,17 +22,10 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
     () => true,
     () => false,
   );
+  const classes = cn("btn btn-ghost btn-icon", className);
 
   if (!mounted) {
-    return (
-      <div
-        className={cn(
-          "h-10 w-10 rounded-full border",
-          className,
-        )}
-        aria-hidden="true"
-      />
-    );
+    return <span className={classes} aria-hidden="true" />;
   }
 
   const isDark = resolvedTheme === "dark";
@@ -41,13 +34,10 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
     <button
       type="button"
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      className={cn(
-        "inline-flex h-10 w-10 items-center justify-center rounded-full border text-foreground hover:border-accent hover:text-accent",
-        className,
-      )}
-      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      className={classes}
+      aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
     >
-      {isDark ? <SunMedium className="h-4 w-4" /> : <MoonStar className="h-4 w-4" />}
+      {isDark ? <Sun aria-hidden="true" /> : <Moon aria-hidden="true" />}
     </button>
   );
 }

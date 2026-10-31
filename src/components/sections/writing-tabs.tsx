@@ -20,8 +20,8 @@ export function WritingTabs({ active }: { active: (typeof tabs)[number]["id"] })
           href={tab.href}
           aria-current={active === tab.id ? "page" : undefined}
           className={cn(
-            "-mb-px border-b-2 border-transparent pb-3 text-sm font-semibold text-muted hover:text-foreground",
-            active === tab.id && "border-accent text-foreground",
+            "-mb-px inline-flex min-h-11 min-w-11 items-center justify-center border-b border-transparent text-small font-medium text-muted transition-colors duration-150 hover:text-foreground",
+            active === tab.id && "border-foreground text-foreground",
           )}
         >
           {tab.label}

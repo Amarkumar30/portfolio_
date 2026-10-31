@@ -2,11 +2,14 @@
 
 /**
  * EntryActions: Edit / Unpublish (or Publish) / Delete for one dashboard row.
- * Used in: /admin dashboard.
+ * Delete asks for confirmation in a dialog; results are shown as toasts.
+ * Used in: /admin dashboard (ContentTable).
  */
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ConfirmDialog } from "@/components/admin/confirm-dialog";
+import { useToast } from "@/components/admin/toast";
 
 interface EntryActionsProps {
   section: string;
@@ -19,23 +22,23 @@ interface EntryActionsProps {
 
 export function EntryActions({ section, slug, title, draft, canDraft, canDelete }: EntryActionsProps) {
   const router = useRouter();
+  const toast = useToast();
   const [busy, setBusy] = useState(false);
-  const [message, setMessage] = useState("");
+  const [confirming, setConfirming] = useState(false);
   const endpoint = `/api/admin/content/${section}/${slug}`;
 
   async function run(request: Promise<Response>, done: string) {
     setBusy(true);
-    setMessage("");
     const response = await request.catch(() => null);
     const payload = (await response?.json().catch(() => null)) as { error?: string } | null;
     setBusy(false);
 
     if (!response?.ok) {
-      setMessage(payload?.error ?? "Request failed");
+      toast({ kind: "error", message: payload?.error ?? "Request failed" });
       return;
     }
 
-    setMessage(done);
+    toast({ kind: "success", message: done });
     router.refresh();
   }
 
@@ -46,42 +49,44 @@ export function EntryActions({ section, slug, title, draft, canDraft, canDelete 
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ draft: !draft }),
       }),
-      draft ? "Published" : "Unpublished",
+      draft ? `Published “${title}” — live in ~1–2 min` : `Unpublished “${title}”`,
     );
   }
 
   function remove() {
-    if (!window.confirm(`Delete "${title}"? This commits a deletion to the repo.`)) return;
-    run(fetch(endpoint, { method: "DELETE" }), "Deleted");
+    setConfirming(false);
+    run(fetch(endpoint, { method: "DELETE" }), `Deleted “${title}”`);
   }
 
-  const button = "rounded-md px-2 py-1 text-sm font-medium hover:bg-accent-soft disabled:opacity-50";
-
   return (
-    <div className="flex flex-wrap items-center gap-1">
-      <Link href={`/admin/edit/${section}/${slug}`} className={`${button} text-accent`}>
+    <div className="flex shrink-0 flex-wrap items-center gap-1 sm:justify-end">
+      <Link href={`/admin/edit/${section}/${slug}`} className="btn btn-secondary px-3">
         Edit
       </Link>
       {canDraft ? (
-        <button type="button" onClick={toggleDraft} disabled={busy} className={button}>
+        <button type="button" onClick={toggleDraft} disabled={busy} className="btn btn-ghost px-3">
           {draft ? "Publish" : "Unpublish"}
         </button>
       ) : null}
       {canDelete ? (
         <button
           type="button"
-          onClick={remove}
+          onClick={() => setConfirming(true)}
           disabled={busy}
-          className={`${button} text-red-700 dark:text-red-400`}
+          className="btn btn-ghost px-3 text-danger hover:text-danger"
         >
           Delete
         </button>
       ) : null}
-      {message ? (
-        <span role="status" className="text-xs text-muted">
-          {message}
-        </span>
-      ) : null}
+      <ConfirmDialog
+        open={confirming}
+        title={`Delete “${title}”?`}
+        body="This commits a deletion to the repository. You can restore it from Git history, but not from here."
+        confirmLabel="Delete"
+        destructive
+        onConfirm={remove}
+        onCancel={() => setConfirming(false)}
+      />
     </div>
   );
 }

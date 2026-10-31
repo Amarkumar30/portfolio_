@@ -52,6 +52,7 @@ export const sectionSchemas = {
     featured: z.boolean().optional().default(false),
     status: z.string().optional(),
     order: z.number().int().optional(),
+    year: z.number().int().min(1990).max(2100).optional(),
     cover: imagePathField,
     coverAlt: z.string().optional(),
     draft: draftField,
@@ -169,6 +170,12 @@ export const sections: Record<SectionId, SectionConfig> = {
         help: "Shown at the top for team projects",
       },
       dateDef,
+      {
+        name: "year",
+        label: "Year",
+        type: "number",
+        help: "Shown in the case study details. Leave empty to hide it.",
+      },
       { name: "stack", label: "Stack", type: "tags", help: "Comma-separated" },
       { name: "links", label: "Links", type: "links", help: "One per line: Label | https://…" },
       {

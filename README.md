@@ -7,7 +7,7 @@ It has a private `/admin` area for publishing to any section. Publishing commits
 ## Stack
 
 - Next.js 16 (App Router, `src/proxy.ts`), React 19, TypeScript
-- Tailwind CSS v4 (CSS-only scroll animations), `next-themes` for light/dark
+- Tailwind CSS v4 with design tokens in `src/app/globals.css` (see [DESIGN_AUDIT.md](DESIGN_AUDIT.md)), `next-themes` for light/dark
 - MDX via `@mdx-js/mdx` + `gray-matter`, frontmatter validated with `zod`
 - Admin: `jose` (session JWT), `bcryptjs`, `@octokit/rest` (GitHub Contents API), `react-markdown` (editor preview)
 - Resend for the contact form, Vercel for hosting and analytics
@@ -26,6 +26,8 @@ Before pushing:
 npm run lint
 npm run build
 ```
+
+To check the design across screen sizes, run `npm run start`, then `npm run screenshots -- <label>` in another terminal (set `BASE_URL` if the server isn't on port 3000). It saves full-page screenshots of every route at 360, 768, 1280 and 1536px in light and dark to `screenshots/<label>/`, which is git-ignored.
 
 ## Content
 

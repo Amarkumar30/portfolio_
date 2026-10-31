@@ -1,10 +1,11 @@
 "use client";
 
 /**
- * AdminBar: page title, "New" button and logout.
+ * AdminBar: page title, where changes go (GitHub or local), and All content / New / Log out.
  * Used in: all admin pages except login.
  */
 import Link from "next/link";
+import { LogOut, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export function AdminBar({ title, storage }: { title: string; storage: "github" | "local" | null }) {
@@ -17,11 +18,12 @@ export function AdminBar({ title, storage }: { title: string; storage: "github" 
   }
 
   return (
-    <div className="mb-8 flex flex-wrap items-center justify-between gap-4 border-b pb-6">
-      <div className="space-y-1">
-        <h1 className="font-heading text-2xl font-semibold">{title}</h1>
+    <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+      <div className="min-w-0">
+        <p className="eyebrow">Admin</p>
+        <h1 className="mt-1 text-h2 font-semibold">{title}</h1>
         {storage ? (
-          <p className="text-sm text-muted">
+          <p className="mt-1 text-small text-muted">
             {storage === "github"
               ? "Publishing to GitHub — changes go live after Vercel redeploys (~1–2 min)."
               : "Local mode — files are written to this machine's working tree."}
@@ -29,24 +31,15 @@ export function AdminBar({ title, storage }: { title: string; storage: "github" 
         ) : null}
       </div>
       <div className="flex items-center gap-2">
-        <Link
-          href="/admin"
-          className="rounded-full border px-4 py-2 text-sm font-medium hover:border-accent hover:text-accent"
-        >
+        <Link href="/admin" className="btn btn-ghost">
           All content
         </Link>
-        <Link
-          href="/admin/new"
-          className="rounded-full bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground hover:opacity-90"
-        >
+        <Link href="/admin/new" className="btn btn-primary">
+          <Plus aria-hidden="true" />
           New
         </Link>
-        <button
-          type="button"
-          onClick={logout}
-          className="rounded-full px-3 py-2 text-sm font-medium text-muted hover:text-foreground"
-        >
-          Log out
+        <button type="button" onClick={logout} className="btn btn-ghost btn-icon" aria-label="Log out" title="Log out">
+          <LogOut aria-hidden="true" />
         </button>
       </div>
     </div>

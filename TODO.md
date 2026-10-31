@@ -11,11 +11,12 @@ Open items for Amar. Kept here instead of inside content files, because editing 
 
 - [ ] Add screenshots: upload in the admin and set **Screenshot** + its alt text.
 - [ ] Update **Status** in the body, and the "Founder · in progress" label, when Bayana launches.
-- [ ] Set `date` to when you started (it only affects ordering; `order: 1` keeps Bayana first either way).
+- [ ] Set `date` to when you started (it only affects ordering; `order: 1` keeps Bayana first either way). **Year** is set to 2026.
 - [ ] Add the stack you're building it with, if you want it shown (currently UPI, Razorpay).
 
 ## Hostel Management Platform (`content/projects/hostel-management-platform.mdx`)
 
+- [ ] Set **Year** (shown in the case study details; hidden until set).
 - [ ] Add GitHub/demo links.
 - [ ] Set `date` to when you built it (ordering only).
 - [ ] Confirm "The hard part" was the hardest part for you, or replace it.
@@ -23,6 +24,7 @@ Open items for Amar. Kept here instead of inside content files, because editing 
 
 ## FreshSip (`content/projects/freshsip-ordering-platform.mdx`)
 
+- [ ] Set **Year** (shown in the case study details; hidden until set).
 - [ ] Add GitHub/demo links.
 - [ ] Set `date` to when you built it (ordering only).
 - [ ] Confirm "The hard part" was the hardest part for you, or replace it.
