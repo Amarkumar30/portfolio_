@@ -40,9 +40,11 @@ All content lives in `content/` as MDX files with YAML frontmatter.
 | Projects | `content/projects/<slug>.mdx` | `/projects`, `/projects/<slug>` |
 | Research | `content/research/<slug>.mdx` | `/research`, `/research/<slug>` |
 | Now      | `content/now.mdx`             | home "Now" block, `/now`        |
+| Journey  | `content/journey/<slug>.mdx`  | timeline on `/about` (`/about#journey-<slug>`) |
 
 - **One config:** `src/lib/content/sections.ts` defines each section's folder, route, frontmatter schema and admin form fields. To add a section, add an entry there, then add its pages under `src/app/`.
 - **Validation:** `src/lib/content/loader.ts` reads files and validates frontmatter. Files with invalid frontmatter are skipped and logged at build time, so they never render as `undefined`.
+- **Journey:** each milestone has a date (`YYYY` or `YYYY-MM`, optional until known), a one-line summary, a kind (sets the icon), optional highlight, links and image; the body is the story shown when it's opened. Undated milestones are placed by **Position**; "Now" is always last and uses `content/now.mdx`. Journey entries appear only on the About page (not in the sitemap, RSS or `llms.txt` listings).
 - **Drafts:** `draft: true` hides an entry in production. It still shows in `npm run dev`.
 - **Uploads:** images uploaded through the admin go to `public/uploads/<yyyy>/<mm>/`.
 - **Everything else** (hero, about story, skills, contact copy, social links) is in `src/lib/data.ts`.
