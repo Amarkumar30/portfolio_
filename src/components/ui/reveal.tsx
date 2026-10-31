@@ -16,6 +16,8 @@ interface RevealProps {
 export function Reveal({ children, className, index = 0 }: RevealProps) {
   return (
     <div
+      // The reveal script adds data-visible before hydration.
+      suppressHydrationWarning
       className={cn("reveal", className)}
       style={index ? ({ "--reveal-delay": `${Math.min(index, 5) * 60}ms` } as React.CSSProperties) : undefined}
     >

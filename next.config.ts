@@ -14,6 +14,10 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/**": ["./content/**/*"],
   },
+  // Soft cross-fade between routes via React's <ViewTransition> (see app/layout.tsx).
+  experimental: {
+    viewTransition: true,
+  },
 };
 
 export default nextConfig;

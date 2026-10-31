@@ -83,17 +83,18 @@ export function SiteHeader() {
     };
   }, [isOpen]);
 
-  const solid = scrolled || isOpen;
-
   return (
     <header
       ref={headerRef}
       className={cn(
         "sticky top-0 z-40 border-b transition-[background-color,border-color] duration-200 ease-out",
-        solid
-          ? "border-border bg-[var(--header-bg)] backdrop-blur-md backdrop-saturate-150"
-          : "border-transparent bg-background",
-        isOpen && "bg-background",
+        // No backdrop-filter while the menu is open: it would make the header the containing
+        // block for the fixed menu sheet.
+        isOpen
+          ? "border-border bg-background"
+          : scrolled
+            ? "border-border bg-[var(--header-bg)] backdrop-blur-md backdrop-saturate-150"
+            : "border-transparent bg-background",
       )}
     >
       <div className="container-shell flex h-header items-center justify-between gap-4">

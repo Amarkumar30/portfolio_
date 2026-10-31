@@ -758,3 +758,18 @@ html:not(.dark) [data-rehype-pretty-code-figure] code[data-theme*=" "] span {
     transform: translateY(8px);
   }
 }
+
+/* Route changes: a short cross-fade (React <ViewTransition> in the root layout). */
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation-duration: 180ms;
+  animation-timing-function: ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
