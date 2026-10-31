@@ -186,3 +186,106 @@ Computed from the tokens in `src/app/globals.css` (WCAG 2.1; AA needs 4.5 for no
 | primary button text on accent | 5.47 (hover 7.58) | 7.77 (hover 9.78) |
 
 Every pair passes AA. Dark text is `#ededed`, not pure white.
+
+## After
+
+Re-captured with `node scripts/screenshots.mjs after` (same 16 routes × 4 widths × 2 themes) and reviewed side by side with `before/`.
+
+### Site-wide
+
+- **Background:** no gradient. The page background is flat near-white (`#fafafa`) or near-black (`#0a0a0a`).
+- **Dark mode:** neutral greys, not green-tinted. Cards sit on a slightly raised `#131313` surface, and body text is `#ededed`.
+- **Accent:** teal now appears only in these places:
+  - links in prose
+  - focus rings
+  - the primary button
+  - the status dot
+  - the active table-of-contents entry
+  - the reading-progress bar
+
+  Labels and metadata use neutral grey mono text.
+- **Cascade bug:** fixed. Base styles are in `@layer base` and component classes in `@layer components`, so utilities win as they should.
+- **`tailwind-merge`:** it now knows the custom type scale. Before, `cn("text-small text-muted")` silently dropped the size.
+- **Alignment:** every page's left edge lines up with "Amar Kumar" in the header, at every width. The container is 1120px of content with 16/24/32px gutters.
+  - Reading pages (posts, research, case studies) centre a 680px column.
+  - Their table of contents sits in the right margin from 1280px.
+- **Header:**
+  - Transparent with no hairline at the top of the page; once you scroll it becomes translucent with a hairline.
+  - Active link: foreground text with a thin underline.
+  - Mobile: full-height sheet with 56px rows that closes on Escape and on navigation, locks page scroll, and keeps focus inside the header.
+- **Footer:** one row (line about me, then GitHub, LinkedIn, Email, RSS, then ©), aligned to the container. Links are 44px tall on touch screens.
+- **Buttons:** one height everywhere (40px, or 44px on touch screens), 8px radius, the same 14px/500 text, and 16px icons.
+
+### Page by page
+
+- **Home:**
+  - The hero is a 56px monogram next to the status line, then the name (display size), the positioning line, two short paragraphs and two buttons. It fits above the fold at 1280×800.
+  - "What I'm building toward": three equal-height cards with matching 36px icon tiles. The Bayana link sits at the bottom of its card.
+  - "Selected work": cards with a label, title, summary, up to five mono tags and "+N". The whole card is clickable; hover darkens the border and lifts it 2px.
+  - "Latest writing" and "Recent notes" are side by side on desktop as simple rows (date, title, reading time). This removes the half-empty card grid.
+  - "Now" is a compact card with "Updated October 2026" in mono.
+- **About:** the story is in the reading column, with a sticky sidebar for Education, Focus, Recognition and Links. On mobile the sidebar becomes a two-column grid after the story. Skills are a single definition list, so "Familiar with" no longer sits alone on its own row.
+- **Projects:** every card has a label, using "Case study" when the project has no status, so titles line up across a row.
+- **Case studies:**
+  - New meta row: Role, Stack (mono tags) and Links, now at the *top* on mobile instead of after the last section.
+  - Optional 16:9 bordered cover.
+  - Table of contents, plus previous/next and "Back to projects" at the end.
+- **Writing:**
+  - The index is a list of rows with excerpts.
+  - Tag chips are quiet, and the active one is filled.
+  - Essays/Notes tabs have a 1px foreground underline.
+- **Posts and research:**
+  - Thin reading-progress bar.
+  - Sticky table of contents (for three or more sections) that highlights the current section.
+  - Meta row: date, reading time and tag links.
+  - Previous/next and "Back to …" at the end.
+- **Prose:**
+  - 17px with 1.75 line height.
+  - h2/h3 spacing, with scroll margin clearing the sticky header.
+  - Quiet blockquotes and markers.
+  - Tables scroll inside a bordered wrapper.
+  - Images span the full column with optional captions (`![alt](src "Caption")`).
+  - Code blocks have a filename label (```` ```ts title="file.ts" ````), a copy button, no line wrapping, and the same surface in both themes.
+- **Notes:** dates in mono above each title, with dividers between notes.
+- **Contact:**
+  - Intro, topics and direct links on the left; the form on the right. The form card no longer stretches to the column height.
+  - Labels sit above inputs.
+  - Fields are validated when you leave them, and errors are linked with `aria-describedby`.
+  - The button shows a spinner while sending, and a success card replaces the form.
+- **404:** centred. The message is in your voice, with one "Back home" button and three quiet links.
+- **Admin:**
+  - Login: a centred card with a show/hide password toggle and a loading state.
+  - Dashboard: filter chips with counts, search, status badges, and an empty state for each section. Delete now asks in a confirm dialog.
+  - Editor: sticky action bar, Markdown toolbar with shortcuts, drag-and-drop and paste image upload, local autosave with restore, a warning before leaving with unsaved changes, and toasts. It works on a phone (checked at 390px).
+
+### Motion
+
+- Scroll reveal: an 8px fade-up the first time an element enters the viewport, with a 60ms stagger. It uses an `IntersectionObserver` and is off with reduced motion or without JS.
+- Hovers and focus: 150–200ms ease-out.
+- Route changes cross-fade in 180ms (`experimental.viewTransition` with React `<ViewTransition>`); reduced motion turns this off.
+- Theme switching briefly disables transitions, so nothing animates mid-switch. next-themes' blocking script prevents a flash of the wrong theme on load.
+
+### Checks
+
+| Check | Result |
+| --- | --- |
+| Horizontal scroll at 360px, all 16 routes, both themes | none |
+| `<h1>` per page | exactly one everywhere |
+| Heading order | no skipped levels |
+| Tap targets at 360px | ≥44px, except inline links inside prose and metadata, and heading anchors |
+| Images without `alt` | none |
+| CLS (home, measured in Chrome) | 0.000 |
+| Lighthouse accessibility (local build) | 100 on home, post, case study, About and Contact |
+
+### Small wording changes for layout
+
+- Home "Selected work" section: the title is now "Selected work" (it was the eyebrow), and "Problems I've worked on" was dropped. "Recent writing" is now "Latest writing", and its one-line description was removed so it lines up with "Recent notes".
+- Home hero: the "Read writing" button was removed, leaving two buttons; Writing is one click away in the header.
+- 404: dropped "Here are a few places that do exist." The links below the button say the same thing.
+- Contact success card: added a "Send another message" button.
+- About sidebar: "Research" became **Focus**, listing full-stack product engineering, the SAU research internship and Founder, Bayana. These are the same facts as before, now kept in `siteContent.focus` in `data.ts`.
+- Case studies: "My role" moved from the first body section into the meta row as **Role**, with the same text.
+
+### Not done, and why
+
+- **Year in the case-study meta row:** left out on purpose. Project `date` values are still placeholders used only for ordering (see `TODO.md`), so showing a year would display an unconfirmed fact. Add real dates, or ask for a `year` field, and it can go back in.
