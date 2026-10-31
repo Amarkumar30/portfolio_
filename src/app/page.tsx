@@ -12,11 +12,16 @@ import { ButtonLink } from "@/components/ui/button-link";
 import { Portrait } from "@/components/ui/portrait";
 import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { DailyCard } from "@/features/daily";
 import { getEntries, getSingle } from "@/lib/content/loader";
 import { buildingToward, siteContent } from "@/lib/data";
 import { formatDate } from "@/lib/format";
 import { renderMdx } from "@/lib/mdx";
 import { buildMetadata, hasResume } from "@/lib/site";
+
+// Re-render at most every 15 minutes so the Daily card switches soon after midnight IST.
+// (Its API responses are cached for a whole day, so this doesn't add API calls.)
+export const revalidate = 900;
 
 export const metadata = buildMetadata({
   title: "Home",
@@ -174,22 +179,25 @@ export default async function HomePage() {
         </div>
       ) : null}
 
-      {now ? (
-        <section aria-labelledby="now-title" className="card max-w-3xl p-6 sm:p-8">
-          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-            <h2 id="now-title" className="text-h3 font-semibold">
-              Now
-            </h2>
-            <p className="meta">
-              Updated <time dateTime={now.data.updated}>{formatDate(now.data.updated, "month")}</time>
-            </p>
-          </div>
-          <div className="rich-text mt-4 text-small">{nowContent}</div>
-          <div className="mt-4">
-            <AllLink href="/now">More on what I&apos;m doing now</AllLink>
-          </div>
-        </section>
-      ) : null}
+      <div className="max-w-3xl space-y-4">
+        {now ? (
+          <section aria-labelledby="now-title" className="card p-6 sm:p-8">
+            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+              <h2 id="now-title" className="text-h3 font-semibold">
+                Now
+              </h2>
+              <p className="meta">
+                Updated <time dateTime={now.data.updated}>{formatDate(now.data.updated, "month")}</time>
+              </p>
+            </div>
+            <div className="rich-text mt-4 text-small">{nowContent}</div>
+            <div className="mt-4">
+              <AllLink href="/now">More on what I&apos;m doing now</AllLink>
+            </div>
+          </section>
+        ) : null}
+        <DailyCard />
+      </div>
 
       <section
         aria-labelledby="cta-title"

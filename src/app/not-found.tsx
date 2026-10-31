@@ -5,6 +5,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ButtonLink } from "@/components/ui/button-link";
+import { DailyJoke } from "@/features/daily";
 
 export const metadata: Metadata = {
   title: "Page not found",
@@ -41,6 +42,9 @@ export default function NotFound() {
             </Link>
           ))}
         </p>
+        <div className="mt-10">
+          <DailyJoke />
+        </div>
       </div>
     </div>
   );
