@@ -14,7 +14,7 @@ const footerLinks = [
 ];
 
 const linkClass =
-  "inline-flex min-h-11 items-center transition-colors duration-150 hover:text-foreground sm:min-h-0";
+  "inline-flex min-h-11 min-w-11 items-center justify-center transition-colors duration-150 hover:text-foreground sm:min-h-0 sm:min-w-0";
 
 export function SiteFooter() {
   return (

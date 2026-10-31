@@ -46,8 +46,8 @@ export default async function NotesPage() {
                     <time dateTime={note.data.date}>{formatDate(note.data.date)}</time>
                     {note.data.draft ? " · Draft" : ""}
                   </p>
-                  <h2 className="mt-2 text-h3 font-semibold">
-                    <a href={`#${note.slug}`} className="transition-colors duration-150 hover:text-accent">
+                  <h2 className="-mb-2.5 mt-0.5 text-h3 font-semibold">
+                    <a href={`#${note.slug}`} className="inline-block py-2.5 transition-colors duration-150 hover:text-accent">
                       {note.data.title}
                     </a>
                   </h2>

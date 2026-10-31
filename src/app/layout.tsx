@@ -21,6 +21,8 @@ const mono = JetBrains_Mono({
   subsets: ["latin"],
   weight: ["400", "500"],
   display: "swap",
+  // Mono is only used for small labels and code; don't let it compete with the body font.
+  preload: false,
 });
 
 export const metadata: Metadata = {

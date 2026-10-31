@@ -79,7 +79,7 @@ export default function AboutPage() {
                 <ul>
                   {socialLinks.map((link) => (
                     <li key={link.label}>
-                      <a href={link.href} className="link inline-flex min-h-11 items-center lg:min-h-8">
+                      <a href={link.href} className="link inline-flex min-h-11 min-w-11 items-center lg:min-h-8 lg:min-w-0">
                         {link.label}
                       </a>
                     </li>

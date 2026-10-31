@@ -1,7 +1,7 @@
 /**
  * ContentCard previews a project: label, title, summary, stack tags (up to 5, then "+N"), and an arrow.
  * The whole card is clickable; cards in a grid row stretch to equal heights.
- * Props: href, title, summary, optional label, optional tags.
+ * Props: href, title, summary, optional label, optional tags, and the title's heading level.
  * Used in: home "Selected work" and the projects index.
  */
 import Link from "next/link";
@@ -15,9 +15,10 @@ interface ContentCardProps {
   summary: string;
   label?: string;
   tags?: string[];
+  headingLevel?: "h2" | "h3";
 }
 
-export function ContentCard({ href, title, summary, label, tags = [] }: ContentCardProps) {
+export function ContentCard({ href, title, summary, label, tags = [], headingLevel: Heading = "h3" }: ContentCardProps) {
   const visible = tags.slice(0, MAX_TAGS);
   const hidden = tags.length - visible.length;
 
@@ -30,11 +31,11 @@ export function ContentCard({ href, title, summary, label, tags = [] }: ContentC
           className="h-4 w-4 shrink-0 text-subtle transition-[color,transform] duration-200 ease-out group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent"
         />
       </div>
-      <h3 className="mt-3 text-h3 font-semibold">
+      <Heading className="mt-3 text-h3 font-semibold">
         <Link href={href} className="after:absolute after:inset-0 after:rounded-card">
           {title}
         </Link>
-      </h3>
+      </Heading>
       <p className="mt-2 text-small text-muted">{summary}</p>
       {visible.length > 0 ? (
         <ul className="mt-auto flex flex-wrap gap-1.5 pt-6" aria-label="Stack">

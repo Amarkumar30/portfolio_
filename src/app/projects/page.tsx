@@ -37,6 +37,7 @@ export default function ProjectsPage() {
               title={project.data.title}
               summary={project.data.summary}
               tags={project.data.stack}
+              headingLevel="h2"
             />
           </Reveal>
         ))}

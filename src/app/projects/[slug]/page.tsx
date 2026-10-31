@@ -39,9 +39,9 @@ export function generateStaticParams() {
   return getEntries("projects").map((project) => ({ slug: project.slug }));
 }
 
-function MetaItem({ label, children }: { label: string; children: React.ReactNode }) {
+function MetaItem({ label, children, className }: { label: string; children: React.ReactNode; className?: string }) {
   return (
-    <div>
+    <div className={className}>
       <dt className="eyebrow mb-2">{label}</dt>
       <dd>{children}</dd>
     </div>
@@ -87,36 +87,34 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
         ) : null}
 
         <dl className="mt-8 grid gap-6 border-y py-6 text-small sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
-          <MetaItem label="Role">
+          <MetaItem label="Role" className="sm:row-span-2">
             <p className="text-foreground">{data.role}</p>
           </MetaItem>
-          <div className="grid gap-6">
-            {data.stack.length > 0 ? (
-              <MetaItem label="Stack">
-                <ul className="flex flex-wrap gap-1.5">
-                  {data.stack.map((item) => (
-                    <li key={item} className="tag">
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </MetaItem>
-            ) : null}
-            {data.links.length > 0 ? (
-              <MetaItem label="Links">
-                <ul className="flex flex-wrap gap-x-4">
-                  {data.links.map((link) => (
-                    <li key={link.href}>
-                      <a href={link.href} className="link inline-flex min-h-11 items-center gap-1 sm:min-h-0">
-                        {link.label}
-                        <ArrowUpRight aria-hidden="true" className="h-3.5 w-3.5" />
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </MetaItem>
-            ) : null}
-          </div>
+          {data.stack.length > 0 ? (
+            <MetaItem label="Stack">
+              <ul className="flex flex-wrap gap-1.5">
+                {data.stack.map((item) => (
+                  <li key={item} className="tag">
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </MetaItem>
+          ) : null}
+          {data.links.length > 0 ? (
+            <MetaItem label="Links">
+              <ul className="flex flex-wrap gap-x-4">
+                {data.links.map((link) => (
+                  <li key={link.href}>
+                    <a href={link.href} className="link inline-flex min-h-11 items-center gap-1 sm:min-h-0">
+                      {link.label}
+                      <ArrowUpRight aria-hidden="true" className="h-3.5 w-3.5" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </MetaItem>
+          ) : null}
         </dl>
       </ArticleHeader>
 
