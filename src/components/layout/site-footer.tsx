@@ -1,30 +1,39 @@
 /**
- * SiteFooter: one line about Amar, profile links, and the year.
+ * SiteFooter: one quiet row with a line about Amar, profile links, RSS, and the year.
  * Props: none.
  * Used in: root app layout across all routes.
  */
-import Link from "next/link";
 import { AdminLink } from "@/components/layout/admin-link";
 import { siteContent, socialLinks } from "@/lib/data";
 
+const footerLinks = [
+  ...["GitHub", "LinkedIn", "Email"].flatMap((label) =>
+    socialLinks.filter((link) => link.label === label),
+  ),
+  { label: "RSS", href: "/feed.xml" },
+];
+
+const linkClass =
+  "inline-flex min-h-11 items-center transition-colors duration-150 hover:text-foreground sm:min-h-0";
+
 export function SiteFooter() {
   return (
-    <footer className="mt-24 border-t py-10">
-      <div className="container-shell flex flex-col gap-6 text-sm text-muted sm:flex-row sm:items-start sm:justify-between">
-        <p className="max-w-md leading-6">{siteContent.footerLine}</p>
-        <div className="flex flex-col gap-3 sm:items-end">
-          <ul className="flex flex-wrap gap-x-5 gap-y-2">
-            {socialLinks.map((link) => (
+    <footer className="border-t">
+      <div className="container-shell flex flex-col gap-4 py-8 text-small text-subtle lg:flex-row lg:items-center lg:justify-between lg:gap-8">
+        <p className="max-w-md">{siteContent.footerLine}</p>
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-6">
+          <ul className="flex flex-wrap gap-x-5">
+            {footerLinks.map((link) => (
               <li key={link.label}>
-                <Link href={link.href} className="hover:text-accent">
+                <a href={link.href} className={linkClass}>
                   {link.label}
-                </Link>
+                </a>
               </li>
             ))}
           </ul>
-          <p className="flex gap-4">
-            <span>© {new Date().getFullYear()} Amar Kumar</span>
-            <AdminLink />
+          <p className="flex items-center gap-4">
+            <span className="tabular">© {new Date().getFullYear()} Amar Kumar</span>
+            <AdminLink className={linkClass} />
           </p>
         </div>
       </div>

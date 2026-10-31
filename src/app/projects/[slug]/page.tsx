@@ -1,15 +1,17 @@
 /**
- * Project detail page: summary, role, then the case study body (problem, what I built, hard part, next).
+ * Project case study: label, title, summary, a meta row (role · stack · links), optional cover,
+ * then the case study body (problem, what I built, hard part, next).
  * Props: route params containing the project slug.
  * Used in: dynamic /projects/[slug] routes.
  */
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
+import { ArticleFooter, ArticleHeader, ReadingLayout } from "@/components/reading/reading-layout";
 import { JsonLd } from "@/components/seo/json-ld";
 import { getEntries, getEntry } from "@/lib/content/loader";
+import { getH2Headings } from "@/lib/headings";
 import { renderMdx } from "@/lib/mdx";
 import { buildMetadata, projectStructuredData } from "@/lib/site";
 
@@ -37,6 +39,15 @@ export function generateStaticParams() {
   return getEntries("projects").map((project) => ({ slug: project.slug }));
 }
 
+function MetaItem({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <dt className="eyebrow mb-2">{label}</dt>
+      <dd>{children}</dd>
+    </div>
+  );
+}
+
 export default async function ProjectDetailPage({ params }: ProjectDetailPageProps) {
   const { slug } = await params;
   const project = getEntry("projects", slug);
@@ -47,9 +58,15 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
 
   const { data } = project;
   const content = await renderMdx(project.body);
+  const projects = getEntries("projects");
+  const index = projects.findIndex((entry) => entry.slug === project.slug);
+  const neighbour = (offset: number) => {
+    const entry = projects[index + offset];
+    return entry ? { href: `/projects/${entry.slug}`, title: entry.data.title } : undefined;
+  };
 
   return (
-    <div className="container-shell space-y-12 py-12 sm:py-20">
+    <ReadingLayout headings={getH2Headings(project.body)}>
       <JsonLd
         data={projectStructuredData({
           title: data.title,
@@ -59,81 +76,69 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
           links: data.links,
         })}
       />
-      <Link
-        href="/projects"
-        className="inline-flex items-center gap-2 text-sm font-medium text-muted hover:text-accent"
+      <ArticleHeader
+        back={{ href: "/projects", label: "Projects" }}
+        eyebrow={`${data.status ?? "Case study"}${data.draft ? " · Draft" : ""}`}
+        title={data.title}
+        lead={data.summary}
       >
-        <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-        All projects
-      </Link>
-
-      <header className="max-w-[68ch] space-y-5">
-        <p className="eyebrow">
-          {data.status ?? "Case study"}
-          {data.draft ? " · Draft" : ""}
-        </p>
-        <h1 className="text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
-          {data.title}
-        </h1>
-        <p className="text-lg leading-8 text-muted">{data.summary}</p>
         {data.collaborationNote ? (
-          <p className="border-l-2 border-accent pl-4 text-sm leading-6 text-muted">
-            {data.collaborationNote}
-          </p>
+          <p className="mt-4 border-l-2 pl-4 text-small text-muted">{data.collaborationNote}</p>
         ) : null}
-      </header>
+
+        <dl className="mt-8 grid gap-6 border-y py-6 text-small sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+          <MetaItem label="Role">
+            <p className="text-foreground">{data.role}</p>
+          </MetaItem>
+          <div className="grid gap-6">
+            {data.stack.length > 0 ? (
+              <MetaItem label="Stack">
+                <ul className="flex flex-wrap gap-1.5">
+                  {data.stack.map((item) => (
+                    <li key={item} className="tag">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </MetaItem>
+            ) : null}
+            {data.links.length > 0 ? (
+              <MetaItem label="Links">
+                <ul className="flex flex-wrap gap-x-4">
+                  {data.links.map((link) => (
+                    <li key={link.href}>
+                      <a href={link.href} className="link inline-flex min-h-11 items-center gap-1 sm:min-h-0">
+                        {link.label}
+                        <ArrowUpRight aria-hidden="true" className="h-3.5 w-3.5" />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </MetaItem>
+            ) : null}
+          </div>
+        </dl>
+      </ArticleHeader>
 
       {data.cover ? (
         <Image
           src={data.cover}
           alt={data.coverAlt ?? `Screenshot of ${data.title}`}
-          width={1200}
-          height={750}
+          width={1360}
+          height={765}
           priority
-          className="h-auto w-full rounded-2xl border"
+          sizes="(min-width: 768px) 680px, 100vw"
+          className="mb-10 aspect-video w-full rounded-card border object-cover"
         />
       ) : null}
 
-      <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_16rem]">
-        <article className="rich-text max-w-[68ch]">
-          <h2>My role</h2>
-          <p>{data.role}</p>
-          {content}
-        </article>
+      <div className="rich-text">{content}</div>
 
-        <aside className="space-y-8 text-sm">
-          {data.stack.length > 0 ? (
-            <div className="space-y-3">
-              <h2 className="eyebrow">Stack</h2>
-              <ul className="flex flex-wrap gap-2">
-                {data.stack.map((item) => (
-                  <li key={item} className="rounded-full border px-3 py-1 text-muted">
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : null}
-          {data.links.length > 0 ? (
-            <div className="space-y-3">
-              <h2 className="eyebrow">Links</h2>
-              <ul className="space-y-2">
-                {data.links.map((link) => (
-                  <li key={link.href}>
-                    <a
-                      href={link.href}
-                      className="inline-flex items-center gap-2 font-semibold text-accent hover:underline"
-                    >
-                      {link.label}
-                      <ExternalLink className="h-4 w-4" aria-hidden="true" />
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : null}
-        </aside>
-      </div>
-    </div>
+      <ArticleFooter
+        previous={neighbour(-1)}
+        next={neighbour(1)}
+        back={{ href: "/projects", label: "Back to projects" }}
+      />
+    </ReadingLayout>
   );
 }

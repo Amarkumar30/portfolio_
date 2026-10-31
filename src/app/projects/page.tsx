@@ -21,23 +21,22 @@ export default function ProjectsPage() {
   const projects = getEntries("projects");
 
   return (
-    <div className="container-shell space-y-12 py-12 sm:py-20">
+    <div className="container-shell page space-y-12">
       <SectionHeading
         as="h1"
         eyebrow="Projects"
         title="Things I've built, and what they taught me."
         description="Each one starts with a real problem. I note what I owned, what was hard, and what I'd change next."
       />
-      <div className="grid gap-6 md:grid-cols-2">
-        {projects.map((project) => (
-          <Reveal key={project.slug}>
+      <div className="grid gap-4 md:grid-cols-2">
+        {projects.map((project, index) => (
+          <Reveal key={project.slug} index={index}>
             <ContentCard
               href={`/projects/${project.slug}`}
-              eyebrow={project.data.status}
+              label={project.data.status ?? "Case study"}
               title={project.data.title}
               summary={project.data.summary}
-              meta={project.data.stack.slice(0, 5)}
-              cta="Read case study"
+              tags={project.data.stack}
             />
           </Reveal>
         ))}

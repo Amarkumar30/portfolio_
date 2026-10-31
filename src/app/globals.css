@@ -193,6 +193,8 @@
   }
 }
 
+/* Component classes live in the components layer so Tailwind utilities can override them. */
+@layer components {
 /* ---------- Layout ---------- */
 
 .container-shell {
@@ -612,7 +614,7 @@
   border-radius: var(--radius-card);
 }
 
-.rich-text figcaption:not([data-rehype-pretty-code-title]) {
+.rich-text .img-caption {
   margin-top: 0.75em;
   text-align: center;
   font-size: var(--text-caption);
@@ -718,6 +720,7 @@
   .code-block .copy-button {
     opacity: 1;
   }
+}
 }
 
 /* rehype-pretty-code ships both themes; show the one that matches. */

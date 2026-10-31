@@ -1,5 +1,6 @@
 /**
- * Blog post page renders a single long-form article.
+ * Blog post page renders a single long-form article with reading progress, a table of contents
+ * (for posts with three or more sections) and previous/next links.
  * Props: route params containing the post slug.
  * Used in: dynamic /blog/[slug] routes.
  */
@@ -7,10 +8,11 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { ArticleFooter, ArticleHeader, ReadingLayout } from "@/components/reading/reading-layout";
 import { JsonLd } from "@/components/seo/json-ld";
 import { getEntries, getEntry } from "@/lib/content/loader";
 import { formatDate } from "@/lib/format";
+import { getH2Headings } from "@/lib/headings";
 import { renderMdx } from "@/lib/mdx";
 import { articleStructuredData, buildMetadata } from "@/lib/site";
 
@@ -48,9 +50,16 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   const content = await renderMdx(post.body);
+  // Newest first, so the "previous" (older) post is the next one in the list.
+  const posts = getEntries("blog");
+  const index = posts.findIndex((entry) => entry.slug === post.slug);
+  const neighbour = (offset: number) => {
+    const entry = posts[index + offset];
+    return entry ? { href: `/blog/${entry.slug}`, title: entry.data.title } : undefined;
+  };
 
   return (
-    <div className="container-shell py-12 sm:py-20">
+    <ReadingLayout headings={getH2Headings(post.body)} progress>
       <JsonLd
         data={articleStructuredData({
           type: "BlogPosting",
@@ -61,39 +70,52 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           tags: post.data.tags,
         })}
       />
-      <article className="mx-auto max-w-[68ch] space-y-10">
-        <Link
-          href="/blog"
-          className="inline-flex items-center gap-2 text-sm font-medium text-muted hover:text-accent"
-        >
-          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-          All writing
-        </Link>
-        <header className="space-y-5 border-b pb-8">
-          <p className="eyebrow">{post.data.category}</p>
-          <h1 className="text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
-            {post.data.title}
-          </h1>
-          <p className="text-lg leading-8 text-muted">{post.data.excerpt}</p>
-          <p className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted">
-            <time dateTime={post.data.date}>{formatDate(post.data.date)}</time>
-            <span aria-hidden="true">·</span>
-            <span>{post.readingTime}</span>
-            {post.data.draft ? <span className="font-semibold text-accent">Draft</span> : null}
-          </p>
-        </header>
-        {post.data.cover ? (
-          <Image
-            src={post.data.cover}
-            alt=""
-            width={1200}
-            height={630}
-            priority
-            className="h-auto w-full rounded-xl border"
-          />
-        ) : null}
-        <div className="rich-text">{content}</div>
-      </article>
-    </div>
+      <ArticleHeader
+        back={{ href: "/blog", label: "Writing" }}
+        eyebrow={post.data.category}
+        title={post.data.title}
+        lead={post.data.excerpt}
+        className="border-b pb-8"
+        meta={[
+          <time key="date" dateTime={post.data.date}>
+            {formatDate(post.data.date)}
+          </time>,
+          post.readingTime,
+          ...(post.data.tags.length > 0
+            ? [
+                <span key="tags" className="flex flex-wrap gap-x-2">
+                  {post.data.tags.map((tag) => (
+                    <Link
+                      key={tag}
+                      href={`/blog?tag=${encodeURIComponent(tag)}`}
+                      className="underline decoration-border-strong underline-offset-4 hover:text-foreground"
+                    >
+                      #{tag}
+                    </Link>
+                  ))}
+                </span>,
+              ]
+            : []),
+          ...(post.data.draft ? [<span key="draft" className="text-accent">Draft</span>] : []),
+        ]}
+      />
+      {post.data.cover ? (
+        <Image
+          src={post.data.cover}
+          alt=""
+          width={1360}
+          height={714}
+          priority
+          sizes="(min-width: 768px) 680px, 100vw"
+          className="mb-10 aspect-[1200/630] w-full rounded-card border object-cover"
+        />
+      ) : null}
+      <div className="rich-text">{content}</div>
+      <ArticleFooter
+        previous={neighbour(1)}
+        next={neighbour(-1)}
+        back={{ href: "/blog", label: "Back to writing" }}
+      />
+    </ReadingLayout>
   );
 }

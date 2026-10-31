@@ -11,11 +11,11 @@ import { useSyncExternalStore } from "react";
 const subscribe = () => () => undefined;
 const hasHint = () => document.cookie.split("; ").some((part) => part === "admin_hint=1");
 
-export function AdminLink() {
+export function AdminLink({ className }: { className?: string }) {
   const show = useSyncExternalStore(subscribe, hasHint, () => false);
 
   return show ? (
-    <Link href="/admin" className="hover:text-accent">
+    <Link href="/admin" className={className}>
       Admin
     </Link>
   ) : null;

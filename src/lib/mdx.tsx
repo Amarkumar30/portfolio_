@@ -31,6 +31,8 @@ export function compileMdx(source: string) {
             dark: "github-dark-dimmed",
             light: "github-light",
           },
+          // The code block surface comes from the site tokens, not the Shiki theme.
+          keepBackground: false,
         },
       ],
     ],

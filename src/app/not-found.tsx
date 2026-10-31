@@ -3,6 +3,7 @@
  * Used in: any unmatched route, and notFound() calls.
  */
 import type { Metadata } from "next";
+import Link from "next/link";
 import { ButtonLink } from "@/components/ui/button-link";
 
 export const metadata: Metadata = {
@@ -10,30 +11,36 @@ export const metadata: Metadata = {
   robots: { index: false },
 };
 
+const elsewhere = [
+  { href: "/projects", label: "Projects" },
+  { href: "/blog", label: "Writing" },
+  { href: "/contact", label: "Contact" },
+];
+
 export default function NotFound() {
   return (
-    <div className="container-shell py-20 sm:py-28">
-      <div className="max-w-[68ch] space-y-6">
+    <div className="container-shell flex min-h-[calc(100svh-var(--header-height)-12rem)] items-center justify-center py-16">
+      <div className="max-w-md text-center">
         <p className="eyebrow">404</p>
-        <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
-          This page isn&apos;t here.
-        </h1>
-        <p className="text-lg leading-8 text-muted">
-          Either the link is old or I moved something. Fittingly, I study how things get
-          found — and this one didn&apos;t. Here are a few places that do exist.
+        <h1 className="mt-3 text-h1 font-semibold">This page isn&apos;t here.</h1>
+        <p className="mt-4 text-muted">
+          Either the link is old or I moved something. Fittingly, I study how things get found —
+          and this one didn&apos;t.
         </p>
-        <div className="flex flex-wrap gap-3 pt-2">
-          <ButtonLink href="/">Home</ButtonLink>
-          <ButtonLink href="/projects" variant="secondary">
-            Projects
-          </ButtonLink>
-          <ButtonLink href="/blog" variant="secondary">
-            Writing
-          </ButtonLink>
-          <ButtonLink href="/contact" variant="secondary">
-            Contact
-          </ButtonLink>
-        </div>
+        <ButtonLink href="/" className="mt-8">
+          Back home
+        </ButtonLink>
+        <p className="mt-6 flex justify-center gap-x-5 text-small">
+          {elsewhere.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="inline-flex min-h-11 items-center text-muted hover:text-foreground"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </p>
       </div>
     </div>
   );

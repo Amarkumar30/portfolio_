@@ -1,5 +1,6 @@
 /**
- * About page: Amar's story, how engineering, research and building connect, and grouped skills.
+ * About page: Amar's story in the reading column, a sidebar with education, focus, recognition
+ * and links, then grouped skills.
  * Props: none for the route component.
  * Used in: /about route.
  */
@@ -8,7 +9,7 @@ import { PersonJsonLd } from "@/components/seo/person-json-ld";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Portrait } from "@/components/ui/portrait";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { aboutStory, familiarWith, siteContent, skillCategories } from "@/lib/data";
+import { aboutStory, familiarWith, siteContent, skillCategories, socialLinks } from "@/lib/data";
 import { buildMetadata, hasResume } from "@/lib/site";
 
 export const metadata: Metadata = buildMetadata({
@@ -18,64 +19,90 @@ export const metadata: Metadata = buildMetadata({
   path: "/about",
 });
 
-export default function AboutPage() {
+function SidebarGroup({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="container-shell space-y-20 py-12 sm:py-20">
+    <div className="border-t pt-4">
+      <h2 className="eyebrow mb-2">{title}</h2>
+      {children}
+    </div>
+  );
+}
+
+export default function AboutPage() {
+  const skills = [...skillCategories, { title: "Familiar with", items: familiarWith }];
+
+  return (
+    <div className="container-shell page space-y-section">
       <PersonJsonLd />
 
-      <article className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_16rem]">
-          <div className="space-y-8">
-            <SectionHeading as="h1" eyebrow="About" title={aboutStory.title} />
-            <div className="rich-text max-w-[68ch]">
-              {aboutStory.paragraphs.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
-              ))}
-              <p className="text-foreground">{aboutStory.teamNote}</p>
-            </div>
-            <div className="flex flex-wrap gap-3">
-              <ButtonLink href="/contact">Get in touch</ButtonLink>
-              {hasResume ? (
-                <ButtonLink href="/resume.pdf" variant="secondary">
-                  Resume
-                </ButtonLink>
-              ) : null}
+      <div className="grid gap-12 lg:grid-cols-[minmax(0,42.5rem)_minmax(0,1fr)] lg:gap-16 xl:gap-24">
+        <article>
+          <SectionHeading as="h1" eyebrow="About" title={aboutStory.title} />
+          <div className="rich-text mt-10">
+            {aboutStory.paragraphs.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+            <p className="text-foreground">{aboutStory.teamNote}</p>
+          </div>
+          <div className="mt-10 flex flex-wrap gap-3">
+            <ButtonLink href="/contact">Get in touch</ButtonLink>
+            {hasResume ? (
+              <ButtonLink href="/resume.pdf" variant="secondary">
+                Resume
+              </ButtonLink>
+            ) : null}
+          </div>
+        </article>
+
+        <aside aria-label="At a glance" className="lg:pt-2">
+          <div className="space-y-6 text-small lg:sticky lg:top-[calc(var(--header-height)+3rem)]">
+            <Portrait size={72} />
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-1">
+              <SidebarGroup title="Education">
+                <p>{siteContent.education}</p>
+              </SidebarGroup>
+              <SidebarGroup title="Focus">
+                <ul className="space-y-1">
+                  {siteContent.focus.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </SidebarGroup>
+              <SidebarGroup title="Recognition">
+                <ul className="space-y-1">
+                  {siteContent.achievements.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </SidebarGroup>
+              <SidebarGroup title="Links">
+                <ul>
+                  {socialLinks.map((link) => (
+                    <li key={link.label}>
+                      <a href={link.href} className="link inline-flex min-h-11 items-center lg:min-h-8">
+                        {link.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </SidebarGroup>
             </div>
           </div>
+        </aside>
+      </div>
 
-          <aside className="space-y-8 text-sm leading-6 lg:pt-8">
-            <Portrait size={112} />
-            <div className="space-y-2">
-              <h2 className="eyebrow">Education</h2>
-              <p>{siteContent.education}</p>
-            </div>
-            <div className="space-y-2">
-              <h2 className="eyebrow">Recognition</h2>
-              <ul className="space-y-1">
-                {siteContent.achievements.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </div>
-            <div className="space-y-2">
-              <h2 className="eyebrow">Research</h2>
-              <p>Research Intern, South Asian University — Generative Engine Optimization</p>
-            </div>
-          </aside>
-      </article>
-
-      <section aria-labelledby="skills-title" className="space-y-8">
+      <section aria-labelledby="skills-title" className="max-w-[42.5rem] space-y-6">
         <SectionHeading id="skills-title" title="Skills" />
-        <dl className="grid gap-x-10 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
-          {skillCategories.map((category) => (
-            <div key={category.title} className="space-y-2 border-t pt-4">
-              <dt className="font-semibold">{category.title}</dt>
-              <dd className="text-sm leading-6 text-muted">{category.items.join(" · ")}</dd>
+        <dl className="border-t">
+          {skills.map((category) => (
+            <div
+              key={category.title}
+              className="grid gap-1 border-b py-4 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-6"
+            >
+              <dt className="font-medium">{category.title}</dt>
+              <dd className="text-muted">{category.items.join(" · ")}</dd>
             </div>
           ))}
-          <div className="space-y-2 border-t pt-4">
-            <dt className="font-semibold">Familiar with</dt>
-            <dd className="text-sm leading-6 text-muted">{familiarWith.join(" · ")}</dd>
-          </div>
         </dl>
       </section>
     </div>
