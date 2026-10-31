@@ -286,6 +286,6 @@ Re-captured with `node scripts/screenshots.mjs after` (same 16 routes × 4 width
 - About sidebar: "Research" became **Focus**, listing full-stack product engineering, the SAU research internship and Founder, Bayana. These are the same facts as before, now kept in `siteContent.focus` in `data.ts`.
 - Case studies: "My role" moved from the first body section into the meta row as **Role**, with the same text.
 
-### Not done, and why
+### Project year
 
-- **Year in the case-study meta row:** left out on purpose. Project `date` values are still placeholders used only for ordering (see `TODO.md`), so showing a year would display an unconfirmed fact. Add real dates, or ask for a `year` field, and it can go back in.
+- Projects have an optional `year` field ("Year" in the admin), shown in the case-study meta row and hidden when empty. Bayana is set to 2026; Hostel Management Platform and FreshSip are open items in `TODO.md`.

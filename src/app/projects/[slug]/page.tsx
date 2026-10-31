@@ -1,5 +1,5 @@
 /**
- * Project case study: label, title, summary, a meta row (role · stack · links), optional cover,
+ * Project case study: label, title, summary, a meta row (role · year · stack · links), optional cover,
  * then the case study body (problem, what I built, hard part, next).
  * Props: route params containing the project slug.
  * Used in: dynamic /projects/[slug] routes.
@@ -39,9 +39,16 @@ export function generateStaticParams() {
   return getEntries("projects").map((project) => ({ slug: project.slug }));
 }
 
-function MetaItem({ label, children, className }: { label: string; children: React.ReactNode; className?: string }) {
+interface MetaItemProps {
+  label: string;
+  children: React.ReactNode;
+  className?: string;
+  style?: React.CSSProperties;
+}
+
+function MetaItem({ label, children, className, style }: MetaItemProps) {
   return (
-    <div className={className}>
+    <div className={className} style={style}>
       <dt className="eyebrow mb-2">{label}</dt>
       <dd>{children}</dd>
     </div>
@@ -57,6 +64,8 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
   }
 
   const { data } = project;
+  // The role spans as many rows as there are items in the right-hand column.
+  const sideItems = [data.year, data.stack.length, data.links.length].filter(Boolean).length;
   const content = await renderMdx(project.body);
   const projects = getEntries("projects");
   const index = projects.findIndex((entry) => entry.slug === project.slug);
@@ -87,9 +96,18 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
         ) : null}
 
         <dl className="mt-8 grid gap-6 border-y py-6 text-small sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
-          <MetaItem label="Role" className="sm:row-span-2">
+          <MetaItem
+            label="Role"
+            className="sm:[grid-row-end:span_var(--rows)]"
+            style={{ "--rows": Math.max(1, sideItems) } as React.CSSProperties}
+          >
             <p className="text-foreground">{data.role}</p>
           </MetaItem>
+          {data.year ? (
+            <MetaItem label="Year">
+              <p className="tabular text-foreground">{data.year}</p>
+            </MetaItem>
+          ) : null}
           {data.stack.length > 0 ? (
             <MetaItem label="Stack">
               <ul className="flex flex-wrap gap-1.5">
