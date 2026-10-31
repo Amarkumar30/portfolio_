@@ -30,6 +30,19 @@ Open items for Amar. Kept here instead of inside content files, because editing 
 - [ ] Confirm "The hard part" was the hardest part for you, or replace it.
 - [ ] Confirm or replace "What I'd do next".
 
+## Journey (`content/journey/`, shown on /about)
+
+Edit these in the admin under **Journey**. Dates are `YYYY` or `YYYY-MM`; a milestone without a date shows no date label and is placed by its **Position**.
+
+- [ ] **Joined South Asian University** — add the month you started, if you want it shown (currently `2024`).
+- [ ] **1st Prize, AvishkarX** — add the date, and replace the placeholder story ("The story behind this one is coming soon.") with what the idea was and what you built.
+- [ ] **SmartHack — Hostel Management Platform** — add the date (year or month). The story is taken from the case study; adjust it if you like.
+- [ ] **Built FreshSip, solo** — add the date. The story is taken from the case study.
+- [ ] **Research Intern — GEO at SAU** — add the date you started. The story is taken from the About page.
+- [ ] **Started Signal Clear** — add the date, and a link to the channel once you have the URL (see below).
+- [ ] **Founded Bayana** — add the month, if you want it shown (currently `2026`).
+- [ ] **Now** — nothing to do: its summary and story come from `content/now.mdx` (the **Now** entry in the admin).
+
 ## Other content
 
 - [ ] `content/now.mdx` — replace with what you're actually doing this month (editable in the admin under **Now**).
