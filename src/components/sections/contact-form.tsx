@@ -9,7 +9,7 @@
  * Used in: contact page.
  */
 import { CheckCircle2 } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { contactEmail } from "@/lib/data";
 
 interface FormState {
@@ -30,6 +30,12 @@ const initialState: FormState = {
 };
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/** What /api/contact returns: { ok: true } on success, { ok: false, error } otherwise. */
+interface ContactResponse {
+  ok?: boolean;
+  error?: string;
+}
 
 function validateField(name: FieldName, value: string) {
   const trimmed = value.trim();
@@ -56,6 +62,8 @@ export function ContactForm() {
   const [errorMessage, setErrorMessage] = useState("");
   const [showEmailFallback, setShowEmailFallback] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  // Blocks a second submit before the disabled button has re-rendered.
+  const sending = useRef(false);
 
   function update(name: keyof FormState, value: string) {
     setForm((current) => ({ ...current, [name]: value }));
@@ -71,6 +79,7 @@ export function ContactForm() {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (sending.current) return;
     const nextErrors = validateForm(form);
     setFieldErrors(nextErrors);
     setErrorMessage("");
@@ -84,6 +93,7 @@ export function ContactForm() {
     }
 
     setStatus("loading");
+    sending.current = true;
 
     try {
       const response = await fetch("/api/contact", {
@@ -92,24 +102,28 @@ export function ContactForm() {
         body: JSON.stringify(form),
       });
 
-      const payload = (await response.json()) as { error?: string };
+      // A body that isn't JSON (e.g. a platform error page) counts as a failure, not a crash.
+      const payload = (await response.json().catch(() => null)) as ContactResponse | null;
 
-      if (response.status === 503 && payload.error === "not_configured") {
+      if (response.ok && payload?.ok === true) {
+        setStatus("success");
+        setForm(initialState);
+        return;
+      }
+
+      if (response.status === 503 && payload?.error === "not_configured") {
         setStatus("error");
         setShowEmailFallback(true);
         return;
       }
 
-      if (!response.ok) {
-        throw new Error(payload.error ?? "Request failed");
-      }
-
-      setStatus("success");
-      setForm(initialState);
+      throw new Error(payload?.error ?? "Request failed");
     } catch (error) {
       setStatus("error");
       setShowEmailFallback(true);
       setErrorMessage(error instanceof Error ? error.message : "");
+    } finally {
+      sending.current = false;
     }
   }
 

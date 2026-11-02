@@ -19,6 +19,8 @@ export const MAX_EXTRA_JOKES = 5;
 /** Server-side API responses are cached for a day (keyed by the IST date). */
 export const API_CACHE_SECONDS = 60 * 60 * 24;
 
-export const ZENQUOTES_TODAY_URL = "https://zenquotes.io/api/today";
+// "random", not "today": ZenQuotes' "today" flips at its own midnight, not IST, so caching it per
+// IST date could show the same quote two days running.
+export const ZENQUOTES_URL = "https://zenquotes.io/api/random";
 export const JOKEAPI_URL =
   "https://v2.jokeapi.dev/joke/Programming?safe-mode&blacklistFlags=nsfw,religious,political,racist,sexist,explicit";
