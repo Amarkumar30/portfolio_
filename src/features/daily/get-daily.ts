@@ -22,11 +22,11 @@ function curatedJoke(joke: CuratedJoke): Joke {
   return { ...joke, source: "curated" };
 }
 
-export async function getDaily(): Promise<Daily | null> {
+export async function getDaily(now = new Date()): Promise<Daily | null> {
   if (!DAILY_ENABLED) return null;
 
   try {
-    const date = todayInIst();
+    const date = todayInIst(now);
     const day = dayNumber(date);
     const [apiQuote, apiJoke] = await Promise.all([fetchQuote(date), fetchJoke(date)]);
 

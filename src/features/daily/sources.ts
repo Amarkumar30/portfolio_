@@ -3,7 +3,7 @@
  * Each request: 3-second timeout, cached for a day per IST date, and never throws —
  * any failure returns null so the caller falls back to the curated list.
  */
-import { API_CACHE_SECONDS, API_TIMEOUT_MS, JOKEAPI_URL, ZENQUOTES_TODAY_URL } from "./config";
+import { API_CACHE_SECONDS, API_TIMEOUT_MS, JOKEAPI_URL, ZENQUOTES_URL } from "./config";
 import { approvedJokeApiIds } from "./curated";
 import type { Joke, Quote } from "./types";
 
@@ -32,9 +32,12 @@ function decodeEntities(text: string) {
     .trim();
 }
 
-/** The date goes into the URL only to key the cache per IST day; both APIs ignore it. */
+/**
+ * The IST date goes into the URL only to key the cache per day (both APIs ignore it), so each
+ * API is called once per IST day and the pick changes at midnight IST.
+ */
 export async function fetchQuote(date: string): Promise<Quote | null> {
-  const payload = await getJson(`${ZENQUOTES_TODAY_URL}?day=${date}`);
+  const payload = await getJson(`${ZENQUOTES_URL}?day=${date}`);
   const item = Array.isArray(payload) ? (payload[0] as { q?: unknown; a?: unknown }) : null;
 
   if (!item || typeof item.q !== "string" || typeof item.a !== "string") return null;

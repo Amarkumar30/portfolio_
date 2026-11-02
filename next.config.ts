@@ -14,6 +14,10 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/**": ["./content/**/*"],
   },
+  // ISR pages (the home page and /api/daily, which revalidate every 15 minutes) are never served
+  // more than an hour stale. The default is a year: after a quiet spell the first visitor got the
+  // old page while it rebuilt in the background, so the Daily card could show a past day's pick.
+  expireTime: 3600,
   // Soft cross-fade between routes via React's <ViewTransition> (see app/layout.tsx).
   experimental: {
     viewTransition: true,
