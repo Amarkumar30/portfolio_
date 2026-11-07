@@ -19,7 +19,7 @@ const navItems = [
   { href: "/about", label: "About", match: ["/about"] },
   { href: "/projects", label: "Projects", match: ["/projects"] },
   { href: "/research", label: "Research", match: ["/research"] },
-  { href: "/blog", label: "Writing", match: ["/blog", "/notes"] },
+  { href: "/blog", label: "Writing", match: ["/blog", "/notes", "/tech-today"] },
   { href: "/contact", label: "Contact", match: ["/contact"] },
 ];
 
