@@ -20,6 +20,13 @@ const imagePathField = z
   .regex(/^\/uploads\/[a-z0-9/._-]+$/i, "Use an uploaded image path like /uploads/2026/10/photo.jpg")
   .optional();
 
+/** Only http(s), so a pick can't carry a javascript: link. */
+const webUrlField = z
+  .string()
+  .refine((value) => URL.canParse(value) && /^https?:\/\//i.test(value), {
+    message: "Use a full https:// URL",
+  });
+
 const linkSchema = z.object({
   label: z.string().min(1),
   href: z.url(),
@@ -116,6 +123,14 @@ export const sectionSchemas = {
     image: imagePathField,
     imageAlt: z.string().optional(),
     order: z.number().int().optional(),
+    draft: draftField,
+  }),
+  "tech-picks": z.object({
+    title: z.string().min(1),
+    url: webUrlField,
+    source: z.string().min(1),
+    date: dateField,
+    note: z.string().min(1),
     draft: draftField,
   }),
 } as const;
@@ -340,6 +355,37 @@ export const sections: Record<SectionId, SectionConfig> = {
         label: "Position",
         type: "number",
         help: "Places milestones without a date, and breaks ties between the same date. Lower comes first.",
+      },
+    ],
+  },
+  "tech-picks": {
+    id: "tech-picks",
+    label: "Tech picks",
+    singular: "Pick",
+    kind: "collection",
+    dir: "content/tech-picks",
+    route: "/tech-today",
+    hasDetailPage: true,
+    titleField: "title",
+    dateField: "date",
+    fields: [
+      titleDef,
+      { name: "url", label: "Article URL", type: "text", required: true, placeholder: "https://…" },
+      {
+        name: "source",
+        label: "Source",
+        type: "text",
+        required: true,
+        help: "Shown as “Read the full article on …”, e.g. TechCrunch.",
+      },
+      dateDef,
+      {
+        name: "note",
+        label: "Your note",
+        type: "textarea",
+        required: true,
+        lengthGuide: 280,
+        help: "Your 1–3 line take. The body below is optional: anything there appears after it on the reading page.",
       },
     ],
   },

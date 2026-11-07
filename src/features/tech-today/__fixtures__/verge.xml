@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US">
+  <title type="text">Fixture Verge</title>
+  <entry>
+    <author><name>Sam Fixture</name></author>
+    <title type="html"><![CDATA[A new security flaw hits a fixture]]></title>
+    <link rel="alternate" type="text/html" href="https://www.theverge.com/security/1/fixture-flaw" />
+    <link rel="replies" type="text/html" href="https://www.theverge.com/security/1/fixture-flaw#comments" />
+    <id>https://www.theverge.com/?p=1</id>
+    <updated>2026-11-06T22:30:00-05:00</updated>
+    <published>2026-11-06T21:00:00-05:00</published>
+    <category scheme="https://www.theverge.com" term="Security" />
+    <category scheme="https://www.theverge.com" term="News" />
+    <summary type="html"><![CDATA[The publisher's own short summary.]]></summary>
+    <content type="html"><![CDATA[<p>FULL ARTICLE TEXT THAT MUST NEVER BE READ.</p>]]></content>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[An entertainment story]]></title>
+    <link rel="alternate" type="text/html" href="https://www.theverge.com/film/2/fixture" />
+    <updated>2026-11-06T20:00:00-05:00</updated>
+    <published>2026-11-06T20:00:00-05:00</published>
+    <category scheme="https://www.theverge.com" term="Entertainment" />
+    <summary type="html"><![CDATA[Denied by its category.]]></summary>
+  </entry>
+</feed>
