@@ -135,13 +135,10 @@ export function RotatedOut() {
   return (
     <Shell>
       <h1 className="mt-6 text-h1 font-semibold">This story has rotated out of today&apos;s list.</h1>
-      <p className="mt-4 text-muted">
-        Tech Today only keeps the latest headlines.{" "}
-        <Link href={TECH_TODAY_PATH} className="link">
-          See what&apos;s on it now
-        </Link>
-        .
-      </p>
+      <p className="mt-4 text-muted">Tech Today only keeps the latest headlines.</p>
+      <Link href={TECH_TODAY_PATH} className="text-link mt-2 inline-flex min-h-11 items-center">
+        See what&apos;s on it now
+      </Link>
     </Shell>
   );
 }
