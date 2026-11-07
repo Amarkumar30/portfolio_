@@ -41,6 +41,7 @@ All content lives in `content/` as MDX files with YAML frontmatter.
 | Research | `content/research/<slug>.mdx` | `/research`, `/research/<slug>` |
 | Now      | `content/now.mdx`             | home "Now" block, `/now`        |
 | Journey  | `content/journey/<slug>.mdx`  | timeline on `/about` (`/about#journey-<slug>`) |
+| Tech picks | `content/tech-picks/<slug>.mdx` | pinned on `/tech-today`, reading page at `/tech-today/<slug>` |
 
 - **One config:** `src/lib/content/sections.ts` defines each section's folder, route, frontmatter schema and admin form fields. To add a section, add an entry there, then add its pages under `src/app/`.
 - **Validation:** `src/lib/content/loader.ts` reads files and validates frontmatter. Files with invalid frontmatter are skipped and logged at build time, so they never render as `undefined`.
@@ -61,6 +62,18 @@ The home page has a small "Daily" card (a quote and a programming joke), and the
 - **Sources:** [ZenQuotes](https://zenquotes.io) (quote of the day, with attribution) and [JokeAPI](https://v2.jokeapi.dev) (safe-mode programming jokes, limited to ids reviewed in `curated.ts`). Requests run on the server only, time out after 3 seconds, and are cached per day in IST.
 - **Fallback:** if an API fails, is slow, or returns something over 220 characters, the day's pick from the curated list in `src/features/daily/curated.ts` is used.
 - **Turn it off:** set `DAILY_ENABLED = false` in `src/features/daily/config.ts`.
+
+## Tech Today
+
+The third tab under Writing (`/tech-today`) lists the day's top tech headlines. Each opens a reading page on this site with the headline, source, date, the publisher's own summary and a link to the original. It's self-contained in `src/features/tech-today/` and never appears in the sitemap, RSS, structured data or the home page; `llms.txt` has one line pointing at it, and reading pages are `noindex`.
+
+- **Only what publishers share:** headlines and the summary from their feed or API, as plain text and attributed. Full articles are never fetched or stored, and `content:encoded` and Atom `<content>` are ignored.
+- **Sources:** edit `SOURCES` in `src/features/tech-today/config.ts`. A new RSS or Atom feed is one entry there. Changes show up at the next refresh, within about 3 hours of deploying.
+- **Refresh:** the list is rebuilt on the first visit after 3 hours and is never shown more than about 4 hours old. Only server code calls the sources, 4 seconds each, and one failing doesn't affect the rest.
+- **If everything fails:** the last good list stays, with its real "Updated" time. If there has never been one, the page shows a short empty state.
+- **Ranking:** the keywords, deny-list and weights are in `topics.ts` and `rank.ts`.
+- **Amar's pick:** in the admin, create a **Tech picks** entry with a title, article URL, source, date and note. The newest published pick from the last 7 days is pinned above the list. The body is optional and appears after the note on the pick's reading page.
+- **Turn it off:** set `TECH_TODAY_ENABLED = false` in `src/features/tech-today/config.ts`. The tab goes and the routes return 404.
 
 ## How admin publishing works
 
