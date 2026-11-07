@@ -1,0 +1,6 @@
+{
+  "101": { "id": 101, "type": "story", "by": "fixture", "score": 420, "time": 1794027600, "title": "Show HN: A compiler fixture", "url": "https://example.com/compiler?ref=hn" },
+  "102": { "id": 102, "type": "story", "by": "fixture", "score": 50, "time": 1794027600, "title": "Ask HN: A post with no link", "text": "No url here." },
+  "103": { "id": 103, "type": "job", "by": "fixture", "time": 1794027600, "title": "Fixture is hiring", "url": "https://example.com/jobs" },
+  "104": { "id": 104, "type": "story", "by": "fixture", "score": 30, "time": 1794027600, "title": "The same seed round story", "url": "https://techcrunch.com/2026/11/07/fixture-seed-round" }
+}
