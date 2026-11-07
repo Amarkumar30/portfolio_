@@ -2,6 +2,7 @@
  * /llms.txt — a plain-Markdown summary of who Amar is and where things are, for LLMs and
  * answer engines (llmstxt.org format). Built from the same content as the site.
  */
+import { TECH_TODAY_ENABLED, TECH_TODAY_PATH } from "@/features/tech-today/config";
 import { getEntries } from "@/lib/content/loader";
 import { contactEmail, siteContent, socialLinks } from "@/lib/data";
 import { siteUrl } from "@/lib/site";
@@ -70,7 +71,8 @@ ${socialLinks
 
 - [RSS feed](${siteUrl}/feed.xml): Essays and notes.
 - [Sitemap](${siteUrl}/sitemap.xml)
-`;
+${TECH_TODAY_ENABLED ? `- Tech Today: a curated feed of external tech headlines at ${siteUrl}${TECH_TODAY_PATH}
+` : ""}`;
 
   return new Response(body, {
     headers: { "Content-Type": "text/plain; charset=utf-8" },
