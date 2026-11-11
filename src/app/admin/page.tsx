@@ -1,5 +1,6 @@
 import { AdminBar } from "@/components/admin/admin-bar";
 import { ContentTable, type SectionMeta } from "@/components/admin/content-table";
+import { FutureCard } from "@/features/future/components/future-card";
 import { requireAdminPage } from "@/lib/admin/auth";
 import { listEntries, type AdminEntrySummary } from "@/lib/admin/content-service";
 import { StorageNotConfiguredError, getStorage } from "@/lib/admin/storage";
@@ -41,6 +42,7 @@ export default async function AdminDashboardPage() {
           {error}
         </p>
       ) : null}
+      <FutureCard />
       <ContentTable entries={entries} sections={sectionsMeta} />
     </>
   );

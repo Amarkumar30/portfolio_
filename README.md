@@ -75,6 +75,10 @@ The third tab under Writing (`/tech-today`) lists the day's top tech headlines. 
 - **Amar's pick:** in the admin, create a **Tech picks** entry with a title, article URL, source, date and note. The newest published pick from the last 7 days is pinned above the list. The body is optional and appears after the note on the pick's reading page.
 - **Turn it off:** set `TECH_TODAY_ENABLED = false` in `src/features/tech-today/config.ts`. The tab goes and the routes return 404.
 
+## Private planner (/future)
+
+`/future` is a private planner (exams, quizzes, interviews, plans) for the logged-in admin only. Without a session it's the site's ordinary 404: the proxy rewrites to a non-existent path, and the page and every API handler check the session again. It's never cached or prerendered, isn't in `robots.txt`, the sitemap, RSS or `llms.txt`, and is linked only from the admin dashboard. Events live in Upstash Redis, never in this public repository; locally they're in the git-ignored `.data/future.json`. Code is in `src/features/future/`, and setup is in [SETUP_ADMIN.md](SETUP_ADMIN.md#private-planner-future).
+
 ## How admin publishing works
 
 ```

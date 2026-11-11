@@ -43,3 +43,6 @@ next-env.d.ts
 
 # design screenshots (scripts/screenshots.mjs)
 /screenshots
+
+# private /future planner data in local development (never commit)
+/.data/
