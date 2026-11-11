@@ -99,3 +99,31 @@ You don't need a GitHub token to try the admin on your machine.
 | "Something went wrong while talking to GitHub" | The token expired, doesn't include this repository, lacks Contents: read & write, or `main` is protected. Check the Vercel function logs. |
 | Published, but the site hasn't changed | Wait for the Vercel deploy to finish. Check that the GitHub integration is connected and that the deploy didn't fail. |
 | An uploaded image is broken in the editor preview | Expected: new images exist only after the next deploy. |
+
+---
+
+## Private planner (/future)
+
+`/future` is a private planner for exams, quizzes, interviews and plans. Only you can see it: without an admin session it's an ordinary 404. Events are kept in an Upstash Redis database, never in this repository, because the repository is public. Changes save instantly, with no commit or redeploy.
+
+Until Redis is connected, `/future` shows "Storage isn't set up yet" after you log in. Setup takes about 5 minutes on Upstash's free tier, with no credit card.
+
+1. Open Vercel → your **portfolio** project → **Storage** tab → **Create Database**. (Or go to **Marketplace** and search **Upstash**.)
+2. Choose **Upstash for Redis** → **Continue**. Pick the **Free** plan and a primary region near your Vercel functions. They run in Washington D.C. (`iad1`) unless you've changed it, so choose **US East**.
+3. Name it, for example `portfolio-future`, then **Create**.
+4. On the **Connect Project** screen, choose this project and tick **Production** and **Preview** (Development is optional). Leave the environment variable prefix empty.
+5. Check **Settings → Environment Variables**. You should see `KV_REST_API_URL` and `KV_REST_API_TOKEN`; some versions of the integration add `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` instead. Either pair works. If you set a prefix in step 4, the names will start with it and won't be found: remove the connection and connect again without a prefix.
+6. Redeploy: **Deployments** → latest production deployment → **⋯** → **Redeploy**.
+7. Log in at `/admin/login`. The dashboard now has a **Future** card; open it, or go to `/future` directly.
+
+**Preview deployments** use the same database as production when Preview is ticked, so they show your real events (still only after you log in).
+
+**Backups:** **Export JSON** at the bottom of `/future` downloads every event. **Import JSON** loads such a file back: events are added, ones with the same id are replaced, and nothing else is deleted. The file is checked in full before anything is saved. Use it to move to another database, or to keep a copy.
+
+**Locally:** without the Redis variables, `npm run dev` keeps events in `.data/future.json`. That folder is git-ignored and is never committed. To use the real database locally instead, copy the two variables into `.env.local`.
+
+| What you see | Likely cause |
+| --- | --- |
+| `/future` is a 404 | You're not logged in, or the session expired. Log in at `/admin/login` first. |
+| "Storage isn't set up yet" | The Redis variables aren't set for this environment, or you haven't redeployed since adding them. |
+| "Couldn't reach storage" | Upstash is unreachable or the token was rotated. Check the database in Vercel → Storage, and the function logs. |
