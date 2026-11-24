@@ -84,3 +84,11 @@ export function patchGoal(goal: Goal, patch: GoalPatch, now: Date): Goal {
   if (patch.done !== undefined && patch.done !== goal.done) next.doneAt = patch.done ? stamp : null;
   return next;
 }
+
+/** Names for ranges already fetched, shared by the page (server) and the views (client). */
+export const rangeKey = {
+  tasks: (from: string, to: string) => `tasks:${from}:${to}`,
+  unfinished: (today: string) => `unfinished:${today}`,
+  goals: (week: string) => `goals:${week}`,
+  notes: (from: string, to: string) => `notes:${from}:${to}`,
+};
