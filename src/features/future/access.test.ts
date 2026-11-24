@@ -112,7 +112,7 @@ test("API: logged out, forged or expired sessions get a 404 with no event data",
 
   for (const token of [null, forged, expired]) {
     for (const [name, call] of everyHandler(body.event.id, token)) {
-      const response = await call();
+      const response: Response = await call();
       const text = await response.text();
 
       assert.equal(response.status, 404, name);

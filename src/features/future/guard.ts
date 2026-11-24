@@ -6,10 +6,12 @@
  * Server-only.
  */
 import { NextResponse, type NextRequest } from "next/server";
+import type { z } from "zod";
 import { isSameOrigin } from "@/lib/admin/csrf";
 import { SESSION_COOKIE, verifySessionToken } from "@/lib/admin/session";
 import { PRIVATE_HEADERS } from "./config";
-import { getFutureStore } from "./store";
+import { fieldErrors } from "./schema";
+import { getFutureStore, getPlannerStores } from "./store";
 
 export function json(body: unknown, status = 200, headers: Record<string, string> = {}) {
   return NextResponse.json(body, { status, headers: { ...PRIVATE_HEADERS, ...headers } });
@@ -56,4 +58,37 @@ export async function readJson(request: Request, limit: number): Promise<{ data:
 export function storageFailed(error: unknown) {
   console.error("[future] storage error", error);
   return json({ error: "Couldn't reach storage. Try again in a moment." }, 502);
+}
+
+/** All four collections, or the same 503 as storeOrError. */
+export function storesOrError() {
+  const stores = getPlannerStores();
+  return stores
+    ? { stores, error: null }
+    : { stores: null, error: json({ error: "Storage isn't set up yet — see SETUP_ADMIN.md." }, 503) };
+}
+
+const DAY = /^\d{4}-\d{2}-\d{2}$/;
+const MAX_RANGE_DAYS = 400;
+
+/** `from` and `to` (YYYY-MM-DD, inclusive, at most ~13 months apart) from the query string. */
+export function readRange(request: Request): { from: string; to: string } | { error: Response } {
+  const params = new URL(request.url).searchParams;
+  const from = params.get("from") ?? "";
+  const to = params.get("to") ?? "";
+
+  if (!DAY.test(from) || !DAY.test(to) || from > to) {
+    return { error: json({ error: "Give from and to as YYYY-MM-DD dates." }, 400) };
+  }
+  if ((Date.parse(to) - Date.parse(from)) / 86_400_000 > MAX_RANGE_DAYS) {
+    return { error: json({ error: "That range is too long." }, 400) };
+  }
+  return { from, to };
+}
+
+/** Validates a parsed body, or returns a 400 with a message per field. */
+export function validate<T>(schema: z.ZodType<T>, data: unknown): { data: T } | { error: Response } {
+  const parsed = schema.safeParse(data);
+  if (parsed.success) return { data: parsed.data };
+  return { error: json({ error: "Some fields need attention.", fields: fieldErrors(parsed.error) }, 400) };
 }

@@ -95,10 +95,32 @@ function prepProgress(event: FutureEvent) {
   return event.prep.length > 0 ? `${done}/${event.prep.length} prep done` : "";
 }
 
+/** The events view on its own, owning its state and clock (used before the tabs existed). */
 export function Planner({ initialEvents, initialNow }: { initialEvents: FutureEvent[]; initialNow: number }) {
-  const toast = useToast();
   const [events, setEvents] = useState(initialEvents);
   const [now, setNow] = useState(initialNow);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(Date.now()), TICK_MS);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  return <EventsView events={events} setEvents={setEvents} now={now} standalone />;
+}
+
+interface EventsViewProps {
+  events: FutureEvent[];
+  setEvents: React.Dispatch<React.SetStateAction<FutureEvent[]>>;
+  now: number;
+  /** On its own page it has the page title; inside the tabs it's the Events section. */
+  standalone?: boolean;
+  /** After an import, so other views can reload what changed. */
+  onImported?: () => void;
+}
+
+/** The Events tab: next up, stats, filters, the grouped timeline, and export/import. */
+export function EventsView({ events, setEvents, now, standalone = false, onImported }: EventsViewProps) {
+  const toast = useToast();
   const [filter, setFilter] = useState<FilterId>("all");
   const [query, setQuery] = useState("");
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -106,11 +128,6 @@ export function Planner({ initialEvents, initialNow }: { initialEvents: FutureEv
   const [form, setForm] = useState<{ open: boolean; event: FutureEvent | null }>({ open: false, event: null });
   const [deleting, setDeleting] = useState<FutureEvent | null>(null);
   const importRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    const timer = window.setInterval(() => setNow(Date.now()), TICK_MS);
-    return () => window.clearInterval(timer);
-  }, []);
 
   const openNew = useCallback(() => setForm({ open: true, event: null }), []);
 
@@ -209,7 +226,8 @@ export function Planner({ initialEvents, initialNow }: { initialEvents: FutureEv
       });
       const { events: fresh } = await request<{ events: FutureEvent[] }>("/api/future/events");
       setEvents(fresh);
-      toast({ kind: "success", message: `Imported ${imported} event${imported === 1 ? "" : "s"}.` });
+      onImported?.();
+      toast({ kind: "success", message: `Imported ${imported} item${imported === 1 ? "" : "s"}.` });
     } catch (error) {
       fail(error);
     }
@@ -344,12 +362,16 @@ export function Planner({ initialEvents, initialNow }: { initialEvents: FutureEv
   return (
     <div className="max-w-3xl">
       <header className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="text-h1 font-semibold">Future</h1>
-          <p className="meta mt-2">
-            <time dateTime={today}>{longDate(today)}</time> · IST
-          </p>
-        </div>
+        {standalone ? (
+          <div>
+            <h1 className="text-h1 font-semibold">Future</h1>
+            <p className="meta mt-2">
+              <time dateTime={today}>{longDate(today)}</time> · IST
+            </p>
+          </div>
+        ) : (
+          <h2 className="text-h2 font-semibold">Events</h2>
+        )}
         <button type="button" onClick={openNew} className="btn btn-primary" aria-keyshortcuts="N">
           <Plus aria-hidden="true" />
           Add event
