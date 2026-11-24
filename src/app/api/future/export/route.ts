@@ -1,11 +1,12 @@
 /**
- * /api/future/export — every planner event as a JSON download. Admin session only.
- * The file has the same shape /api/future/import accepts.
+ * /api/future/export — every event, task, goal and note as a JSON download. Admin session only.
+ * The file has the shape /api/future/import accepts (version 2).
  */
 import type { NextRequest } from "next/server";
 import { istDate } from "@/features/future/dates";
-import { guardFutureRequest, json, storageFailed, storeOrError } from "@/features/future/guard";
-import type { FutureExport } from "@/features/future/schema";
+import { guardFutureRequest, json, storageFailed, storesOrError } from "@/features/future/guard";
+import type { PlannerExport } from "@/features/future/planner-schema";
+import { sortTasks } from "@/features/future/tasks";
 import { compareEvents } from "@/features/future/timeline";
 
 export const dynamic = "force-dynamic";
@@ -14,15 +15,24 @@ export async function GET(request: NextRequest) {
   const denied = await guardFutureRequest(request);
   if (denied) return denied;
 
-  const { store, error } = storeOrError();
+  const { stores, error } = storesOrError();
   if (error) return error;
 
   try {
     const now = new Date();
-    const file: FutureExport = {
-      version: 1,
+    const [events, tasks, goals, notes] = await Promise.all([
+      stores.events.list(),
+      stores.tasks.list(),
+      stores.goals.list(),
+      stores.notes.list(),
+    ]);
+    const file: PlannerExport = {
+      version: 2,
       exportedAt: now.toISOString(),
-      events: (await store.list()).sort(compareEvents),
+      events: events.sort(compareEvents),
+      tasks: sortTasks(tasks).sort((a, b) => a.date.localeCompare(b.date)),
+      goals: goals.sort((a, b) => a.weekStart.localeCompare(b.weekStart) || a.order - b.order),
+      notes: notes.sort((a, b) => a.date.localeCompare(b.date)),
     };
 
     return json(file, 200, {
